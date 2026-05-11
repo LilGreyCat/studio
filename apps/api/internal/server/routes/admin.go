@@ -24,6 +24,7 @@ func registerAdminPublic(r chi.Router, deps Dependencies) {
 
 func registerAdminSession(r chi.Router, deps Dependencies) {
 	r.Get("/me", deps.Admins.Me)
+	r.Post("/logout", deps.Admins.Logout)
 }
 
 func registerAdminProtected(
