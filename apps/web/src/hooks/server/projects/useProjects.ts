@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { getProjects } from "./api";
 import type { Project } from "./types";
@@ -9,6 +9,7 @@ type UseProjectsResult = {
     projects: Project[];
     isLoading: boolean;
     error: string | null;
+    refreshProjects: () => Promise<void>;
 };
 
 export function useProjects(): UseProjectsResult {
@@ -16,44 +17,30 @@ export function useProjects(): UseProjectsResult {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        let isCancelled = false;
+    const refreshProjects = useCallback(async (): Promise<void> => {
+        try {
+            setIsLoading(true);
+            setError(null);
 
-        async function loadProjects(): Promise<void> {
-            try {
-                setIsLoading(true);
-                setError(null);
-
-                const data = await getProjects();
-
-                if (!isCancelled) {
-                    setProjects(data);
-                }
-            } catch (err) {
-                if (!isCancelled) {
-                    setError(
-                        err instanceof Error
-                            ? err.message
-                            : "Failed to fetch projects"
-                    );
-                }
-            } finally {
-                if (!isCancelled) {
-                    setIsLoading(false);
-                }
-            }
+            const data = await getProjects();
+            setProjects(data);
+        } catch (err) {
+            setError(
+                err instanceof Error ? err.message : "Failed to fetch projects"
+            );
+        } finally {
+            setIsLoading(false);
         }
-
-        void loadProjects();
-
-        return () => {
-            isCancelled = true;
-        };
     }, []);
+
+    useEffect(() => {
+        void refreshProjects();
+    }, [refreshProjects]);
 
     return {
         projects,
         isLoading,
         error,
+        refreshProjects,
     };
 }
