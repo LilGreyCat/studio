@@ -24,3 +24,10 @@ export function loginAdmin(payload: LoginPayload): Promise<LoginResponse> {
         body: JSON.stringify(payload),
     });
 }
+
+export function logoutAdmin(): Promise<{ message: string }> {
+    return fetchJson<{ message: string }>("/admin/logout", {
+        method: "POST",
+        credentials: "include",
+    });
+}

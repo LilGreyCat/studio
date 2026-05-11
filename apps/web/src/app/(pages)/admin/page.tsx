@@ -2,10 +2,13 @@
 
 import { Box, Typography } from "@mui/material";
 
+import AdminLogin from "@/components/admin/adminLogin";
+import AdminDashboard from "@/components/admin/dashboard/AdminDashboard";
 import { useAdminSession } from "@/hooks/server/admin/useAdminSession";
 
 export default function AdminPage() {
-  const { admin, isAuthenticated, isLoading } = useAdminSession();
+  const { admin, isAuthenticated, isLoading, refreshSession } =
+    useAdminSession();
 
   if (isLoading) {
     return (
@@ -16,12 +19,8 @@ export default function AdminPage() {
   }
 
   if (!isAuthenticated || !admin) {
-    return <div>LOGIN FORM HERE</div>;
+    return <AdminLogin onLoginSuccess={refreshSession} />;
   }
 
-  return (
-    <Box sx={{ p: 4 }}>
-      <Typography variant="h4">Welcome {admin.email}</Typography>
-    </Box>
-  );
+  return <AdminDashboard admin={admin} onLogoutSuccess={refreshSession} />;
 }

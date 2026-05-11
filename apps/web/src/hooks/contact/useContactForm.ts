@@ -115,7 +115,7 @@ export function useContactForm() {
         router.replace(nextUrl, { scroll: false });
     };
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         setSuccessMessage("");

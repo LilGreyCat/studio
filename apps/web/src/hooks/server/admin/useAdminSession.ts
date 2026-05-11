@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { getAdminSession } from "./api";
 import type { AdminSession } from "./types";
@@ -10,6 +10,7 @@ type UseAdminSessionResult = {
     isAuthenticated: boolean;
     isLoading: boolean;
     error: string | null;
+    refreshSession: () => Promise<void>;
 };
 
 export function useAdminSession(): UseAdminSessionResult {
@@ -17,44 +18,30 @@ export function useAdminSession(): UseAdminSessionResult {
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
-        let isCancelled = false;
+    const refreshSession = useCallback(async (): Promise<void> => {
+        try {
+            setIsLoading(true);
+            setError(null);
 
-        async function loadSession(): Promise<void> {
-            try {
-                setIsLoading(true);
-                setError(null);
-
-                const data = await getAdminSession();
-
-                if (!isCancelled) {
-                    setAdmin(data);
-                }
-            } catch (err) {
-                if (!isCancelled) {
-                    setAdmin(null);
-                    setError(
-                        err instanceof Error ? err.message : "Unauthorized"
-                    );
-                }
-            } finally {
-                if (!isCancelled) {
-                    setIsLoading(false);
-                }
-            }
+            const data = await getAdminSession();
+            setAdmin(data);
+        } catch (err) {
+            setAdmin(null);
+            setError(err instanceof Error ? err.message : "Unauthorized");
+        } finally {
+            setIsLoading(false);
         }
-
-        void loadSession();
-
-        return () => {
-            isCancelled = true;
-        };
     }, []);
+
+    useEffect(() => {
+        void refreshSession();
+    }, [refreshSession]);
 
     return {
         admin,
         isAuthenticated: admin !== null,
         isLoading,
         error,
+        refreshSession,
     };
 }
