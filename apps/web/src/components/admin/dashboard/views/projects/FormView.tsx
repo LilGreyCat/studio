@@ -118,6 +118,7 @@ export default function ProjectFormView({
         },
         links: getLinksPayload(),
         integrations: getIntegrationsPayload(),
+        imageFile,
       });
 
       return;

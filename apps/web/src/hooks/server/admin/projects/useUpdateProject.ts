@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { uploadImage } from "@/hooks/server/admin/uploads";
 import {
     patchProjectIntegrations,
     patchProjectLinks,
@@ -14,14 +15,15 @@ import type {
     UpdateProjectPayload,
 } from "./types";
 
-type UseUpdateProjectParams = {
-    onSuccess?: () => void | Promise<void>;
-};
-
 type UpdateFullProjectPayload = {
     project: UpdateProjectPayload;
     links?: Partial<PutProjectLinksPayload>;
     integrations?: Partial<PutProjectIntegrationsPayload>;
+    imageFile?: File | null;
+};
+
+type UseUpdateProjectParams = {
+    onSuccess?: () => void | Promise<void>;
 };
 
 export function useUpdateProject({ onSuccess }: UseUpdateProjectParams = {}) {
@@ -36,7 +38,15 @@ export function useUpdateProject({ onSuccess }: UseUpdateProjectParams = {}) {
             setIsUpdating(true);
             setUpdateError(null);
 
-            await updateProject(projectId, payload.project);
+            const imageURL = await getUpdatedImageURL(
+                payload.project.image_url,
+                payload.imageFile ?? null
+            );
+
+            await updateProject(projectId, {
+                ...payload.project,
+                image_url: imageURL,
+            });
 
             if (payload.links) {
                 await patchProjectLinks(projectId, payload.links);
@@ -61,4 +71,16 @@ export function useUpdateProject({ onSuccess }: UseUpdateProjectParams = {}) {
         isUpdating,
         updateError,
     };
+}
+
+async function getUpdatedImageURL(
+    currentImageURL: string | null | undefined,
+    file: File | null
+): Promise<string | null | undefined> {
+    if (file === null) {
+        return currentImageURL;
+    }
+
+    const response = await uploadImage(file, "projects");
+    return response.url;
 }
