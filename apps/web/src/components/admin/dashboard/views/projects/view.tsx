@@ -1,50 +1,33 @@
 "use client";
 
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Stack,
-  Typography,
-} from "@mui/material";
-import { useState } from "react";
+import { Button, Stack, Typography } from "@mui/material";
 
 import { useDeleteProject } from "@/hooks/server/admin/projects";
 import { useProjects } from "@/hooks/server/projects";
-import type { Project } from "@/hooks/server/projects/types";
 
+import { useAdminProjectsView } from "@/hooks/server/admin/projects/useAdminProjectsView";
 import ProjectFormView from "./FormView";
+import ProjectListView from "./ProjectListView";
 
 type AdminProjectsViewProps = {
   onBack: () => void;
 };
 
-type ProjectAdminMode = "list" | "create" | "edit";
-
 export default function AdminProjectsView({ onBack }: AdminProjectsViewProps) {
-  const [mode, setMode] = useState<ProjectAdminMode>("list");
-  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-
   const { projects, isLoading, error, refreshProjects } = useProjects();
+
+  const {
+    mode,
+    selectedProject,
+    openEditMode,
+    openCreateMode,
+    closeForm,
+    handleFormSuccess,
+  } = useAdminProjectsView({ refreshProjects });
 
   const { handleDelete, isDeleting, deleteError } = useDeleteProject({
     onSuccess: refreshProjects,
   });
-
-  function openEditMode(project: Project): void {
-    setSelectedProject(project);
-    setMode("edit");
-  }
-
-  function closeForm(): void {
-    setSelectedProject(null);
-    setMode("list");
-  }
-
-  async function handleFormSuccess(): Promise<void> {
-    await refreshProjects();
-    closeForm();
-  }
 
   if (mode === "create") {
     return (
@@ -73,7 +56,7 @@ export default function AdminProjectsView({ onBack }: AdminProjectsViewProps) {
         <Typography variant="h4">Gestion des projets</Typography>
 
         <Stack direction="row" spacing={2}>
-          <Button variant="contained" onClick={() => setMode("create")}>
+          <Button variant="contained" onClick={openCreateMode}>
             Ajouter un projet
           </Button>
 
@@ -85,81 +68,14 @@ export default function AdminProjectsView({ onBack }: AdminProjectsViewProps) {
 
       {deleteError && <Typography color="error">{deleteError}</Typography>}
 
-      {renderProjectList({
-        projects,
-        isLoading,
-        error,
-        isDeleting,
-        onDelete: handleDelete,
-        onEdit: openEditMode,
-      })}
-    </Stack>
-  );
-}
-
-type RenderProjectListParams = {
-  projects: Project[];
-  isLoading: boolean;
-  error: string | null;
-  isDeleting: boolean;
-  onDelete: (projectId: number) => Promise<void>;
-  onEdit: (project: Project) => void;
-};
-
-function renderProjectList({
-  projects,
-  isLoading,
-  error,
-  isDeleting,
-  onDelete,
-  onEdit,
-}: RenderProjectListParams) {
-  if (isLoading) {
-    return <CircularProgress />;
-  }
-
-  if (error) {
-    return <Typography color="error">{error}</Typography>;
-  }
-
-  if (projects.length === 0) {
-    return <Typography>Aucun projet trouvé.</Typography>;
-  }
-
-  return (
-    <Stack spacing={2}>
-      {projects.map((project) => (
-        <Box
-          key={project.id}
-          sx={{
-            p: 2,
-            border: "1px solid",
-            borderColor: "divider",
-            borderRadius: 2,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 2,
-          }}
-        >
-          <Typography variant="h6">{project.name}</Typography>
-
-          <Stack direction="row" spacing={2}>
-            <Button variant="outlined" onClick={() => onEdit(project)}>
-              Modifier
-            </Button>
-
-            <Button
-              variant="outlined"
-              color="error"
-              disabled={isDeleting}
-              onClick={() => onDelete(project.id)}
-            >
-              Supprimer
-            </Button>
-          </Stack>
-        </Box>
-      ))}
+      <ProjectListView
+        projects={projects}
+        isLoading={isLoading}
+        error={error}
+        isDeleting={isDeleting}
+        onDelete={handleDelete}
+        onEdit={openEditMode}
+      />
     </Stack>
   );
 }
