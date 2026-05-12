@@ -11,6 +11,7 @@ import { useState } from "react";
 
 import { useDeleteProject } from "@/hooks/server/admin/projects";
 import { useProjects } from "@/hooks/server/projects";
+import type { Project } from "@/hooks/server/projects/types";
 
 import ProjectFormView from "./FormView";
 
@@ -18,10 +19,11 @@ type AdminProjectsViewProps = {
   onBack: () => void;
 };
 
-type ProjectAdminMode = "list" | "create";
+type ProjectAdminMode = "list" | "create" | "edit";
 
 export default function AdminProjectsView({ onBack }: AdminProjectsViewProps) {
   const [mode, setMode] = useState<ProjectAdminMode>("list");
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
 
   const { projects, isLoading, error, refreshProjects } = useProjects();
 
@@ -29,14 +31,38 @@ export default function AdminProjectsView({ onBack }: AdminProjectsViewProps) {
     onSuccess: refreshProjects,
   });
 
+  function openEditMode(project: Project): void {
+    setSelectedProject(project);
+    setMode("edit");
+  }
+
+  function closeForm(): void {
+    setSelectedProject(null);
+    setMode("list");
+  }
+
+  async function handleFormSuccess(): Promise<void> {
+    await refreshProjects();
+    closeForm();
+  }
+
   if (mode === "create") {
     return (
       <ProjectFormView
-        onCancel={() => setMode("list")}
-        onSuccess={async () => {
-          await refreshProjects();
-          setMode("list");
-        }}
+        mode="create"
+        onCancel={closeForm}
+        onSuccess={handleFormSuccess}
+      />
+    );
+  }
+
+  if (mode === "edit" && selectedProject !== null) {
+    return (
+      <ProjectFormView
+        mode="edit"
+        project={selectedProject}
+        onCancel={closeForm}
+        onSuccess={handleFormSuccess}
       />
     );
   }
@@ -65,17 +91,19 @@ export default function AdminProjectsView({ onBack }: AdminProjectsViewProps) {
         error,
         isDeleting,
         onDelete: handleDelete,
+        onEdit: openEditMode,
       })}
     </Stack>
   );
 }
 
 type RenderProjectListParams = {
-  projects: ReturnType<typeof useProjects>["projects"];
+  projects: Project[];
   isLoading: boolean;
   error: string | null;
   isDeleting: boolean;
   onDelete: (projectId: number) => Promise<void>;
+  onEdit: (project: Project) => void;
 };
 
 function renderProjectList({
@@ -84,6 +112,7 @@ function renderProjectList({
   error,
   isDeleting,
   onDelete,
+  onEdit,
 }: RenderProjectListParams) {
   if (isLoading) {
     return <CircularProgress />;
@@ -115,14 +144,20 @@ function renderProjectList({
         >
           <Typography variant="h6">{project.name}</Typography>
 
-          <Button
-            variant="outlined"
-            color="error"
-            disabled={isDeleting}
-            onClick={() => onDelete(project.id)}
-          >
-            Supprimer
-          </Button>
+          <Stack direction="row" spacing={2}>
+            <Button variant="outlined" onClick={() => onEdit(project)}>
+              Modifier
+            </Button>
+
+            <Button
+              variant="outlined"
+              color="error"
+              disabled={isDeleting}
+              onClick={() => onDelete(project.id)}
+            >
+              Supprimer
+            </Button>
+          </Stack>
         </Box>
       ))}
     </Stack>

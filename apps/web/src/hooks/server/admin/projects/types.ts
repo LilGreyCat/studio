@@ -40,3 +40,8 @@ export type PutProjectIntegrationsPayload = {
     deezer_embed_url: string | null;
     apple_music_embed_url: string | null;
 };
+
+export type UpdateProjectPayload = {
+    name?: string;
+    image_url?: string | null;
+};
