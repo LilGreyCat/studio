@@ -4,6 +4,8 @@ import { useState } from "react";
 
 import { createProject, putProjectIntegrations, putProjectLinks } from "./api";
 
+import { uploadImage } from "@/hooks/server/admin/uploads";
+
 import type {
     CreateProjectPayload,
     PutProjectIntegrationsPayload,
@@ -14,6 +16,7 @@ type CreateFullProjectPayload = {
     project: CreateProjectPayload;
     links: PutProjectLinksPayload;
     integrations: PutProjectIntegrationsPayload;
+    imageFile: File | null;
 };
 
 type UseCreateProjectParams = {
@@ -31,7 +34,12 @@ export function useCreateProject({ onSuccess }: UseCreateProjectParams = {}) {
             setIsCreating(true);
             setCreateError(null);
 
-            const project = await createProject(payload.project);
+            const imageURL = await getUploadedImageURL(payload.imageFile);
+
+            const project = await createProject({
+                ...payload.project,
+                image_url: imageURL,
+            });
 
             await putProjectLinks(project.id, payload.links);
             await putProjectIntegrations(project.id, payload.integrations);
@@ -51,4 +59,13 @@ export function useCreateProject({ onSuccess }: UseCreateProjectParams = {}) {
         isCreating,
         createError,
     };
+}
+
+async function getUploadedImageURL(file: File | null): Promise<string | null> {
+    if (file === null) {
+        return null;
+    }
+
+    const response = await uploadImage(file, "projects");
+    return response.url;
 }

@@ -17,7 +17,6 @@ func (h Handler) Patch(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var request projectReq.PatchProject
-
 	if err := utils.DecodeJSON(r, &request); err != nil {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
 		return
@@ -46,6 +45,8 @@ func (h Handler) Patch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "failed to update project", http.StatusInternalServerError)
 		return
 	}
+
+	deleteOldProjectImageIfChanged(currentProject.ImageURL, project.ImageURL)
 
 	response := projectResp.ToProjectResponse(project)
 	utils.WriteJSON(w, http.StatusOK, response)

@@ -1,13 +1,12 @@
 "use client";
 
 import { Button, Stack, TextField, Typography } from "@mui/material";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import {
   useCreateProject,
   useUpdateProject,
 } from "@/hooks/server/admin/projects";
-import { useImageUpload } from "@/hooks/server/admin/uploads";
 import {
   useProjectIntegrations,
   useProjectLinks,
@@ -34,6 +33,7 @@ export default function ProjectFormView({
 }: ProjectFormViewProps) {
   const [name, setName] = useState(project?.name ?? "");
   const [imageURL, setImageURL] = useState(project?.image_url ?? "");
+  const [imageFile, setImageFile] = useState<File | null>(null);
 
   const [spotifyURL, setSpotifyURL] = useState("");
   const [deezerURL, setDeezerURL] = useState("");
@@ -58,12 +58,23 @@ export default function ProjectFormView({
     onSuccess,
   });
 
-  const { isUploading, uploadError, handleFileChange } = useImageUpload({
-    folder: "projects",
-    onUploaded: setImageURL,
-  });
+  const imagePreviewURL = useMemo(() => {
+    if (imageFile === null) {
+      return null;
+    }
+
+    return URL.createObjectURL(imageFile);
+  }, [imageFile]);
 
   const isSubmitting = isCreating || isUpdating;
+
+  useEffect(() => {
+    return () => {
+      if (imagePreviewURL !== null) {
+        URL.revokeObjectURL(imagePreviewURL);
+      }
+    };
+  }, [imagePreviewURL]);
 
   useEffect(() => {
     if (mode !== "edit" || !links) {
@@ -87,6 +98,13 @@ export default function ProjectFormView({
     setAppleMusicEmbedURL(integrations.apple_music_embed_url ?? "");
   }, [mode, integrations]);
 
+  function handleImageChange(event: React.ChangeEvent<HTMLInputElement>): void {
+    const file = event.target.files?.[0] ?? null;
+    setImageFile(file);
+
+    event.target.value = "";
+  }
+
   async function handleSubmit(
     event: React.SubmitEvent<HTMLFormElement>
   ): Promise<void> {
@@ -98,18 +116,8 @@ export default function ProjectFormView({
           name: name.trim(),
           image_url: emptyToNull(imageURL),
         },
-        links: {
-          spotify_url: emptyToNull(spotifyURL),
-          deezer_url: emptyToNull(deezerURL),
-          apple_music_url: emptyToNull(appleMusicURL),
-          soundcloud_url: emptyToNull(soundcloudURL),
-          youtube_url: emptyToNull(youtubeURL),
-        },
-        integrations: {
-          spotify_embed_url: emptyToNull(spotifyEmbedURL),
-          deezer_embed_url: emptyToNull(deezerEmbedURL),
-          apple_music_embed_url: emptyToNull(appleMusicEmbedURL),
-        },
+        links: getLinksPayload(),
+        integrations: getIntegrationsPayload(),
       });
 
       return;
@@ -118,21 +126,30 @@ export default function ProjectFormView({
     await createFullProject({
       project: {
         name: name.trim(),
-        image_url: emptyToNull(imageURL),
+        image_url: null,
       },
-      links: {
-        spotify_url: emptyToNull(spotifyURL),
-        deezer_url: emptyToNull(deezerURL),
-        apple_music_url: emptyToNull(appleMusicURL),
-        soundcloud_url: emptyToNull(soundcloudURL),
-        youtube_url: emptyToNull(youtubeURL),
-      },
-      integrations: {
-        spotify_embed_url: emptyToNull(spotifyEmbedURL),
-        deezer_embed_url: emptyToNull(deezerEmbedURL),
-        apple_music_embed_url: emptyToNull(appleMusicEmbedURL),
-      },
+      links: getLinksPayload(),
+      integrations: getIntegrationsPayload(),
+      imageFile,
     });
+  }
+
+  function getLinksPayload() {
+    return {
+      spotify_url: emptyToNull(spotifyURL),
+      deezer_url: emptyToNull(deezerURL),
+      apple_music_url: emptyToNull(appleMusicURL),
+      soundcloud_url: emptyToNull(soundcloudURL),
+      youtube_url: emptyToNull(youtubeURL),
+    };
+  }
+
+  function getIntegrationsPayload() {
+    return {
+      spotify_embed_url: emptyToNull(spotifyEmbedURL),
+      deezer_embed_url: emptyToNull(deezerEmbedURL),
+      apple_music_embed_url: emptyToNull(appleMusicEmbedURL),
+    };
   }
 
   return (
@@ -149,29 +166,47 @@ export default function ProjectFormView({
         fullWidth
       />
 
-      <Button variant="outlined" component="label" disabled={isUploading}>
-        {isUploading ? "Upload en cours..." : "Choisir une image"}
-
+      <Button variant="outlined" component="label" disabled={isSubmitting}>
+        Choisir une image
         <input
           hidden
           type="file"
           accept="image/png,image/jpeg,image/webp"
-          onChange={handleFileChange}
+          onChange={handleImageChange}
         />
       </Button>
 
-      <TextField
-        label="Image URL"
-        value={imageURL}
-        fullWidth
-        slotProps={{
-          input: {
-            readOnly: true,
-          },
-        }}
-      />
+      {imageFile && (
+        <Typography>
+          Image sélectionnée : <strong>{imageFile.name}</strong>
+        </Typography>
+      )}
 
-      {uploadError && <Typography color="error">{uploadError}</Typography>}
+      {imagePreviewURL && (
+        <img
+          src={imagePreviewURL}
+          alt="Aperçu"
+          style={{
+            width: "100%",
+            maxWidth: 360,
+            borderRadius: 8,
+            objectFit: "cover",
+          }}
+        />
+      )}
+
+      {mode === "edit" && !imageFile && imageURL && (
+        <TextField
+          label="Image actuelle"
+          value={imageURL}
+          fullWidth
+          slotProps={{
+            input: {
+              readOnly: true,
+            },
+          }}
+        />
+      )}
 
       <Typography variant="h6">Liens</Typography>
 
