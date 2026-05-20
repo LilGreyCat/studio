@@ -11,7 +11,7 @@ import {
 
 import { useAdminLogin } from "@/hooks/server/admin/useAdminLogin";
 
-import { GlassySurface } from "../ui";
+import { GlassySurface, MainLogo } from "@/components/ui";
 
 type AdminLoginProps = {
   onLoginSuccess?: () => Promise<void> | void;
@@ -29,7 +29,17 @@ export default function AdminLogin({ onLoginSuccess }: AdminLoginProps) {
   } = useAdminLogin({ onLoginSuccess });
 
   return (
-    <Box component="form" onSubmit={handleSubmit}>
+    <Box
+      component="form"
+      onSubmit={handleSubmit}
+      sx={{
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+      }}
+    >
+      <MainLogo marginBottom={3} />
       <GlassySurface>
         <Typography variant="h4" sx={titleSx} gutterBottom>
           Login Administrateur
