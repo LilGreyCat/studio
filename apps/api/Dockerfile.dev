@@ -19,4 +19,4 @@ RUN go mod download || true
 COPY . .
 
 EXPOSE 8080
-CMD ["air", "-c", ".air.toml"]
+CMD ["sh", "-c", "migrate -path /app/migrations -database \"$DATABASE_URL\" up && exec air -c .air.toml"]
