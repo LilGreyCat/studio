@@ -7,7 +7,7 @@ import (
 )
 
 func (h Handler) Logout(w http.ResponseWriter, r *http.Request) {
-	clearAdminSessionCookie(w)
+	h.clearAdminSessionCookie(w)
 
 	utils.WriteJSON(w, http.StatusOK, map[string]any{
 		"message": "logout successful",

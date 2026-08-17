@@ -25,7 +25,7 @@ func (h Handler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	setAdminSessionCookie(w, admin.ID, h.authSecret)
+	h.setAdminSessionCookie(w, admin.ID, h.authSecret)
 	utils.WriteJSON(w, http.StatusOK, map[string]any{
 		"message": "login successful",
 	})

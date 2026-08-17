@@ -7,12 +7,13 @@ import (
 	auth "github.com/PtiCadri/studio/apps/api/internal/auth"
 )
 
-func setAdminSessionCookie(
+func (h Handler) setAdminSessionCookie(
 	w http.ResponseWriter,
 	adminID int64,
 	authSecret string,
 ) {
-	cookieValue := auth.SignUserID(adminID, authSecret)
+	expiresAt := time.Now().Add(24 * time.Hour)
+	cookieValue := auth.SignUserID(adminID, authSecret, expiresAt)
 
 	http.SetCookie(w, &http.Cookie{
 		Name:     "admin_session",
@@ -20,19 +21,19 @@ func setAdminSessionCookie(
 		Path:     "/",
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
-		Secure:   false,
-		Expires:  time.Now().Add(24 * time.Hour),
+		Secure:   h.cookieSecure,
+		Expires:  expiresAt,
 	})
 }
 
-func clearAdminSessionCookie(w http.ResponseWriter) {
+func (h Handler) clearAdminSessionCookie(w http.ResponseWriter) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     "admin_session",
 		Value:    "",
 		Path:     "/",
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,
-		Secure:   false, // true in production with HTTPS
+		Secure:   h.cookieSecure,
 		MaxAge:   -1,
 		Expires:  time.Unix(0, 0),
 	})

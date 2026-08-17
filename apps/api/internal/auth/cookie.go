@@ -7,16 +7,13 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"time"
 )
 
-// SignUserID generates a signed user ID cookie value.
-// It takes an integer user ID and a secret string as input.
-// The function returns a string in the format of "userID.signature"
-// where signature is the base64 encoded HMAC-SHA256 value of the user ID
-// and the secret string.
+// SignUserID generates a signed user ID and expiry cookie value.
 // The returned string is a valid cookie value.
-func SignUserID(userID int64, secret string) string {
-	payload := strconv.FormatInt(userID, 10)
+func SignUserID(userID int64, secret string, expiresAt time.Time) string {
+	payload := fmt.Sprintf("%d:%d", userID, expiresAt.Unix())
 
 	mac := hmac.New(sha256.New, []byte(secret))
 	mac.Write([]byte(payload))
@@ -25,13 +22,9 @@ func SignUserID(userID int64, secret string) string {
 	return payload + "." + signature
 }
 
-// VerifyUserID verifies a signed user ID cookie value.
-// It takes a signed user ID cookie value and a secret string as input.
-// The function returns the user ID as an integer if the signature is valid,
-// or an error if the signature is invalid or the user ID is invalid.
-// The returned error is of type *fmt.Error.
+// VerifyUserID verifies the signature and rejects expired cookie values.
 func VerifyUserID(value string, secret string) (int64, error) {
-	parts := strings.Split(value, ".")
+	parts := strings.SplitN(value, ".", 2)
 	if len(parts) != 2 {
 		return 0, fmt.Errorf("invalid cookie format")
 	}
@@ -50,9 +43,22 @@ func VerifyUserID(value string, secret string) (int64, error) {
 		return 0, fmt.Errorf("invalid signature")
 	}
 
-	userID, err := strconv.ParseInt(payload, 10, 64)
+	payloadParts := strings.SplitN(payload, ":", 2)
+	if len(payloadParts) != 2 {
+		return 0, fmt.Errorf("invalid cookie payload")
+	}
+
+	userID, err := strconv.ParseInt(payloadParts[0], 10, 64)
 	if err != nil {
 		return 0, fmt.Errorf("invalid user id: %w", err)
+	}
+
+	expiresAt, err := strconv.ParseInt(payloadParts[1], 10, 64)
+	if err != nil {
+		return 0, fmt.Errorf("invalid expiry: %w", err)
+	}
+	if time.Now().Unix() >= expiresAt {
+		return 0, fmt.Errorf("cookie expired")
 	}
 
 	return userID, nil

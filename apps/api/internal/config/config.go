@@ -1,12 +1,16 @@
 package config
 
-import "os"
+import (
+	"os"
+	"strconv"
+)
 
 type Config struct {
-	Port        string
-	DatabaseUrl string
-	AuthSecret  string
-	FrontendUrl string
+	Port         string
+	DatabaseUrl  string
+	AuthSecret   string
+	FrontendUrl  string
+	CookieSecure bool
 }
 
 // Load returns a Config object from environment variables.
@@ -18,10 +22,13 @@ func Load() Config {
 		port = "8080"
 	}
 
+	cookieSecure, _ := strconv.ParseBool(os.Getenv("COOKIE_SECURE"))
+
 	return Config{
-		Port:        port,
-		DatabaseUrl: os.Getenv("DATABASE_URL"),
-		AuthSecret:  os.Getenv("AUTH_SECRET"),
-		FrontendUrl: os.Getenv("FRONTEND_URL"),
+		Port:         port,
+		DatabaseUrl:  os.Getenv("DATABASE_URL"),
+		AuthSecret:   os.Getenv("AUTH_SECRET"),
+		FrontendUrl:  os.Getenv("FRONTEND_URL"),
+		CookieSecure: cookieSecure,
 	}
 }

@@ -35,7 +35,7 @@ func BuildDependencies(
 		Health:   handlers.NewHealth(db),
 		Projects: projectHandlers.New(projectsRepo),
 		Artists:  artistHandlers.New(artistsRepo),
-		Admins:   adminHandlers.New(adminsRepo, cfg.AuthSecret),
+		Admins:   adminHandlers.New(adminsRepo, cfg.AuthSecret, cfg.CookieSecure),
 		Uploads:  uploadHandlers.New(),
 	}
 }
