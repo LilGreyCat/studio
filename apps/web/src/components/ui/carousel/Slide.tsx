@@ -25,7 +25,7 @@ function Slide({ slide, onClick }: SlideProps) {
             width={slide.width}
             height={slide.height}
             sizes="100vw"
-            style={{ width: "100%", height: "auto" }}
+            style={{ width: "75%", height: "auto" }}
           />
         </Box>
       </ButtonBase>

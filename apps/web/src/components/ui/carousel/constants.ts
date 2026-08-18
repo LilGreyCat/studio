@@ -7,28 +7,40 @@ type StudioSlide = {
 
 const studioSlides: StudioSlide[] = [
     {
-        src: "studio.png",
-        alt: "photo du Studio",
-        width: 1900,
-        height: 778,
+        src: "01_bureau.png",
+        alt: "Bureau du studio",
+        width: 1537,
+        height: 1023,
     },
     {
-        src: "studio2.jpg",
-        alt: "photo du Studio",
-        width: 780,
-        height: 383,
+        src: "02_angle1.png",
+        alt: "Premier angle du studio",
+        width: 1537,
+        height: 1023,
     },
     {
-        src: "studio3.png",
-        alt: "photo du Studio",
-        width: 1824,
-        height: 594,
+        src: "03_angle2.png",
+        alt: "Deuxième angle du studio",
+        width: 1535,
+        height: 1024,
     },
     {
-        src: "studio4.webp",
-        alt: "photo du Studio",
-        width: 1208,
-        height: 642,
+        src: "04_fish-oeil1.png",
+        alt: "Première vue grand-angle du studio",
+        width: 1535,
+        height: 1024,
+    },
+    {
+        src: "05_fish-oeil2.png",
+        alt: "Deuxième vue grand-angle du studio",
+        width: 1536,
+        height: 1024,
+    },
+    {
+        src: "06_canape.png",
+        alt: "Canapé du studio",
+        width: 1537,
+        height: 1023,
     },
 ];
 
