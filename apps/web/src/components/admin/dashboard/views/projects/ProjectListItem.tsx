@@ -1,4 +1,5 @@
-import { Box, Button, Stack, Typography } from "@mui/material";
+import { GlassySurface } from "@/components/ui";
+import { Button, Stack, Typography } from "@mui/material";
 
 import type { Project } from "@/hooks/server/projects/types";
 
@@ -16,7 +17,7 @@ export default function ProjectListItem({
   onDelete,
 }: ProjectListItemProps) {
   return (
-    <Box
+    <GlassySurface
       sx={{
         p: 2,
         border: "1px solid",
@@ -44,6 +45,6 @@ export default function ProjectListItem({
           Supprimer
         </Button>
       </Stack>
-    </Box>
+    </GlassySurface>
   );
 }
