@@ -1,11 +1,9 @@
 package project
 
 import (
-	"context"
 	"database/sql"
 	"net/http"
 
-	"github.com/PtiCadri/studio/apps/api/internal/domain/models"
 	"github.com/PtiCadri/studio/apps/api/internal/utils"
 
 	projectResp "github.com/PtiCadri/studio/apps/api/internal/responses/project"
@@ -19,7 +17,7 @@ func (h Handler) GetByID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	project, artists, err := h.getProjectWithArtists(r.Context(), id)
+	project, artists, err := h.projectRepo.GetDetail(r.Context(), id)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			http.Error(w, "project not found", http.StatusNotFound)
@@ -32,22 +30,4 @@ func (h Handler) GetByID(w http.ResponseWriter, r *http.Request) {
 
 	response := projectResp.ToProjectDetailResponse(project, artists)
 	utils.WriteJSON(w, http.StatusOK, response)
-}
-
-func (h Handler) getProjectWithArtists(
-	ctx context.Context,
-	id int64,
-) (models.Project, []models.Artist, error) {
-
-	project, err := h.projectRepo.GetByID(ctx, id)
-	if err != nil {
-		return models.Project{}, nil, err
-	}
-
-	artists, err := h.projectRepo.GetArtistsByProjectID(ctx, project.ID)
-	if err != nil {
-		return models.Project{}, nil, err
-	}
-
-	return project, artists, nil
 }
