@@ -1,4 +1,4 @@
-import { ServiceId } from "@/hooks/contact/useContactForm";
+import type { ServiceId } from "@/hooks/contact/useContactForm";
 import { Resend } from "resend";
 
 type ContactPayload = {
@@ -19,132 +19,170 @@ const serviceLabels: Record<ServiceId, string> = {
     album: "Formule Album",
 };
 
+const validServices: ServiceId[] = [
+    "recording",
+    "mixing",
+    "mastering",
+    "live",
+    "single",
+    "ep",
+    "album",
+];
+
+const fieldLimits = {
+    name: 100,
+    email: 254,
+    phone: 30,
+    message: 5000,
+} as const;
+
+const htmlEntities: Record<string, string> = {
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;",
+};
+
 function isValidEmail(email: string): boolean {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-function buildEmailHtml(payload: ContactPayload): string {
-    const phoneLine = payload.phone?.trim() ? payload.phone : "Non renseigné";
+function escapeHtml(value: string): string {
+    return value.replace(/[&<>"']/g, (character) => htmlEntities[character]);
+}
 
+function parsePayload(body: unknown): ContactPayload | null {
+    if (typeof body !== "object" || body === null) {
+        return null;
+    }
+
+    const candidate = body as Record<string, unknown>;
+    const name =
+        typeof candidate.name === "string" ? candidate.name.trim() : "";
+    const email =
+        typeof candidate.email === "string" ? candidate.email.trim() : "";
+    const phone =
+        typeof candidate.phone === "string" ? candidate.phone.trim() : "";
+    const message =
+        typeof candidate.message === "string" ? candidate.message.trim() : "";
+    const services = Array.isArray(candidate.services)
+        ? candidate.services
+        : [];
+
+    if (!name || !email || services.length === 0 || !message) {
+        return null;
+    }
+
+    if (
+        !services.every(
+            (service): service is ServiceId =>
+                typeof service === "string" &&
+                validServices.includes(service as ServiceId)
+        )
+    ) {
+        return null;
+    }
+
+    return { name, email, phone, services, message };
+}
+
+function exceedsFieldLimits(payload: ContactPayload): boolean {
+    return (
+        payload.name.length > fieldLimits.name ||
+        payload.email.length > fieldLimits.email ||
+        (payload.phone?.length ?? 0) > fieldLimits.phone ||
+        payload.message.length > fieldLimits.message
+    );
+}
+
+function buildEmailHtml(payload: ContactPayload): string {
+    const phoneLine = payload.phone
+        ? escapeHtml(payload.phone)
+        : "Non renseigné";
     const servicesLine = payload.services
-        .map((service) => serviceLabels[service])
+        .map((service) => escapeHtml(serviceLabels[service]))
         .join("<br />- ");
 
     return `
         <div style="font-family: Arial, sans-serif;">
             <h3>Nouveau message de contact.</h3>
-            <p><strong>Nom:</strong> ${payload.name}</p>
-            <p><strong>Email:</strong> ${payload.email}</p>
-            <p><strong>Telephone:</strong> ${phoneLine}</p>
+            <p><strong>Nom:</strong> ${escapeHtml(payload.name)}</p>
+            <p><strong>Email:</strong> ${escapeHtml(payload.email)}</p>
+            <p><strong>Téléphone:</strong> ${phoneLine}</p>
             <p><strong>Prestation(s):</strong><br />- ${servicesLine}</p>
             <h3>Message</h3>
-            <p style="white-space: pre-wrap;">${payload.message}</p>
+            <p style="white-space: pre-wrap;">${escapeHtml(payload.message)}</p>
         </div>
     `;
 }
 
 export async function POST(request: Request) {
     try {
-        console.log("API /contact called");
+        const payload = parsePayload(await request.json());
 
-        const body = (await request.json()) as ContactPayload;
-        console.log("Body received:", body);
-
-        const name = body.name?.trim() || "";
-        const email = body.email?.trim() || "";
-        const phone = body.phone?.trim() || "";
-        const services = Array.isArray(body.services) ? body.services : [];
-        const message = body.message?.trim() || "";
-
-        console.log("Env check:", {
-            hasApiKey: !!process.env.RESEND_API_KEY,
-            to: process.env.CONTACT_TO_EMAIL,
-            from: process.env.CONTACT_FROM_EMAIL,
-        });
-
-        if (!name || !email || services.length === 0 || !message) {
+        if (!payload) {
             return Response.json(
-                { error: "Veuillez remplir tous les champs obligatoires." },
+                {
+                    error: "Veuillez remplir correctement tous les champs obligatoires.",
+                },
                 { status: 400 }
             );
         }
 
-        if (!isValidEmail(email)) {
+        if (!isValidEmail(payload.email)) {
             return Response.json(
                 { error: "Adresse email invalide." },
                 { status: 400 }
             );
         }
 
-        const validServices: ServiceId[] = [
-            "recording",
-            "mixing",
-            "mastering",
-            "live",
-            "single",
-            "ep",
-            "album",
-        ];
-
-        const hasInvalidService = services.some((service) => {
-            return !validServices.includes(service);
-        });
-
-        if (hasInvalidService) {
+        if (exceedsFieldLimits(payload)) {
             return Response.json(
-                { error: "Veuillez sélectionner au moins une prestation." },
+                { error: "Un ou plusieurs champs sont trop longs." },
                 { status: 400 }
             );
         }
 
         const to = process.env.CONTACT_TO_EMAIL;
         const from = process.env.CONTACT_FROM_EMAIL;
+        const apiKey = process.env.RESEND_API_KEY;
 
-        if (!to || !from || !process.env.RESEND_API_KEY) {
-            console.error("Missing environment variables");
+        if (!to || !from || !apiKey) {
+            console.error("Contact email configuration is incomplete");
             return Response.json(
-                { error: "Missing email environment variables." },
+                {
+                    error: "Le service de contact est temporairement indisponible.",
+                },
                 { status: 500 }
             );
         }
 
-        const resend = new Resend(process.env.RESEND_API_KEY);
+        const resend = new Resend(apiKey);
         const result = await resend.emails.send({
             from,
             to,
-            replyTo: email,
-            subject: `Nouveau message de : ${name}`,
-            html: buildEmailHtml({
-                name,
-                email,
-                phone,
-                services,
-                message,
-            }),
+            replyTo: payload.email,
+            subject: `Nouveau message de : ${payload.name.replace(/[\r\n]+/g, " ")}`,
+            html: buildEmailHtml(payload),
         });
 
-        console.log("Resend result:", result);
-
         if (result.error) {
-            console.error("Resend returned an error:", result.error);
-
+            console.error("Contact email provider rejected the request");
             return Response.json(
-                { error: "Email could not be sent." },
+                { error: "L'email n'a pas pu être envoyé." },
                 { status: 500 }
             );
         }
 
         return Response.json({ ok: true });
     } catch (error) {
-        console.error("POST /api/contact crashed:", error);
-
+        console.error(
+            "Contact request failed",
+            error instanceof Error ? error.name : "UnknownError"
+        );
         return Response.json(
-            {
-                error:
-                    error instanceof Error
-                        ? error.message
-                        : "Unknown server error",
-            },
+            { error: "Une erreur est survenue pendant l'envoi." },
             { status: 500 }
         );
     }
