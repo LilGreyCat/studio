@@ -1,11 +1,9 @@
 "use client";
 
+import { Typography } from "@mui/material";
+
 import { GlassySurface } from "@/components/ui";
-import { useProjectActions } from "@/hooks/server/projects";
-import type {
-  ProjectIntegrations,
-  ProjectLinks,
-} from "@/hooks/server/projects/types";
+import { useProjectActions, useProjectDetails } from "@/hooks/server/projects";
 import { useIntegration } from "@/hooks/server/useIntegration";
 import { getImageUrl } from "@/utils/getImageUrl";
 
@@ -14,19 +12,15 @@ import ProjectIntegrationCard from "./IntegrationCard";
 import { surfaceSx } from "./styles";
 
 type ProjectProps = {
+  id: number;
   name: string;
   image_url: string | null;
-  links: ProjectLinks;
-  integrations: ProjectIntegrations;
 };
 
-export default function Project({
-  name,
-  image_url,
-  links,
-  integrations,
-}: ProjectProps) {
+export default function Project({ id, name, image_url }: ProjectProps) {
   const imageSrc = getImageUrl(image_url);
+
+  const { links, integrations, isLoading, error } = useProjectDetails(id);
 
   const { activeIntegration, setActiveIntegration, resetIntegration } =
     useIntegration();
@@ -38,6 +32,14 @@ export default function Project({
   });
 
   function renderContent() {
+    if (isLoading) {
+      return <Typography>Chargement...</Typography>;
+    }
+
+    if (error) {
+      return <Typography>{error}</Typography>;
+    }
+
     if (activeIntegration !== null) {
       return (
         <ProjectIntegrationCard

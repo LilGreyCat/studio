@@ -15,12 +15,6 @@ type ProjectResponse struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-type ProjectOverviewResponse struct {
-	ProjectResponse
-	Links        ProjectLinksResponse        `json:"links"`
-	Integrations ProjectIntegrationsResponse `json:"integrations"`
-}
-
 func ToProjectResponse(project models.Project) ProjectResponse {
 	return ProjectResponse{
 		ID:        project.ID,
@@ -28,13 +22,5 @@ func ToProjectResponse(project models.Project) ProjectResponse {
 		ImageURL:  utils.NullStringToPointer(project.ImageURL),
 		CreatedAt: project.CreatedAt,
 		UpdatedAt: project.UpdatedAt,
-	}
-}
-
-func ToProjectOverviewResponse(project models.ProjectOverview) ProjectOverviewResponse {
-	return ProjectOverviewResponse{
-		ProjectResponse: ToProjectResponse(project.Project),
-		Links:           ToProjectLinksResponse(project.Links),
-		Integrations:    ToProjectIntegrationsResponse(project.Integrations),
 	}
 }

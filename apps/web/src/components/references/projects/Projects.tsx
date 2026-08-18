@@ -21,10 +21,9 @@ export default function Projects() {
       {projects.map((project) => (
         <Project
           key={project.id}
+          id={project.id}
           name={project.name}
           image_url={project.image_url}
-          links={project.links}
-          integrations={project.integrations}
         />
       ))}
     </Box>

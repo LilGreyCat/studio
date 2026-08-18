@@ -14,10 +14,10 @@ func (h Handler) List(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response := make([]projectResp.ProjectOverviewResponse, 0, len(projects))
+	response := make([]projectResp.ProjectResponse, 0, len(projects))
 
 	for _, project := range projects {
-		response = append(response, projectResp.ToProjectOverviewResponse(project))
+		response = append(response, projectResp.ToProjectResponse(project))
 	}
 
 	utils.WriteJSON(w, http.StatusOK, response)

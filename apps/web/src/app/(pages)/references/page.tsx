@@ -11,6 +11,7 @@ export default function References() {
     <>
       <MainLogo marginBottom={5} />
       <Projects />
+      {/* Reserved separator for the future artists section. */}
       <Divider />
     </>
   );

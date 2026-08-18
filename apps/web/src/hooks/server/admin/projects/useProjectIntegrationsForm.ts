@@ -1,22 +1,34 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import type { ProjectIntegrations } from "@/hooks/server/projects/types";
+import { useProjectIntegrations } from "@/hooks/server/projects";
 import { emptyToNull } from "@/utils/emptyToNull";
 
+type UseProjectIntegrationsFormParams = {
+    projectId: number | null;
+    enabled: boolean;
+};
+
 export function useProjectIntegrationsForm({
-    integrations,
-}: {
-    integrations?: ProjectIntegrations;
-}) {
-    const [spotifyEmbedURL, setSpotifyEmbedURL] = useState(
-        integrations?.spotify_embed_url ?? ""
-    );
-    const [deezerEmbedURL, setDeezerEmbedURL] = useState(
-        integrations?.deezer_embed_url ?? ""
-    );
-    const [appleMusicEmbedURL, setAppleMusicEmbedURL] = useState(
-        integrations?.apple_music_embed_url ?? ""
-    );
+    projectId,
+    enabled,
+}: UseProjectIntegrationsFormParams) {
+    const [spotifyEmbedURL, setSpotifyEmbedURL] = useState("");
+    const [deezerEmbedURL, setDeezerEmbedURL] = useState("");
+    const [appleMusicEmbedURL, setAppleMusicEmbedURL] = useState("");
+
+    const { integrations } = useProjectIntegrations(enabled ? projectId : null);
+
+    useEffect(() => {
+        if (!enabled || !integrations) {
+            return;
+        }
+
+        // Editable form state must be initialized when the async resource arrives.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        setSpotifyEmbedURL(integrations.spotify_embed_url ?? "");
+        setDeezerEmbedURL(integrations.deezer_embed_url ?? "");
+        setAppleMusicEmbedURL(integrations.apple_music_embed_url ?? "");
+    }, [enabled, integrations]);
 
     function getIntegrationsPayload() {
         return {
