@@ -15,11 +15,32 @@ import (
 var (
 	ErrInvalidCredentials = errors.New("invalid credentials")
 	ErrFetchAdmin         = errors.New("failed to fetch admin user")
+	dummyPasswordHash     = createDummyPasswordHash()
 )
+
+const (
+	maximumEmailBytes    = 254
+	maximumPasswordBytes = 72
+)
+
+func createDummyPasswordHash() []byte {
+	hash, err := bcrypt.GenerateFromPassword(
+		[]byte("not-a-real-admin-password"),
+		bcrypt.DefaultCost,
+	)
+	if err != nil {
+		panic("failed to initialize admin authentication")
+	}
+	return hash
+}
 
 func validateLoginRequest(request adminRequests.Login) error {
 	if request.Email == "" || request.Password == "" {
 		return errors.New("email and password are required")
+	}
+	if len([]byte(request.Email)) > maximumEmailBytes ||
+		len([]byte(request.Password)) > maximumPasswordBytes {
+		return errors.New("invalid email or password length")
 	}
 
 	return nil
@@ -32,6 +53,10 @@ func (h Handler) authenticateAdmin(
 	admin, err := h.repo.GetByEmail(ctx, request.Email)
 	if err != nil {
 		if err == sql.ErrNoRows {
+			_ = bcrypt.CompareHashAndPassword(
+				dummyPasswordHash,
+				[]byte(request.Password),
+			)
 			return adminModels.Admin{}, ErrInvalidCredentials
 		}
 
