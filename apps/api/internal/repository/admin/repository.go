@@ -1,11 +1,11 @@
 package admin
 
-import "database/sql"
+import "github.com/PtiCadri/studio/apps/api/internal/repository"
 
 type AdminRepository struct {
-	db *sql.DB
+	db repository.Database
 }
 
-func New(db *sql.DB) *AdminRepository {
+func New(db repository.Database) *AdminRepository {
 	return &AdminRepository{db: db}
 }

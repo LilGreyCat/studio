@@ -1,11 +1,11 @@
 package artist
 
-import "database/sql"
+import "github.com/PtiCadri/studio/apps/api/internal/repository"
 
 type ArtistRepository struct {
-	db *sql.DB
+	db repository.Database
 }
 
-func New(db *sql.DB) *ArtistRepository {
+func New(db repository.Database) *ArtistRepository {
 	return &ArtistRepository{db: db}
 }

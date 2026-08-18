@@ -1,11 +1,11 @@
 package project
 
-import "database/sql"
+import "github.com/PtiCadri/studio/apps/api/internal/repository"
 
 type ProjectRepository struct {
-	db *sql.DB
+	db repository.Database
 }
 
-func New(db *sql.DB) *ProjectRepository {
+func New(db repository.Database) *ProjectRepository {
 	return &ProjectRepository{db: db}
 }
