@@ -1,14 +1,12 @@
 import { TextField } from "@mui/material";
+import { memo } from "react";
 
 type ProjectBaseFieldsProps = {
   name: string;
   onNameChange: (value: string) => void;
 };
 
-export default function ProjectBaseFields({
-  name,
-  onNameChange,
-}: ProjectBaseFieldsProps) {
+function ProjectBaseFields({ name, onNameChange }: ProjectBaseFieldsProps) {
   return (
     <TextField
       label="Nom du projet"
@@ -19,3 +17,5 @@ export default function ProjectBaseFields({
     />
   );
 }
+
+export default memo(ProjectBaseFields);

@@ -1,4 +1,5 @@
 import { Button, TextField, Typography } from "@mui/material";
+import { memo } from "react";
 
 type ProjectImageFieldProps = {
   mode: "create" | "edit";
@@ -9,7 +10,7 @@ type ProjectImageFieldProps = {
   onImageChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export default function ProjectImageField({
+function ProjectImageField({
   mode,
   imageURL,
   imageFile,
@@ -65,3 +66,5 @@ export default function ProjectImageField({
     </>
   );
 }
+
+export default memo(ProjectImageField);

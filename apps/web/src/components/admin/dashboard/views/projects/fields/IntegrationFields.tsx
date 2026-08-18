@@ -1,4 +1,5 @@
 import { Stack, TextField, Typography } from "@mui/material";
+import { memo } from "react";
 
 type ProjectIntegrationsFieldsProps = {
   spotifyEmbedURL: string;
@@ -9,7 +10,7 @@ type ProjectIntegrationsFieldsProps = {
   onAppleMusicEmbedURLChange: (value: string) => void;
 };
 
-export default function ProjectIntegrationsFields({
+function ProjectIntegrationsFields({
   spotifyEmbedURL,
   deezerEmbedURL,
   appleMusicEmbedURL,
@@ -46,3 +47,5 @@ export default function ProjectIntegrationsFields({
     </>
   );
 }
+
+export default memo(ProjectIntegrationsFields);

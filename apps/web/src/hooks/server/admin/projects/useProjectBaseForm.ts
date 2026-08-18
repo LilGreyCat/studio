@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import type { Project } from "@/hooks/server/projects/types";
 
@@ -27,14 +27,15 @@ export function useProjectBaseForm({ project }: UseProjectBaseFormParams) {
         };
     }, [imagePreviewURL]);
 
-    function handleImageChange(
-        event: React.ChangeEvent<HTMLInputElement>
-    ): void {
-        const file = event.target.files?.[0] ?? null;
-        setImageFile(file);
+    const handleImageChange = useCallback(
+        (event: React.ChangeEvent<HTMLInputElement>): void => {
+            const file = event.target.files?.[0] ?? null;
+            setImageFile(file);
 
-        event.target.value = "";
-    }
+            event.target.value = "";
+        },
+        []
+    );
 
     return {
         name,

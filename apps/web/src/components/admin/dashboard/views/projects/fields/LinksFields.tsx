@@ -1,4 +1,5 @@
 import { Stack, TextField, Typography } from "@mui/material";
+import { memo } from "react";
 
 type ProjectLinksFieldsProps = {
   spotifyURL: string;
@@ -13,7 +14,7 @@ type ProjectLinksFieldsProps = {
   onYoutubeURLChange: (value: string) => void;
 };
 
-export default function ProjectLinksFields({
+function ProjectLinksFields({
   spotifyURL,
   deezerURL,
   appleMusicURL,
@@ -68,3 +69,5 @@ export default function ProjectLinksFields({
     </>
   );
 }
+
+export default memo(ProjectLinksFields);
