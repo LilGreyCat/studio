@@ -31,14 +31,20 @@ export default function Starfield() {
 
 const animKeyframes = {
   "@keyframes animStar": {
-    from: { transform: "translateY(0px)" },
-    to: { transform: "translateY(-2000px)" },
+    from: { transform: "translate3d(0, 0, 0)" },
+    to: { transform: "translate3d(0, -2000px, 0)" },
   },
+};
+
+const compositorSx = {
+  willChange: "transform",
+  backfaceVisibility: "hidden",
 };
 
 // 1px stars
 const stars1Sx = {
   ...animKeyframes,
+  ...compositorSx,
   position: "absolute",
   top: 0,
   left: 0,
@@ -63,6 +69,7 @@ const stars1Sx = {
 // 2px stars
 const stars2Sx = {
   ...animKeyframes,
+  ...compositorSx,
   position: "absolute",
   top: 0,
   left: 0,
@@ -87,6 +94,7 @@ const stars2Sx = {
 // 3px stars
 const stars3Sx = {
   ...animKeyframes,
+  ...compositorSx,
   position: "absolute",
   top: 0,
   left: 0,
