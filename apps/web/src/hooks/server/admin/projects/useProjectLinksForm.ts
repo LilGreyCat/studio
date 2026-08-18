@@ -25,6 +25,8 @@ export function useProjectLinksForm({
             return;
         }
 
+        // Editable form state must be initialized when the async resource arrives.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setSpotifyURL(links.spotify_url ?? "");
         setDeezerURL(links.deezer_url ?? "");
         setAppleMusicURL(links.apple_music_url ?? "");

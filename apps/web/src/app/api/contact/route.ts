@@ -9,8 +9,6 @@ type ContactPayload = {
     message: string;
 };
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
 const serviceLabels: Record<ServiceId, string> = {
     recording: "Enregistrement",
     mixing: "Mix",
@@ -110,6 +108,7 @@ export async function POST(request: Request) {
             );
         }
 
+        const resend = new Resend(process.env.RESEND_API_KEY);
         const result = await resend.emails.send({
             from,
             to,

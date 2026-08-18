@@ -23,6 +23,8 @@ export function useProjectIntegrationsForm({
             return;
         }
 
+        // Editable form state must be initialized when the async resource arrives.
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setSpotifyEmbedURL(integrations.spotify_embed_url ?? "");
         setDeezerEmbedURL(integrations.deezer_embed_url ?? "");
         setAppleMusicEmbedURL(integrations.apple_music_embed_url ?? "");

@@ -36,6 +36,8 @@ export default function ProjectImageField({
       )}
 
       {imagePreviewURL && (
+        // Local blob previews cannot benefit from Next.js image optimization.
+        // eslint-disable-next-line @next/next/no-img-element
         <img
           src={imagePreviewURL}
           alt="Aperçu"

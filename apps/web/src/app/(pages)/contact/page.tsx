@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import { Metadata } from "next";
+import { Suspense } from "react";
 
 import ContactContent from "@/components/contact/Content";
 import { MainLogo } from "@/components/ui";
@@ -14,7 +15,9 @@ export default function Contact() {
   return (
     <Box sx={containerSx}>
       <MainLogo marginBottom={5} />
-      <ContactContent />
+      <Suspense fallback={null}>
+        <ContactContent />
+      </Suspense>
     </Box>
   );
 }

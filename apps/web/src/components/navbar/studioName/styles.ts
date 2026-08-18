@@ -8,17 +8,17 @@ const iconSx: SystemStyleObject<Theme> = {
     mb: "5px",
 };
 
-const nhaIconSx: SxProps<Theme> = {
+const nhaIconSx: SystemStyleObject<Theme> = {
     ...iconSx,
     height: "10px",
 };
 
-const desIconSx: SxProps<Theme> = {
+const desIconSx: SystemStyleObject<Theme> = {
     ...iconSx,
     height: "13px",
 };
 
-const recordsIconSx: SxProps<Theme> = {
+const recordsIconSx: SystemStyleObject<Theme> = {
     ...iconSx,
     height: "10px",
     ml: "2px",
