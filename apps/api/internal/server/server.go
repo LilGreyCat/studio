@@ -3,6 +3,14 @@ package server
 import (
 	"log"
 	"net/http"
+	"time"
+)
+
+const (
+	readHeaderTimeout = 5 * time.Second
+	readTimeout       = 30 * time.Second
+	writeTimeout      = 30 * time.Second
+	idleTimeout       = 60 * time.Second
 )
 
 type Server struct {
@@ -12,8 +20,12 @@ type Server struct {
 func New(addr string, handler http.Handler) *Server {
 	return &Server{
 		httpServer: &http.Server{
-			Addr:    addr,
-			Handler: handler,
+			Addr:              addr,
+			Handler:           handler,
+			ReadHeaderTimeout: readHeaderTimeout,
+			ReadTimeout:       readTimeout,
+			WriteTimeout:      writeTimeout,
+			IdleTimeout:       idleTimeout,
 		},
 	}
 }

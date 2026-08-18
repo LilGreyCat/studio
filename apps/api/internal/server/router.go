@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	chiMiddleware "github.com/go-chi/chi/v5/middleware"
 
 	"github.com/PtiCadri/studio/apps/api/internal/config"
 	"github.com/PtiCadri/studio/apps/api/internal/middleware"
@@ -13,6 +14,8 @@ import (
 
 func NewRouter(db *sql.DB, cfg config.Config) http.Handler {
 	r := chi.NewRouter()
+	r.Use(chiMiddleware.Recoverer)
+	r.Use(middleware.SecurityHeaders)
 	r.Use(middleware.CORS(cfg.FrontendUrl))
 
 	deps := routes.BuildDependencies(db, cfg)
