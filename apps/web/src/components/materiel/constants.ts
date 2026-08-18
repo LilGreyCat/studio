@@ -22,7 +22,7 @@ const hardwareObj: Record<HardwareKeys, HardwareItem> = {
         width: 480,
     },
     soundcard: {
-        imageSrc: "/matos/carte-son.jpg",
+        imageSrc: "/matos/carte-son.jpg?v=2",
         title: "Carte Son Apollo Twin USB",
         eyebrow: "Interface principale",
         desc: SOUND_CARD,
