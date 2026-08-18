@@ -2,6 +2,7 @@ package artist
 
 import (
 	"database/sql"
+	"errors"
 	"net/http"
 
 	artistReq "github.com/PtiCadri/studio/apps/api/internal/requests/artist"
@@ -15,73 +16,19 @@ func (h Handler) PatchIntegrations(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid artist id", http.StatusBadRequest)
 		return
 	}
-
 	var request artistReq.PatchIntegrations
-
 	if err := utils.DecodeJSON(r, &request); err != nil {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
 		return
 	}
-
-	currentIntegrations, err := h.artistRepo.GetIntegrations(
-		r.Context(),
-		artistID,
-	)
+	integrations, err := h.artistRepo.PatchIntegrations(r.Context(), artistID, request)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			http.Error(
-				w,
-				"artist integrations not found",
-				http.StatusNotFound,
-			)
+		if errors.Is(err, sql.ErrNoRows) {
+			http.Error(w, "artist integrations not found", http.StatusNotFound)
 			return
 		}
-
-		http.Error(
-			w,
-			"failed to fetch artist integrations",
-			http.StatusInternalServerError,
-		)
+		http.Error(w, "failed to patch artist integrations", http.StatusInternalServerError)
 		return
 	}
-
-	spotifyEmbedURL := utils.NullStringToPointer(
-		currentIntegrations.SpotifyEmbedURL,
-	)
-	if request.SpotifyEmbedURL != nil {
-		spotifyEmbedURL = request.SpotifyEmbedURL
-	}
-
-	deezerEmbedURL := utils.NullStringToPointer(
-		currentIntegrations.DeezerEmbedURL,
-	)
-	if request.DeezerEmbedURL != nil {
-		deezerEmbedURL = request.DeezerEmbedURL
-	}
-
-	appleMusicEmbedURL := utils.NullStringToPointer(
-		currentIntegrations.AppleMusicEmbedURL,
-	)
-	if request.AppleMusicEmbedURL != nil {
-		appleMusicEmbedURL = request.AppleMusicEmbedURL
-	}
-
-	integrations, err := h.artistRepo.PutIntegrations(
-		r.Context(),
-		artistID,
-		spotifyEmbedURL,
-		deezerEmbedURL,
-		appleMusicEmbedURL,
-	)
-	if err != nil {
-		http.Error(
-			w,
-			"failed to patch artist integrations",
-			http.StatusInternalServerError,
-		)
-		return
-	}
-
-	response := artistResp.ToArtistIntegrationsResponse(integrations)
-	utils.WriteJSON(w, http.StatusOK, response)
+	utils.WriteJSON(w, http.StatusOK, artistResp.ToArtistIntegrationsResponse(integrations))
 }
