@@ -27,3 +27,12 @@ func TestValidateFileMimeTypeRequiresMatchingExtension(t *testing.T) {
 		t.Fatal("PNG content with a JPEG extension was accepted")
 	}
 }
+
+func TestValidateFolderAcceptsHardware(t *testing.T) {
+	if err := validateFolder("hardware"); err != nil {
+		t.Fatalf("hardware folder was rejected: %v", err)
+	}
+	if err := validateFolder("../hardware"); err == nil {
+		t.Fatal("unsafe folder was accepted")
+	}
+}

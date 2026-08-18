@@ -1,12 +1,13 @@
 package uploads
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"fmt"
 	"io"
 	"mime/multipart"
 	"os"
 	"path/filepath"
-	"time"
 )
 
 func saveUploadedFile(
@@ -19,10 +20,14 @@ func saveUploadedFile(
 		return "", err
 	}
 
-	filename := fmt.Sprintf("%d%s", time.Now().UnixNano(), ext)
+	randomName := make([]byte, 16)
+	if _, err := rand.Read(randomName); err != nil {
+		return "", err
+	}
+	filename := fmt.Sprintf("%s%s", hex.EncodeToString(randomName), ext)
 	dstPath := filepath.Join(uploadDir, filename)
 
-	dst, err := os.Create(dstPath)
+	dst, err := os.OpenFile(dstPath, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
 	if err != nil {
 		return "", err
 	}

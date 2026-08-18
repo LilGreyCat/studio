@@ -49,6 +49,19 @@ func NormalizePatch(request *Patch) error {
 	if !patchHasFields(request) {
 		return errors.New("at least one field is required")
 	}
+	imageFieldCount := 0
+	for _, set := range []bool{
+		request.ImageURL.Set,
+		request.ImageWidth.Set,
+		request.ImageHeight.Set,
+	} {
+		if set {
+			imageFieldCount++
+		}
+	}
+	if imageFieldCount != 0 && imageFieldCount != 3 {
+		return errors.New("image_url, image_width, and image_height must be updated together")
+	}
 
 	if err := normalizeOptionalString(&request.Slug, "slug"); err != nil {
 		return err

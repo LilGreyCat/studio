@@ -1,6 +1,6 @@
 import { fetchJson } from "@/utils/fetchJson";
 
-type UploadFolder = "projects" | "artists";
+type UploadFolder = "projects" | "artists" | "hardware";
 
 type UploadResponse = {
     url: string;

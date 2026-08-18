@@ -59,6 +59,16 @@ func TestNormalizePatchRejectsNullRequiredField(t *testing.T) {
 	}
 }
 
+func TestNormalizePatchRequiresCompleteImageMetadata(t *testing.T) {
+	var request Patch
+	if err := json.NewDecoder(strings.NewReader(`{"image_url":"/uploads/hardware/new.webp"}`)).Decode(&request); err != nil {
+		t.Fatal(err)
+	}
+	if err := NormalizePatch(&request); err == nil {
+		t.Fatal("partial image metadata was accepted")
+	}
+}
+
 func TestValidateReorder(t *testing.T) {
 	if err := ValidateReorder(Reorder{IDs: []int64{3, 1, 2}}); err != nil {
 		t.Fatal(err)

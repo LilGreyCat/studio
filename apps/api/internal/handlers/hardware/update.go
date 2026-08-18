@@ -22,7 +22,7 @@ func (h Handler) Update(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	item, err := h.hardwareRepo.Update(r.Context(), id, request)
+	item, previousImageURL, err := h.hardwareRepo.Update(r.Context(), id, request)
 	if err != nil {
 		if utils.IsUniqueViolation(err) {
 			http.Error(w, "hardware slug already exists", http.StatusConflict)
@@ -31,5 +31,6 @@ func (h Handler) Update(w http.ResponseWriter, r *http.Request) {
 		httpapi.WriteRepositoryError(w, err, "hardware not found", "failed to update hardware")
 		return
 	}
+	deleteOldImageIfChanged(previousImageURL, item.ImageURL)
 	utils.WriteJSON(w, http.StatusOK, hardwareResp.FromModel(item))
 }

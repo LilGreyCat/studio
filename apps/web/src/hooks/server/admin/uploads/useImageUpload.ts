@@ -4,7 +4,7 @@ import { useState } from "react";
 
 import { uploadImage } from "./api";
 
-type UploadFolder = "projects" | "artists";
+type UploadFolder = "projects" | "artists" | "hardware";
 
 type UseImageUploadParams = {
     folder: UploadFolder;

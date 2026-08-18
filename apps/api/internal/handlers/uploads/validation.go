@@ -11,6 +11,7 @@ import (
 
 var allowedFolders = map[string]bool{
 	"artists":  true,
+	"hardware": true,
 	"projects": true,
 }
 

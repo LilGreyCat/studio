@@ -105,8 +105,8 @@ func TestAdminHardwarePatchAcceptsVisibilityFalse(t *testing.T) {
 		sqlmock.NewRows([]string{
 			"id", "slug", "eyebrow", "title", "description", "image_url",
 			"image_width", "image_height", "display_order", "is_visible",
-			"created_at", "updated_at",
-		}).AddRow(2, "soundcard", "Interface", "Apollo", "Description", "/matos/carte-son.jpg", 100, 100, 2, false, now, now),
+			"created_at", "updated_at", "previous_image_url",
+		}).AddRow(2, "soundcard", "Interface", "Apollo", "Description", "/matos/carte-son.jpg", 100, 100, 2, false, now, now, "/matos/carte-son.jpg"),
 	)
 
 	response := httptest.NewRecorder()
