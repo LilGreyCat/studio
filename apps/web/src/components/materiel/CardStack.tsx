@@ -2,6 +2,7 @@
 
 import ImageLightbox from "@/components/ui/imageLightbox/ImageLightbox";
 import useImageLightbox from "@/hooks/imageLightbox/useImageLightbox";
+import { useCallback } from "react";
 
 import HardwareCard from "./HardwareCard";
 import { hardwareObj, type HardwareItem } from "./constants";
@@ -10,14 +11,17 @@ export default function CardStack() {
   const items = Object.values(hardwareObj);
   const { image, isOpen, openImage, closeImage } = useImageLightbox();
 
-  const handleImageClick = (item: HardwareItem) => {
-    openImage({
-      src: item.imageSrc,
-      alt: item.title,
-      width: item.width,
-      height: item.height,
-    });
-  };
+  const handleImageClick = useCallback(
+    (item: HardwareItem) => {
+      openImage({
+        src: item.imageSrc,
+        alt: item.title,
+        width: item.width,
+        height: item.height,
+      });
+    },
+    [openImage]
+  );
 
   return (
     <>
@@ -26,7 +30,7 @@ export default function CardStack() {
           key={item.title}
           item={item}
           reverse={index % 2 !== 0}
-          onImageClick={() => handleImageClick(item)}
+          onImageClick={handleImageClick}
         />
       ))}
 

@@ -1,6 +1,7 @@
 import GlassySurface from "@/components/ui/GlassySurface";
 import { Box, ButtonBase, Typography } from "@mui/material";
 import Image from "next/image";
+import { memo } from "react";
 import {
   descSx,
   dividerSx,
@@ -26,18 +27,14 @@ type HardwareItem = {
 type Props = {
   item: HardwareItem;
   reverse?: boolean;
-  onImageClick: () => void;
+  onImageClick: (item: HardwareItem) => void;
 };
 
-export default function HardwareCard({
-  item,
-  reverse = false,
-  onImageClick,
-}: Props) {
+function HardwareCard({ item, reverse = false, onImageClick }: Props) {
   return (
     <GlassySurface sx={surfaceSx(reverse)}>
       <ButtonBase
-        onClick={onImageClick}
+        onClick={() => onImageClick(item)}
         aria-label={`Ouvrir l'image en plein écran: ${item.title}`}
         sx={imageButtonSx}
       >
@@ -47,6 +44,7 @@ export default function HardwareCard({
             alt={item.title}
             width={item.width}
             height={item.height}
+            sizes="280px"
             style={imageSx}
           />
         </Box>
@@ -66,3 +64,5 @@ export default function HardwareCard({
     </GlassySurface>
   );
 }
+
+export default memo(HardwareCard);

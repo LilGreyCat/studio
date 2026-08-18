@@ -51,6 +51,7 @@ export default function ImageLightbox({
               alt={image.alt}
               width={image.width}
               height={image.height}
+              sizes="100vw"
               style={lightboxImageSx}
               priority
             />
