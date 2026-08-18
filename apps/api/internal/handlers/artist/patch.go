@@ -23,26 +23,24 @@ func (h Handler) Patch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	currentArtist, err := h.artistRepo.GetByID(r.Context(), artistID)
+	if request.Name.Set && request.Name.Value == nil {
+		http.Error(w, "name cannot be null", http.StatusBadRequest)
+		return
+	}
+
+	artist, err := h.artistRepo.Update(
+		r.Context(),
+		artistID,
+		request.Name.Set,
+		request.Name.Value,
+		request.ImageURL.Set,
+		request.ImageURL.Value,
+	)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			http.Error(w, "artist not found", http.StatusNotFound)
 			return
 		}
-
-		http.Error(w, "failed to fetch artist", http.StatusInternalServerError)
-		return
-	}
-
-	name, imageURL := mergeArtistPatch(currentArtist, request)
-
-	artist, err := h.artistRepo.Update(
-		r.Context(),
-		artistID,
-		name,
-		imageURL,
-	)
-	if err != nil {
 		http.Error(w, "failed to update artist", http.StatusInternalServerError)
 		return
 	}

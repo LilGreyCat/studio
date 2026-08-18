@@ -22,31 +22,32 @@ func (h Handler) Patch(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	currentProject, err := h.projectRepo.GetByID(r.Context(), projectID)
+	if request.Name.Set && request.Name.Value == nil {
+		http.Error(w, "name cannot be null", http.StatusBadRequest)
+		return
+	}
+
+	project, previousImageURL, err := h.projectRepo.Update(
+		r.Context(),
+		projectID,
+		request.Name.Set,
+		request.Name.Value,
+		request.ImageURL.Set,
+		request.ImageURL.Value,
+	)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			http.Error(w, "project not found", http.StatusNotFound)
 			return
 		}
-
-		http.Error(w, "failed to fetch project", http.StatusInternalServerError)
-		return
-	}
-
-	name, imageURL := mergeProjectPatch(currentProject, request)
-
-	project, err := h.projectRepo.Update(
-		r.Context(),
-		projectID,
-		name,
-		imageURL,
-	)
-	if err != nil {
 		http.Error(w, "failed to update project", http.StatusInternalServerError)
 		return
 	}
 
-	deleteOldProjectImageIfChanged(currentProject.ImageURL, project.ImageURL)
+	if previousImageURL != nil {
+		previous := sql.NullString{String: *previousImageURL, Valid: true}
+		deleteOldProjectImageIfChanged(previous, project.ImageURL)
+	}
 
 	response := projectResp.ToProjectResponse(project)
 	utils.WriteJSON(w, http.StatusOK, response)

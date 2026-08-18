@@ -9,14 +9,16 @@ import (
 func (r *ArtistRepository) Update(
 	ctx context.Context,
 	id int64,
-	name string,
+	setName bool,
+	name *string,
+	setImageURL bool,
 	imageURL *string,
 ) (models.Artist, error) {
 	const query = `
 		UPDATE artists
 		SET
-			name = $2,
-			image_url = $3,
+			name = CASE WHEN $2 THEN $3 ELSE name END,
+			image_url = CASE WHEN $4 THEN $5 ELSE image_url END,
 			updated_at = NOW()
 		WHERE id = $1
 		RETURNING
@@ -33,7 +35,9 @@ func (r *ArtistRepository) Update(
 		ctx,
 		query,
 		id,
+		setName,
 		name,
+		setImageURL,
 		imageURL,
 	).Scan(
 		&artist.ID,
