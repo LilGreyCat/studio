@@ -10,7 +10,12 @@ RUN CGO_ENABLED=0 GOOS=linux go build \
     -trimpath \
     -ldflags="-s -w" \
     -o /out/studio-api \
-    ./cmd/api
+    ./cmd/api \
+    && CGO_ENABLED=0 GOOS=linux go build \
+    -trimpath \
+    -ldflags="-s -w" \
+    -o /out/create-admin \
+    ./cmd/create-admin
 
 FROM golang:1.25-alpine AS migration-builder
 
@@ -31,6 +36,20 @@ COPY --chown=migrate:migrate migrations ./migrations
 USER migrate
 
 ENTRYPOINT ["migrate"]
+
+FROM alpine:3.22 AS admin-cli
+
+RUN apk add --no-cache ca-certificates \
+    && addgroup -S studio \
+    && adduser -S -G studio studio
+
+WORKDIR /app
+
+COPY --from=builder --chown=studio:studio /out/create-admin ./create-admin
+
+USER studio
+
+ENTRYPOINT ["./create-admin"]
 
 FROM alpine:3.22 AS runner
 

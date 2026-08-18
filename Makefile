@@ -43,3 +43,6 @@ prod-down:
 
 prod-logs:
 	docker compose --env-file .env.production -f docker-compose.prod.yml logs -f
+
+prod-create-admin:
+	docker compose --env-file .env.production -f docker-compose.prod.yml --profile tools run --rm admin-create

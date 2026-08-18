@@ -55,11 +55,24 @@ services:
     ports:
       - "127.0.0.1:${API_HOST_PORT:-8080}:8080"
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:8080/health"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
       interval: 15s
       timeout: 5s
       retries: 5
       start_period: 10s
+
+  admin-create:
+    profiles: ["tools"]
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+      target: admin-cli
+    env_file:
+      - ${ENV_FILE:-.env.production}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
 
   web:
     build:
@@ -76,7 +89,7 @@ services:
     ports:
       - "127.0.0.1:${WEB_HOST_PORT:-3000}:3000"
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3000/"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/"]
       interval: 15s
       timeout: 5s
       retries: 5
