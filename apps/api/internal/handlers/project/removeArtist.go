@@ -1,6 +1,8 @@
 package project
 
 import (
+	"database/sql"
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -24,6 +26,10 @@ func (h Handler) RemoveArtist(w http.ResponseWriter, r *http.Request) {
 
 	err = h.projectRepo.RemoveArtist(r.Context(), projectID, artistID)
 	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			http.Error(w, "artist-project link not found", http.StatusNotFound)
+			return
+		}
 		http.Error(
 			w,
 			"failed to unlink artist from project",

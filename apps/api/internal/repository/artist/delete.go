@@ -1,6 +1,9 @@
 package artist
 
-import "context"
+import (
+	"context"
+	"database/sql"
+)
 
 func (r *ArtistRepository) Delete(
 	ctx context.Context,
@@ -11,9 +14,16 @@ func (r *ArtistRepository) Delete(
 		WHERE id = $1;
 	`
 
-	_, err := r.db.ExecContext(ctx, query, id)
+	result, err := r.db.ExecContext(ctx, query, id)
 	if err != nil {
 		return err
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return sql.ErrNoRows
 	}
 
 	return nil

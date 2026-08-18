@@ -1,7 +1,6 @@
 package project
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/PtiCadri/studio/apps/api/internal/utils"
@@ -18,7 +17,7 @@ func (h Handler) AddArtist(w http.ResponseWriter, r *http.Request) {
 		ArtistID int64 `json:"artist_id"`
 	}
 
-	if err := json.NewDecoder(r.Body).Decode(&request); err != nil {
+	if err := utils.DecodeJSON(r, &request); err != nil {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
 		return
 	}

@@ -1,6 +1,9 @@
 package project
 
-import "context"
+import (
+	"context"
+	"database/sql"
+)
 
 func (r *ProjectRepository) RemoveArtist(
 	ctx context.Context,
@@ -13,9 +16,16 @@ func (r *ProjectRepository) RemoveArtist(
 		  AND artist_id = $2;
 	`
 
-	_, err := r.db.ExecContext(ctx, query, projectID, artistID)
+	result, err := r.db.ExecContext(ctx, query, projectID, artistID)
 	if err != nil {
 		return err
+	}
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+	if rowsAffected == 0 {
+		return sql.ErrNoRows
 	}
 
 	return nil
