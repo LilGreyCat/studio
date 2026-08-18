@@ -1,12 +1,5 @@
 import { Box } from "@mui/material";
-import {
-  STARS_1,
-  STARS_2,
-  STARS_3,
-  STARS_AFTER_1,
-  STARS_AFTER_2,
-  STARS_AFTER_3,
-} from "./stars";
+import { STARS_1, STARS_2, STARS_3 } from "./stars";
 
 export default function Starfield() {
   return (
@@ -20,6 +13,7 @@ export default function Starfield() {
         pointerEvents: "none",
         background:
           "radial-gradient(ellipse 140% 55% at 50% 116%, #141414 0%, #0a0a0a 45%, #000000 100%)",
+        ...animKeyframes,
       }}
     >
       <Box sx={stars1Sx} />
@@ -41,77 +35,33 @@ const compositorSx = {
   backfaceVisibility: "hidden",
 };
 
-// 1px stars
-const stars1Sx = {
-  ...animKeyframes,
-  ...compositorSx,
-  position: "absolute",
-  top: 0,
-  left: 0,
-  width: "1px",
-  height: "1px",
-  background: "transparent",
-  borderRadius: "50%",
-  animation: "animStar 120s linear infinite",
-  boxShadow: STARS_1,
-  "&::after": {
-    content: '""',
-    position: "absolute",
-    top: "2000px",
-    width: "1px",
-    height: "1px",
-    background: "transparent",
-    borderRadius: "50%",
-    boxShadow: STARS_AFTER_1,
-  },
-};
+function createStarLayerSx(size: number, duration: number, stars: string) {
+  const pixelSize = `${size}px`;
 
-// 2px stars
-const stars2Sx = {
-  ...animKeyframes,
-  ...compositorSx,
-  position: "absolute",
-  top: 0,
-  left: 0,
-  width: "2px",
-  height: "2px",
-  background: "transparent",
-  borderRadius: "50%",
-  animation: "animStar 160s linear infinite",
-  boxShadow: STARS_2,
-  "&::after": {
-    content: '""',
+  return {
+    ...compositorSx,
     position: "absolute",
-    top: "2000px",
-    width: "2px",
-    height: "2px",
+    top: 0,
+    left: 0,
+    width: pixelSize,
+    height: pixelSize,
     background: "transparent",
     borderRadius: "50%",
-    boxShadow: STARS_AFTER_2,
-  },
-};
+    animation: `animStar ${duration}s linear infinite`,
+    boxShadow: stars,
+    "&::after": {
+      content: '""',
+      position: "absolute",
+      top: "2000px",
+      width: pixelSize,
+      height: pixelSize,
+      background: "transparent",
+      borderRadius: "50%",
+      boxShadow: stars,
+    },
+  };
+}
 
-// 3px stars
-const stars3Sx = {
-  ...animKeyframes,
-  ...compositorSx,
-  position: "absolute",
-  top: 0,
-  left: 0,
-  width: "3px",
-  height: "3px",
-  background: "transparent",
-  borderRadius: "50%",
-  animation: "animStar 200s linear infinite",
-  boxShadow: STARS_3,
-  "&::after": {
-    content: '""',
-    position: "absolute",
-    top: "2000px",
-    width: "3px",
-    height: "3px",
-    background: "transparent",
-    borderRadius: "50%",
-    boxShadow: STARS_AFTER_3,
-  },
-};
+const stars1Sx = createStarLayerSx(1, 120, STARS_1);
+const stars2Sx = createStarLayerSx(2, 160, STARS_2);
+const stars3Sx = createStarLayerSx(3, 200, STARS_3);
