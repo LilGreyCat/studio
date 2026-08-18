@@ -38,6 +38,7 @@ func registerAdminProtected(
 	cfg config.Config,
 ) {
 	r.Group(func(r chi.Router) {
+		r.Use(middleware.RequireOrigin(cfg.FrontendUrl))
 		r.Use(middleware.AdminAuth(cfg.AuthSecret))
 
 		registerAdminSession(r, deps)
