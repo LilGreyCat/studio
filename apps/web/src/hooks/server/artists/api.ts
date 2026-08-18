@@ -11,14 +11,25 @@ export function getArtists(): Promise<Artist[]> {
     return fetchJson<Artist[]>("/artists/");
 }
 
-export function getArtistById(id: number): Promise<ArtistDetail> {
-    return fetchJson<ArtistDetail>(`/artists/${id}`);
+export function getArtistById(
+    id: number,
+    signal?: AbortSignal
+): Promise<ArtistDetail> {
+    return fetchJson<ArtistDetail>(`/artists/${id}`, { signal });
 }
 
-export function getArtistLinks(id: number): Promise<ArtistLinks> {
-    return fetchJson<ArtistLinks>(`/artists/${id}/links`);
+export function getArtistLinks(
+    id: number,
+    signal?: AbortSignal
+): Promise<ArtistLinks> {
+    return fetchJson<ArtistLinks>(`/artists/${id}/links`, { signal });
 }
 
-export function getArtistIntegrations(id: number): Promise<ArtistIntegrations> {
-    return fetchJson<ArtistIntegrations>(`/artists/${id}/integrations`);
+export function getArtistIntegrations(
+    id: number,
+    signal?: AbortSignal
+): Promise<ArtistIntegrations> {
+    return fetchJson<ArtistIntegrations>(`/artists/${id}/integrations`, {
+        signal,
+    });
 }

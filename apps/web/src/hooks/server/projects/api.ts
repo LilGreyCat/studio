@@ -11,16 +11,25 @@ export function getProjects(): Promise<Project[]> {
     return fetchJson<Project[]>("/projects/");
 }
 
-export function getProjectById(id: number): Promise<ProjectDetail> {
-    return fetchJson<ProjectDetail>(`/projects/${id}`);
+export function getProjectById(
+    id: number,
+    signal?: AbortSignal
+): Promise<ProjectDetail> {
+    return fetchJson<ProjectDetail>(`/projects/${id}`, { signal });
 }
 
-export function getProjectLinks(id: number): Promise<ProjectLinks> {
-    return fetchJson<ProjectLinks>(`/projects/${id}/links`);
+export function getProjectLinks(
+    id: number,
+    signal?: AbortSignal
+): Promise<ProjectLinks> {
+    return fetchJson<ProjectLinks>(`/projects/${id}/links`, { signal });
 }
 
 export function getProjectIntegrations(
-    id: number
+    id: number,
+    signal?: AbortSignal
 ): Promise<ProjectIntegrations> {
-    return fetchJson<ProjectIntegrations>(`/projects/${id}/integrations`);
+    return fetchJson<ProjectIntegrations>(`/projects/${id}/integrations`, {
+        signal,
+    });
 }

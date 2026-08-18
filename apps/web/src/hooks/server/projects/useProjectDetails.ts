@@ -33,45 +33,43 @@ export function useProjectDetails(
     }));
 
     useEffect(() => {
-        let isCancelled = false;
+        const controller = new AbortController();
 
         if (projectId === null) {
             return;
         }
 
         void Promise.all([
-            getProjectLinks(projectId),
-            getProjectIntegrations(projectId),
+            getProjectLinks(projectId, controller.signal),
+            getProjectIntegrations(projectId, controller.signal),
         ])
             .then(([links, integrations]) => {
-                if (!isCancelled) {
-                    setState({
-                        projectId,
-                        links,
-                        integrations,
-                        isLoading: false,
-                        error: null,
-                    });
-                }
+                setState({
+                    projectId,
+                    links,
+                    integrations,
+                    isLoading: false,
+                    error: null,
+                });
             })
             .catch((error: unknown) => {
-                if (!isCancelled) {
-                    setState({
-                        projectId,
-                        links: null,
-                        integrations: null,
-                        isLoading: false,
-                        error:
-                            error instanceof Error
-                                ? error.message
-                                : "Failed to fetch project details",
-                    });
+                if (controller.signal.aborted) {
+                    return;
                 }
+
+                setState({
+                    projectId,
+                    links: null,
+                    integrations: null,
+                    isLoading: false,
+                    error:
+                        error instanceof Error
+                            ? error.message
+                            : "Failed to fetch project details",
+                });
             });
 
-        return () => {
-            isCancelled = true;
-        };
+        return () => controller.abort();
     }, [projectId]);
 
     if (projectId === null) {
