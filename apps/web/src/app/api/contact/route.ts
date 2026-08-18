@@ -1,6 +1,8 @@
 import type { ServiceId } from "@/hooks/contact/useContactForm";
 import { Resend } from "resend";
 
+import { consumeContactRequest, getContactClientKey } from "./rateLimit";
+
 type ContactPayload = {
     name: string;
     email: string;
@@ -118,6 +120,21 @@ function buildEmailHtml(payload: ContactPayload): string {
 }
 
 export async function POST(request: Request) {
+    const rateLimit = consumeContactRequest(getContactClientKey(request));
+    if (!rateLimit.allowed) {
+        return Response.json(
+            {
+                error: "Trop de tentatives. Veuillez réessayer dans quelques minutes.",
+            },
+            {
+                status: 429,
+                headers: {
+                    "Retry-After": String(rateLimit.retryAfterSeconds),
+                },
+            }
+        );
+    }
+
     try {
         const payload = parsePayload(await request.json());
 
