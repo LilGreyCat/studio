@@ -17,4 +17,10 @@ func TestPostgresErrorClassification(t *testing.T) {
 	if IsForeignKeyViolation(uniqueError) {
 		t.Error("unique violation was classified as a foreign-key violation")
 	}
+	if !IsUniqueViolation(uniqueError) {
+		t.Error("unique violation was not recognized")
+	}
+	if IsUniqueViolation(foreignKeyError) {
+		t.Error("foreign-key violation was classified as a unique violation")
+	}
 }

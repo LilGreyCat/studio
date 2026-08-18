@@ -45,7 +45,16 @@ func registerAdminProtected(
 		registerAdminUploads(r, deps)
 		registerAdminProjects(r, deps)
 		registerAdminArtists(r, deps)
+		registerAdminHardware(r, deps)
 	})
+}
+
+func registerAdminHardware(r chi.Router, deps Dependencies) {
+	r.Get("/hardware", deps.Hardware.AdminList)
+	r.Post("/hardware", deps.Hardware.Create)
+	r.Put("/hardware/order", deps.Hardware.Reorder)
+	r.Patch("/hardware/{id}", deps.Hardware.Update)
+	r.Delete("/hardware/{id}", deps.Hardware.Delete)
 }
 
 func registerAdminUploads(r chi.Router, deps Dependencies) {
