@@ -8,6 +8,8 @@ import (
 )
 
 func (h Handler) Login(w http.ResponseWriter, r *http.Request) {
+	r.Body = http.MaxBytesReader(w, r.Body, 16<<10)
+
 	request, err := adminReq.DecodeLoginRequest(r)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)

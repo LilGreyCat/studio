@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"time"
+
 	"github.com/go-chi/chi/v5"
 
 	"github.com/PtiCadri/studio/apps/api/internal/config"
@@ -19,7 +21,10 @@ func RegisterAdmin(
 }
 
 func registerAdminPublic(r chi.Router, deps Dependencies) {
-	r.Post("/login", deps.Admins.Login)
+	r.With(middleware.RateLimit(10, 15*time.Minute)).Post(
+		"/login",
+		deps.Admins.Login,
+	)
 }
 
 func registerAdminSession(r chi.Router, deps Dependencies) {
