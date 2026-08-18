@@ -24,18 +24,14 @@ export function useProjectForm({
     onSuccess,
 }: UseProjectFormParams) {
     const isEditMode = mode === "edit";
-    const projectId = isEditMode ? (project?.id ?? null) : null;
-
     const base = useProjectBaseForm({ project });
 
     const links = useProjectLinksForm({
-        projectId,
-        enabled: isEditMode,
+        links: isEditMode ? project?.links : undefined,
     });
 
     const integrations = useProjectIntegrationsForm({
-        projectId,
-        enabled: isEditMode,
+        integrations: isEditMode ? project?.integrations : undefined,
     });
 
     const { createFullProject, isCreating, createError } = useCreateProject({
