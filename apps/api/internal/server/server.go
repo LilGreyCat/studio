@@ -1,6 +1,7 @@
 package server
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"time"
@@ -33,4 +34,8 @@ func New(addr string, handler http.Handler) *Server {
 func (s *Server) Start() error {
 	log.Printf("API listening on %s", s.httpServer.Addr)
 	return s.httpServer.ListenAndServe()
+}
+
+func (s *Server) Shutdown(ctx context.Context) error {
+	return s.httpServer.Shutdown(ctx)
 }
