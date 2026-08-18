@@ -1,7 +1,7 @@
 "use client";
 
 import Image, { ImageProps } from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type Props = Omit<ImageProps, "src"> & {
   src: string | null;
@@ -12,34 +12,23 @@ export default function SafeImage({
   src,
   fallbackSrc = "/logo2.svg",
   alt,
+  onError,
   ...props
 }: Props) {
-  const [safeSrc, setSafeSrc] = useState<string>(fallbackSrc);
+  const candidateSrc = src ?? fallbackSrc;
+  const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const safeSrc = failedSrc === candidateSrc ? fallbackSrc : candidateSrc;
 
-  useEffect(() => {
-    let cancelled = false;
-    const candidateSrc = src ?? fallbackSrc;
-
-    const img = new window.Image();
-
-    img.onload = () => {
-      if (!cancelled) {
-        setSafeSrc(candidateSrc);
-      }
-    };
-
-    img.onerror = () => {
-      if (!cancelled) {
-        setSafeSrc(fallbackSrc);
-      }
-    };
-
-    img.src = candidateSrc;
-
-    return () => {
-      cancelled = true;
-    };
-  }, [src, fallbackSrc]);
-
-  return <Image {...props} src={safeSrc} alt={alt} unoptimized />;
+  return (
+    <Image
+      {...props}
+      src={safeSrc}
+      alt={alt}
+      unoptimized
+      onError={(event) => {
+        setFailedSrc(candidateSrc);
+        onError?.(event);
+      }}
+    />
+  );
 }
