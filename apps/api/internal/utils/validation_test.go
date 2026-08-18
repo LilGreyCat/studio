@@ -37,6 +37,41 @@ func TestParseIDParam(t *testing.T) {
 	}
 }
 
+func TestNormalizeHTTPURLs(t *testing.T) {
+	validValue := "  https://example.com/album?id=1  "
+	valid := &validValue
+	if err := NormalizeHTTPURLs(&valid); err != nil {
+		t.Fatal(err)
+	}
+	if valid == nil || *valid != "https://example.com/album?id=1" {
+		t.Fatalf("URL was not normalized: %v", valid)
+	}
+
+	emptyValue := "   "
+	empty := &emptyValue
+	if err := NormalizeHTTPURLs(&empty); err != nil || empty != nil {
+		t.Fatalf("empty URL was not normalized to nil: %v, %v", empty, err)
+	}
+
+	for _, invalid := range []string{"javascript:alert(1)", "/relative", "https://"} {
+		value := &invalid
+		if err := NormalizeHTTPURLs(&value); err == nil {
+			t.Errorf("invalid URL %q was accepted", invalid)
+		}
+	}
+}
+
+func TestNormalizeEmbedURLs(t *testing.T) {
+	embedValue := `<iframe title='player' src='https://open.spotify.com/embed/album/1'></iframe>`
+	embed := &embedValue
+	if err := NormalizeEmbedURLs(&embed); err != nil {
+		t.Fatal(err)
+	}
+	if embed == nil || *embed != "https://open.spotify.com/embed/album/1" {
+		t.Fatalf("iframe src was not extracted: %v", embed)
+	}
+}
+
 func contextWithRoute(request *http.Request, routeContext *chi.Context) context.Context {
 	return context.WithValue(request.Context(), chi.RouteCtxKey, routeContext)
 }

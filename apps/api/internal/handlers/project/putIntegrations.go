@@ -21,6 +21,10 @@ func (h Handler) PutIntegrations(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
 		return
 	}
+	if err := utils.NormalizeEmbedURLs(&request.SpotifyEmbedURL, &request.DeezerEmbedURL, &request.AppleMusicEmbedURL); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 
 	integrations, err := h.projectRepo.PutIntegrations(
 		r.Context(),

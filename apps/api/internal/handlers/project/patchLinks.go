@@ -21,6 +21,15 @@ func (h Handler) PatchLinks(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
 		return
 	}
+	fields := []*utils.Optional[string]{&request.SpotifyURL, &request.DeezerURL, &request.AppleMusicURL, &request.SoundcloudURL, &request.YoutubeURL}
+	if !utils.AnyOptionalSet(fields...) {
+		http.Error(w, "at least one field is required", http.StatusBadRequest)
+		return
+	}
+	if err := utils.NormalizeOptionalHTTPURLs(fields...); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	links, err := h.projectRepo.PatchLinks(r.Context(), projectID, request)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {

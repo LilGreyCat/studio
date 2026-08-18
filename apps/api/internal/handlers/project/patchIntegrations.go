@@ -21,6 +21,15 @@ func (h Handler) PatchIntegrations(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "invalid request body", http.StatusBadRequest)
 		return
 	}
+	fields := []*utils.Optional[string]{&request.SpotifyEmbedURL, &request.DeezerEmbedURL, &request.AppleMusicEmbedURL}
+	if !utils.AnyOptionalSet(fields...) {
+		http.Error(w, "at least one field is required", http.StatusBadRequest)
+		return
+	}
+	if err := utils.NormalizeOptionalEmbedURLs(fields...); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
 	integrations, err := h.projectRepo.PatchIntegrations(r.Context(), projectID, request)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
