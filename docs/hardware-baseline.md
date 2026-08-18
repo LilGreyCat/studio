@@ -8,15 +8,14 @@ must seed this content in this order.
 
 | Position | Slug | Eyebrow | Title | Image | Width | Height |
 | ---: | --- | --- | --- | --- | ---: | ---: |
-| 1 | `speakers` | Monitoring | Enceintes Adam Audio A7V | `/matos/enceintes.jpg` | 480 | 480 |
-| 2 | `soundcard` | Interface principale | Carte Son Apollo Twin USB | `/matos/carte-son.jpg` | 1920 | 1920 |
+| 1 | `speakers` | Monitoring | Enceintes Adam Audio A7V | `/matos/enceintes.png` | 816 | 997 |
+| 2 | `soundcard` | Interface principale | Carte Son Apollo Twin USB | `/matos/carte-son.png` | 1023 | 1122 |
 | 3 | `preamp` | Preamp | Preampli Neve 1073SPX | `/matos/preamp.jpg` | 800 | 599 |
-| 4 | `mic1` | Micro 1 | Micro Sony C-80 | `/matos/mic1.jpg` | 600 | 600 |
-| 5 | `mic2` | Micro 2 | Micro Neumann U87 | `/matos/mic2.jpg` | 600 | 600 |
+| 4 | `mic1` | Micro 1 | Micro Sony C-80 | `/matos/mic1.png` | 1023 | 1066 |
+| 5 | `mic2` | Micro 2 | Micro Neumann U87 | `/matos/mic2.png` | 1023 | 1047 |
 
-The sound-card URL currently has the development cache-busting query `?v=2`.
-The database seed should store the canonical path without that query. Uploaded
-replacement images will use unique filenames instead.
+The database stores canonical image paths. Uploaded replacement images use
+unique filenames to prevent stale browser caches.
 
 ## Description content
 
@@ -75,4 +74,3 @@ imposé dans la quasi-totalité des studios professionnels et reste aujourd’hu
 - Glass surfaces, typography, spacing, divider, and animations remain unchanged.
 - A future hidden hardware item does not occupy a card or affect visible order.
 - Empty, loading, and API-error states must not cause a disruptive layout shift.
-
