@@ -2,29 +2,24 @@ package project
 
 import (
 	"context"
-	"database/sql"
+
+	"github.com/PtiCadri/studio/apps/api/internal/domain/models"
 )
 
 func (r *ProjectRepository) Delete(
 	ctx context.Context,
 	id int64,
-) error {
+) (models.Project, error) {
 	const query = `
 		DELETE FROM projects
-		WHERE id = $1;
+		WHERE id = $1
+		RETURNING id, name, image_url, created_at, updated_at;
 	`
 
-	result, err := r.db.ExecContext(ctx, query, id)
-	if err != nil {
-		return err
-	}
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return err
-	}
-	if rowsAffected == 0 {
-		return sql.ErrNoRows
-	}
-
-	return nil
+	var project models.Project
+	err := r.db.QueryRowContext(ctx, query, id).Scan(
+		&project.ID, &project.Name, &project.ImageURL,
+		&project.CreatedAt, &project.UpdatedAt,
+	)
+	return project, err
 }

@@ -2,6 +2,7 @@ package project
 
 import (
 	"database/sql"
+	"errors"
 	"net/http"
 
 	"github.com/PtiCadri/studio/apps/api/internal/storage"
@@ -15,19 +16,13 @@ func (h Handler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	project, err := h.projectRepo.GetByID(r.Context(), projectID)
+	project, err := h.projectRepo.Delete(r.Context(), projectID)
 	if err != nil {
-		if err == sql.ErrNoRows {
+		if errors.Is(err, sql.ErrNoRows) {
 			http.Error(w, "project not found", http.StatusNotFound)
 			return
 		}
 
-		http.Error(w, "failed to fetch project", http.StatusInternalServerError)
-		return
-	}
-
-	err = h.projectRepo.Delete(r.Context(), projectID)
-	if err != nil {
 		http.Error(w, "failed to delete project", http.StatusInternalServerError)
 		return
 	}

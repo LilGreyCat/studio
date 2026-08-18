@@ -2,29 +2,24 @@ package artist
 
 import (
 	"context"
-	"database/sql"
+
+	"github.com/PtiCadri/studio/apps/api/internal/domain/models"
 )
 
 func (r *ArtistRepository) Delete(
 	ctx context.Context,
 	id int64,
-) error {
+) (models.Artist, error) {
 	const query = `
 		DELETE FROM artists
-		WHERE id = $1;
+		WHERE id = $1
+		RETURNING id, name, image_url, created_at, updated_at;
 	`
 
-	result, err := r.db.ExecContext(ctx, query, id)
-	if err != nil {
-		return err
-	}
-	rowsAffected, err := result.RowsAffected()
-	if err != nil {
-		return err
-	}
-	if rowsAffected == 0 {
-		return sql.ErrNoRows
-	}
-
-	return nil
+	var artist models.Artist
+	err := r.db.QueryRowContext(ctx, query, id).Scan(
+		&artist.ID, &artist.Name, &artist.ImageURL,
+		&artist.CreatedAt, &artist.UpdatedAt,
+	)
+	return artist, err
 }
