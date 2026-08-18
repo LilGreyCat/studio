@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { getAdminSession } from "./api";
 import type { AdminSession } from "./types";
@@ -17,24 +17,49 @@ export function useAdminSession(): UseAdminSessionResult {
     const [admin, setAdmin] = useState<AdminSession | null>(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const isMountedRef = useRef(false);
+    const latestRequestRef = useRef(0);
 
     const refreshSession = useCallback(async (): Promise<void> => {
+        const requestId = ++latestRequestRef.current;
+
         try {
             setIsLoading(true);
             setError(null);
 
             const data = await getAdminSession();
-            setAdmin(data);
+            if (
+                isMountedRef.current &&
+                requestId === latestRequestRef.current
+            ) {
+                setAdmin(data);
+            }
         } catch (err) {
-            setAdmin(null);
-            setError(err instanceof Error ? err.message : "Unauthorized");
+            if (
+                isMountedRef.current &&
+                requestId === latestRequestRef.current
+            ) {
+                setAdmin(null);
+                setError(err instanceof Error ? err.message : "Unauthorized");
+            }
         } finally {
-            setIsLoading(false);
+            if (
+                isMountedRef.current &&
+                requestId === latestRequestRef.current
+            ) {
+                setIsLoading(false);
+            }
         }
     }, []);
 
     useEffect(() => {
+        isMountedRef.current = true;
         void refreshSession();
+
+        return () => {
+            isMountedRef.current = false;
+            latestRequestRef.current += 1;
+        };
     }, [refreshSession]);
 
     return {
