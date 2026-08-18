@@ -1,4 +1,5 @@
-import { Button, Stack, SxProps, Typography } from "@mui/material";
+import { optionTileButtonSx, optionTileSx } from "@/components/ui/optionTileStyles";
+import { Box, ButtonBase, Stack, Typography } from "@mui/material";
 import { AdminView } from "../types";
 
 type AdminHomeViewProps = {
@@ -11,36 +12,38 @@ export default function AdminHomeView({ onSelectView }: AdminHomeViewProps) {
       <Typography variant="h5">Que veux-tu gérer ?</Typography>
 
       <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
-        <Button
-          variant="contained"
-          sx={featureButtonSx}
+        <ButtonBase
+          sx={optionTileButtonSx}
           onClick={() => onSelectView("projects")}
         >
-          Projets
-        </Button>
+          <Box sx={adminOptionTileSx}>Projets</Box>
+        </ButtonBase>
 
-        <Button
-          variant="contained"
-          sx={featureButtonSx}
+        <ButtonBase
+          sx={optionTileButtonSx}
           onClick={() => onSelectView("artists")}
         >
-          Artistes
-        </Button>
+          <Box sx={adminOptionTileSx}>Artistes</Box>
+        </ButtonBase>
 
-        <Button
-          variant="contained"
-          sx={featureButtonSx}
+        <ButtonBase
+          sx={optionTileButtonSx}
           onClick={() => onSelectView("hardware")}
         >
-          Matériel
-        </Button>
+          <Box sx={adminOptionTileSx}>Matériel</Box>
+        </ButtonBase>
       </Stack>
     </Stack>
   );
 }
 
-const featureButtonSx: SxProps = {
-  minHeight: 120,
-  flex: 1,
-  fontSize: "1.2rem",
+const adminOptionTileSx = {
+  ...optionTileSx(false),
+  borderWidth: "2px",
+  fontSize: "1.5rem",
+  fontWeight: 700,
+  "&:hover": {
+    border: { md: "2px solid white" },
+    color: { md: "text.primary" },
+  },
 };

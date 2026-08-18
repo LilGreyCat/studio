@@ -1,5 +1,8 @@
 import { SxProps, Theme } from "@mui/material";
-import { SystemStyleObject } from "@mui/system";
+import {
+    optionTileButtonSx as buttonSx,
+    optionTileSx as optionBoxSx,
+} from "@/components/ui/optionTileStyles";
 const formSx: SxProps<Theme> = {
     width: "100%",
     height: "min-content",
@@ -51,41 +54,6 @@ const prestationIconSx: SxProps<Theme> = {
     width: { xs: "25px", md: "30px" },
     height: { xs: "25px", md: "30px" },
 };
-
-const buttonSx: SxProps<Theme> = {
-    width: "100%",
-    display: "block",
-    textAlign: "left",
-    borderRadius: "inherit",
-};
-
-const optionBoxSx: (isSelected: boolean) => SystemStyleObject<Theme> = (
-    isSelected
-) => ({
-    px: 2,
-    py: 1.2,
-
-    width: "100%",
-    height: "100px",
-
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "space-around",
-    textAlign: "center",
-
-    borderRadius: "4px",
-    border: "1px solid",
-    borderColor: isSelected ? "primary.main" : "divider",
-    color: isSelected ? "text.primary" : "text.secondary",
-    cursor: "pointer",
-    transition: "all 0.2s ease",
-
-    "&:hover": {
-        border: { md: "1px solid white" },
-        color: { md: "text.primary" },
-    },
-});
 
 export {
     buttonSx,
