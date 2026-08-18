@@ -36,6 +36,9 @@ default:
 - Existing carousel, lightbox, service-card, menu, and integration behavior.
 - Existing desktop and mobile layout hierarchy.
 
+The detailed hardware content, ordering, formatting, and interaction contract
+is recorded in [`hardware-baseline.md`](hardware-baseline.md).
+
 The starfield compositor hints present at the start of this branch are
 accepted as part of the baseline. They change layer composition only, not the
 intended appearance or timing.
