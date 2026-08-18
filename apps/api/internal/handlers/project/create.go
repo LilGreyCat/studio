@@ -3,6 +3,7 @@ package project
 import (
 	"net/http"
 
+	"github.com/PtiCadri/studio/apps/api/internal/httpapi"
 	projectReq "github.com/PtiCadri/studio/apps/api/internal/requests/project"
 	projectResp "github.com/PtiCadri/studio/apps/api/internal/responses/project"
 	"github.com/PtiCadri/studio/apps/api/internal/utils"
@@ -11,8 +12,7 @@ import (
 func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 	var request projectReq.CreateProject
 
-	if err := utils.DecodeJSON(r, &request); err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
+	if !httpapi.DecodeJSON(w, r, &request) {
 		return
 	}
 

@@ -3,6 +3,7 @@ package artist
 import (
 	"net/http"
 
+	"github.com/PtiCadri/studio/apps/api/internal/httpapi"
 	artistReq "github.com/PtiCadri/studio/apps/api/internal/requests/artist"
 	artistResp "github.com/PtiCadri/studio/apps/api/internal/responses/artist"
 	"github.com/PtiCadri/studio/apps/api/internal/utils"
@@ -11,8 +12,7 @@ import (
 func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 	var request artistReq.CreateArtist
 
-	if err := utils.DecodeJSON(r, &request); err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
+	if !httpapi.DecodeJSON(w, r, &request) {
 		return
 	}
 

@@ -3,22 +3,21 @@ package project
 import (
 	"net/http"
 
+	"github.com/PtiCadri/studio/apps/api/internal/httpapi"
 	projectReq "github.com/PtiCadri/studio/apps/api/internal/requests/project"
 	projectResp "github.com/PtiCadri/studio/apps/api/internal/responses/project"
 	"github.com/PtiCadri/studio/apps/api/internal/utils"
 )
 
 func (h Handler) PutLinks(w http.ResponseWriter, r *http.Request) {
-	projectID, err := utils.ParseIDParam(r, "id")
-	if err != nil {
-		http.Error(w, "invalid project id", http.StatusBadRequest)
+	projectID, ok := httpapi.ParseID(w, r, "id", "project")
+	if !ok {
 		return
 	}
 
 	var request projectReq.PutLinks
 
-	if err := utils.DecodeJSON(r, &request); err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
+	if !httpapi.DecodeJSON(w, r, &request) {
 		return
 	}
 	if err := utils.NormalizeHTTPURLs(&request.SpotifyURL, &request.DeezerURL, &request.AppleMusicURL, &request.SoundcloudURL, &request.YoutubeURL); err != nil {
@@ -36,15 +35,7 @@ func (h Handler) PutLinks(w http.ResponseWriter, r *http.Request) {
 		request.YoutubeURL,
 	)
 	if err != nil {
-		if utils.IsForeignKeyViolation(err) {
-			http.Error(w, "project not found", http.StatusNotFound)
-			return
-		}
-		http.Error(
-			w,
-			"failed to save project links",
-			http.StatusInternalServerError,
-		)
+		httpapi.WriteRepositoryError(w, err, "project not found", "failed to save project links")
 		return
 	}
 

@@ -1,24 +1,21 @@
 package artist
 
 import (
-	"database/sql"
-	"errors"
 	"net/http"
 
+	"github.com/PtiCadri/studio/apps/api/internal/httpapi"
 	artistReq "github.com/PtiCadri/studio/apps/api/internal/requests/artist"
 	artistResp "github.com/PtiCadri/studio/apps/api/internal/responses/artist"
 	"github.com/PtiCadri/studio/apps/api/internal/utils"
 )
 
 func (h Handler) PatchLinks(w http.ResponseWriter, r *http.Request) {
-	artistID, err := utils.ParseIDParam(r, "id")
-	if err != nil {
-		http.Error(w, "invalid artist id", http.StatusBadRequest)
+	artistID, ok := httpapi.ParseID(w, r, "id", "artist")
+	if !ok {
 		return
 	}
 	var request artistReq.PatchLinks
-	if err := utils.DecodeJSON(r, &request); err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
+	if !httpapi.DecodeJSON(w, r, &request) {
 		return
 	}
 	fields := []*utils.Optional[string]{&request.SpotifyURL, &request.DeezerURL, &request.AppleMusicURL, &request.SoundcloudURL, &request.YoutubeURL, &request.InstagramURL, &request.TiktokURL}
@@ -32,11 +29,7 @@ func (h Handler) PatchLinks(w http.ResponseWriter, r *http.Request) {
 	}
 	links, err := h.artistRepo.PatchLinks(r.Context(), artistID, request)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			http.Error(w, "artist links not found", http.StatusNotFound)
-			return
-		}
-		http.Error(w, "failed to patch artist links", http.StatusInternalServerError)
+		httpapi.WriteRepositoryError(w, err, "artist links not found", "failed to patch artist links")
 		return
 	}
 	utils.WriteJSON(w, http.StatusOK, artistResp.ToArtistLinksResponse(links))

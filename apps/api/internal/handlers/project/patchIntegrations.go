@@ -1,24 +1,21 @@
 package project
 
 import (
-	"database/sql"
-	"errors"
 	"net/http"
 
+	"github.com/PtiCadri/studio/apps/api/internal/httpapi"
 	projectReq "github.com/PtiCadri/studio/apps/api/internal/requests/project"
 	projectResp "github.com/PtiCadri/studio/apps/api/internal/responses/project"
 	"github.com/PtiCadri/studio/apps/api/internal/utils"
 )
 
 func (h Handler) PatchIntegrations(w http.ResponseWriter, r *http.Request) {
-	projectID, err := utils.ParseIDParam(r, "id")
-	if err != nil {
-		http.Error(w, "invalid project id", http.StatusBadRequest)
+	projectID, ok := httpapi.ParseID(w, r, "id", "project")
+	if !ok {
 		return
 	}
 	var request projectReq.PatchIntegrations
-	if err := utils.DecodeJSON(r, &request); err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
+	if !httpapi.DecodeJSON(w, r, &request) {
 		return
 	}
 	fields := []*utils.Optional[string]{&request.SpotifyEmbedURL, &request.DeezerEmbedURL, &request.AppleMusicEmbedURL}
@@ -32,11 +29,7 @@ func (h Handler) PatchIntegrations(w http.ResponseWriter, r *http.Request) {
 	}
 	integrations, err := h.projectRepo.PatchIntegrations(r.Context(), projectID, request)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			http.Error(w, "project integrations not found", http.StatusNotFound)
-			return
-		}
-		http.Error(w, "failed to patch project integrations", http.StatusInternalServerError)
+		httpapi.WriteRepositoryError(w, err, "project integrations not found", "failed to patch project integrations")
 		return
 	}
 	utils.WriteJSON(w, http.StatusOK, projectResp.ToProjectIntegrationsResponse(integrations))

@@ -1,28 +1,22 @@
 package project
 
 import (
-	"database/sql"
 	"net/http"
 
+	"github.com/PtiCadri/studio/apps/api/internal/httpapi"
 	projectResp "github.com/PtiCadri/studio/apps/api/internal/responses/project"
 	"github.com/PtiCadri/studio/apps/api/internal/utils"
 )
 
 func (h Handler) GetLinks(w http.ResponseWriter, r *http.Request) {
-	projectID, err := utils.ParseIDParam(r, "id")
-	if err != nil {
-		http.Error(w, "invalid project id", http.StatusBadRequest)
+	projectID, ok := httpapi.ParseID(w, r, "id", "project")
+	if !ok {
 		return
 	}
 
 	links, err := h.projectRepo.GetLinks(r.Context(), projectID)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			http.Error(w, "project links not found", http.StatusNotFound)
-			return
-		}
-
-		http.Error(w, "failed to fetch project links", http.StatusInternalServerError)
+		httpapi.WriteRepositoryError(w, err, "project links not found", "failed to fetch project links")
 		return
 	}
 

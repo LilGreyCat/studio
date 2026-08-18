@@ -1,28 +1,22 @@
 package artist
 
 import (
-	"database/sql"
 	"net/http"
 
+	"github.com/PtiCadri/studio/apps/api/internal/httpapi"
 	artistResp "github.com/PtiCadri/studio/apps/api/internal/responses/artist"
 	"github.com/PtiCadri/studio/apps/api/internal/utils"
 )
 
 func (h Handler) GetLinks(w http.ResponseWriter, r *http.Request) {
-	artistID, err := utils.ParseIDParam(r, "id")
-	if err != nil {
-		http.Error(w, "invalid artist id", http.StatusBadRequest)
+	artistID, ok := httpapi.ParseID(w, r, "id", "artist")
+	if !ok {
 		return
 	}
 
 	links, err := h.artistRepo.GetLinks(r.Context(), artistID)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			http.Error(w, "artist links not found", http.StatusNotFound)
-			return
-		}
-
-		http.Error(w, "failed to fetch artist links", http.StatusInternalServerError)
+		httpapi.WriteRepositoryError(w, err, "artist links not found", "failed to fetch artist links")
 		return
 	}
 

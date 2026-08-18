@@ -1,29 +1,21 @@
 package project
 
 import (
-	"database/sql"
-	"errors"
 	"net/http"
 
+	"github.com/PtiCadri/studio/apps/api/internal/httpapi"
 	"github.com/PtiCadri/studio/apps/api/internal/storage"
-	"github.com/PtiCadri/studio/apps/api/internal/utils"
 )
 
 func (h Handler) Delete(w http.ResponseWriter, r *http.Request) {
-	projectID, err := utils.ParseIDParam(r, "id")
-	if err != nil {
-		http.Error(w, "invalid project id", http.StatusBadRequest)
+	projectID, ok := httpapi.ParseID(w, r, "id", "project")
+	if !ok {
 		return
 	}
 
 	project, err := h.projectRepo.Delete(r.Context(), projectID)
 	if err != nil {
-		if errors.Is(err, sql.ErrNoRows) {
-			http.Error(w, "project not found", http.StatusNotFound)
-			return
-		}
-
-		http.Error(w, "failed to delete project", http.StatusInternalServerError)
+		httpapi.WriteRepositoryError(w, err, "project not found", "failed to delete project")
 		return
 	}
 

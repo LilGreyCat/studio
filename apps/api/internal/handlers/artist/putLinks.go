@@ -3,22 +3,21 @@ package artist
 import (
 	"net/http"
 
+	"github.com/PtiCadri/studio/apps/api/internal/httpapi"
 	artistReq "github.com/PtiCadri/studio/apps/api/internal/requests/artist"
 	artistResp "github.com/PtiCadri/studio/apps/api/internal/responses/artist"
 	"github.com/PtiCadri/studio/apps/api/internal/utils"
 )
 
 func (h Handler) PutLinks(w http.ResponseWriter, r *http.Request) {
-	artistID, err := utils.ParseIDParam(r, "id")
-	if err != nil {
-		http.Error(w, "invalid artist id", http.StatusBadRequest)
+	artistID, ok := httpapi.ParseID(w, r, "id", "artist")
+	if !ok {
 		return
 	}
 
 	var request artistReq.PutLinks
 
-	if err := utils.DecodeJSON(r, &request); err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
+	if !httpapi.DecodeJSON(w, r, &request) {
 		return
 	}
 	if err := utils.NormalizeHTTPURLs(&request.SpotifyURL, &request.DeezerURL, &request.AppleMusicURL, &request.SoundcloudURL, &request.YoutubeURL, &request.InstagramURL, &request.TiktokURL); err != nil {
@@ -38,15 +37,7 @@ func (h Handler) PutLinks(w http.ResponseWriter, r *http.Request) {
 		request.TiktokURL,
 	)
 	if err != nil {
-		if utils.IsForeignKeyViolation(err) {
-			http.Error(w, "artist not found", http.StatusNotFound)
-			return
-		}
-		http.Error(
-			w,
-			"failed to save artist links",
-			http.StatusInternalServerError,
-		)
+		httpapi.WriteRepositoryError(w, err, "artist not found", "failed to save artist links")
 		return
 	}
 

@@ -1,32 +1,22 @@
 package artist
 
 import (
-	"database/sql"
 	"net/http"
 
+	"github.com/PtiCadri/studio/apps/api/internal/httpapi"
 	artistResp "github.com/PtiCadri/studio/apps/api/internal/responses/artist"
 	"github.com/PtiCadri/studio/apps/api/internal/utils"
 )
 
 func (h Handler) GetIntegrations(w http.ResponseWriter, r *http.Request) {
-	artistID, err := utils.ParseIDParam(r, "id")
-	if err != nil {
-		http.Error(w, "invalid artist id", http.StatusBadRequest)
+	artistID, ok := httpapi.ParseID(w, r, "id", "artist")
+	if !ok {
 		return
 	}
 
 	integrations, err := h.artistRepo.GetIntegrations(r.Context(), artistID)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			http.Error(w, "artist integrations not found", http.StatusNotFound)
-			return
-		}
-
-		http.Error(
-			w,
-			"failed to fetch artist integrations",
-			http.StatusInternalServerError,
-		)
+		httpapi.WriteRepositoryError(w, err, "artist integrations not found", "failed to fetch artist integrations")
 		return
 	}
 

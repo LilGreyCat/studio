@@ -3,13 +3,12 @@ package project
 import (
 	"net/http"
 
-	"github.com/PtiCadri/studio/apps/api/internal/utils"
+	"github.com/PtiCadri/studio/apps/api/internal/httpapi"
 )
 
 func (h Handler) AddArtist(w http.ResponseWriter, r *http.Request) {
-	projectID, err := utils.ParseIDParam(r, "id")
-	if err != nil {
-		http.Error(w, "invalid project id", http.StatusBadRequest)
+	projectID, ok := httpapi.ParseID(w, r, "id", "project")
+	if !ok {
 		return
 	}
 
@@ -17,8 +16,7 @@ func (h Handler) AddArtist(w http.ResponseWriter, r *http.Request) {
 		ArtistID int64 `json:"artist_id"`
 	}
 
-	if err := utils.DecodeJSON(r, &request); err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
+	if !httpapi.DecodeJSON(w, r, &request) {
 		return
 	}
 
@@ -27,21 +25,13 @@ func (h Handler) AddArtist(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.projectRepo.AddArtist(
+	err := h.projectRepo.AddArtist(
 		r.Context(),
 		projectID,
 		request.ArtistID,
 	)
 	if err != nil {
-		if utils.IsForeignKeyViolation(err) {
-			http.Error(w, "project or artist not found", http.StatusNotFound)
-			return
-		}
-		http.Error(
-			w,
-			"failed to link artist to project",
-			http.StatusInternalServerError,
-		)
+		httpapi.WriteRepositoryError(w, err, "project or artist not found", "failed to link artist to project")
 		return
 	}
 

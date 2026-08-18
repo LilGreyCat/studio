@@ -4,21 +4,20 @@ import (
 	"database/sql"
 	"net/http"
 
+	"github.com/PtiCadri/studio/apps/api/internal/httpapi"
 	projectReq "github.com/PtiCadri/studio/apps/api/internal/requests/project"
 	projectResp "github.com/PtiCadri/studio/apps/api/internal/responses/project"
 	"github.com/PtiCadri/studio/apps/api/internal/utils"
 )
 
 func (h Handler) Patch(w http.ResponseWriter, r *http.Request) {
-	projectID, err := utils.ParseIDParam(r, "id")
-	if err != nil {
-		http.Error(w, "invalid project id", http.StatusBadRequest)
+	projectID, ok := httpapi.ParseID(w, r, "id", "project")
+	if !ok {
 		return
 	}
 
 	var request projectReq.PatchProject
-	if err := utils.DecodeJSON(r, &request); err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
+	if !httpapi.DecodeJSON(w, r, &request) {
 		return
 	}
 
@@ -48,11 +47,7 @@ func (h Handler) Patch(w http.ResponseWriter, r *http.Request) {
 		request.ImageURL.Value,
 	)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			http.Error(w, "project not found", http.StatusNotFound)
-			return
-		}
-		http.Error(w, "failed to update project", http.StatusInternalServerError)
+		httpapi.WriteRepositoryError(w, err, "project not found", "failed to update project")
 		return
 	}
 

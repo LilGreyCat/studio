@@ -1,25 +1,23 @@
 package artist
 
 import (
-	"database/sql"
 	"net/http"
 
+	"github.com/PtiCadri/studio/apps/api/internal/httpapi"
 	artistReq "github.com/PtiCadri/studio/apps/api/internal/requests/artist"
 	artistResp "github.com/PtiCadri/studio/apps/api/internal/responses/artist"
 	"github.com/PtiCadri/studio/apps/api/internal/utils"
 )
 
 func (h Handler) Patch(w http.ResponseWriter, r *http.Request) {
-	artistID, err := utils.ParseIDParam(r, "id")
-	if err != nil {
-		http.Error(w, "invalid artist id", http.StatusBadRequest)
+	artistID, ok := httpapi.ParseID(w, r, "id", "artist")
+	if !ok {
 		return
 	}
 
 	var request artistReq.PatchArtist
 
-	if err := utils.DecodeJSON(r, &request); err != nil {
-		http.Error(w, "invalid request body", http.StatusBadRequest)
+	if !httpapi.DecodeJSON(w, r, &request) {
 		return
 	}
 
@@ -49,11 +47,7 @@ func (h Handler) Patch(w http.ResponseWriter, r *http.Request) {
 		request.ImageURL.Value,
 	)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			http.Error(w, "artist not found", http.StatusNotFound)
-			return
-		}
-		http.Error(w, "failed to update artist", http.StatusInternalServerError)
+		httpapi.WriteRepositoryError(w, err, "artist not found", "failed to update artist")
 		return
 	}
 
