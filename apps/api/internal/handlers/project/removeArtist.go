@@ -18,8 +18,8 @@ func (h Handler) RemoveArtist(w http.ResponseWriter, r *http.Request) {
 	}
 
 	artistIDStr := chi.URLParam(r, "artistId")
-	artistID, err := strconv.ParseInt(artistIDStr, 10, 64)
-	if err != nil {
+	artistID, err := strconv.ParseInt(artistIDStr, 10, 32)
+	if err != nil || artistID <= 0 {
 		http.Error(w, "invalid artist id", http.StatusBadRequest)
 		return
 	}

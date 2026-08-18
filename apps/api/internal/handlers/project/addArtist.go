@@ -22,8 +22,8 @@ func (h Handler) AddArtist(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if request.ArtistID == 0 {
-		http.Error(w, "artist_id is required", http.StatusBadRequest)
+	if request.ArtistID <= 0 || request.ArtistID > 2147483647 {
+		http.Error(w, "artist_id must be a positive 32-bit integer", http.StatusBadRequest)
 		return
 	}
 

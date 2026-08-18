@@ -16,14 +16,15 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if request.Name == "" {
-		http.Error(w, "name is required", http.StatusBadRequest)
+	name, err := utils.NormalizeEntityName(request.Name)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
 
 	project, err := h.projectRepo.Create(
 		r.Context(),
-		request.Name,
+		name,
 		request.ImageURL,
 	)
 	if err != nil {

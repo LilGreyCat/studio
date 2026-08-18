@@ -27,6 +27,18 @@ func (h Handler) Patch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "name cannot be null", http.StatusBadRequest)
 		return
 	}
+	if !request.Name.Set && !request.ImageURL.Set {
+		http.Error(w, "at least one field is required", http.StatusBadRequest)
+		return
+	}
+	if request.Name.Value != nil {
+		name, err := utils.NormalizeEntityName(*request.Name.Value)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+		request.Name.Value = &name
+	}
 
 	artist, err := h.artistRepo.Update(
 		r.Context(),
