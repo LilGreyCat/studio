@@ -1,4 +1,4 @@
-import { API_BASE_URL } from "@/utils/constants";
+import { resolveImageURL } from "@/utils/resolveImageURL";
 
 export function slugifyHardwareTitle(value: string): string {
     return value
@@ -10,7 +10,7 @@ export function slugifyHardwareTitle(value: string): string {
 }
 
 export function resolveHardwareImageURL(path: string): string {
-    return path.startsWith("/uploads/") ? `${API_BASE_URL}${path}` : path;
+    return resolveImageURL(path);
 }
 
 export async function readImageDimensions(

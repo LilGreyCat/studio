@@ -54,6 +54,7 @@ export default function ImageLightbox({
               sizes="100vw"
               style={lightboxImageSx}
               priority
+              unoptimized={image.src.startsWith("http")}
             />
           </Box>
         </Box>

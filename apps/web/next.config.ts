@@ -1,18 +1,22 @@
 import type { NextConfig } from "next";
 
+const apiURL = new URL(
+    process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080"
+);
+
 const nextConfig: NextConfig = {
     output: "standalone",
     images: {
         localPatterns: [
             {
-                pathname: "/matos/**",
+                pathname: "/**",
             },
         ],
         remotePatterns: [
             {
-                protocol: "http",
-                hostname: "192.168.1.199",
-                port: "8080",
+                protocol: apiURL.protocol === "https:" ? "https" : "http",
+                hostname: apiURL.hostname,
+                port: apiURL.port,
                 pathname: "/uploads/**",
             },
         ],

@@ -1,6 +1,5 @@
-export type { HardwareItem } from "../../hardware/types";
-
-export type CreateHardwarePayload = {
+export type HardwareItem = {
+    id: number;
     slug: string;
     eyebrow: string;
     title: string;
@@ -8,7 +7,8 @@ export type CreateHardwarePayload = {
     image_url: string;
     image_width: number;
     image_height: number;
+    display_order: number;
     is_visible: boolean;
+    created_at: string;
+    updated_at: string;
 };
-
-export type UpdateHardwarePayload = Partial<CreateHardwarePayload>;

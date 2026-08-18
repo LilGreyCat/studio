@@ -88,6 +88,7 @@ const descSx: SxProps<Theme> = {
     fontSize: "1.02rem",
     lineHeight: 1.8,
     color: "text.secondary",
+    whiteSpace: "pre-line",
 };
 
 const imageButtonSx: SxProps<Theme> = {

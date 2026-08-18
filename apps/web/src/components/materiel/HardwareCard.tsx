@@ -2,6 +2,7 @@ import GlassySurface from "@/components/ui/GlassySurface";
 import { Box, ButtonBase, Typography } from "@mui/material";
 import Image from "next/image";
 import { memo } from "react";
+import type { HardwareCardItem } from "./types";
 import {
   descSx,
   dividerSx,
@@ -15,19 +16,10 @@ import {
   titleSx,
 } from "./styles";
 
-type HardwareItem = {
-  imageSrc: string;
-  title: string;
-  eyebrow: string;
-  desc: React.ReactNode;
-  height: number;
-  width: number;
-};
-
 type Props = {
-  item: HardwareItem;
+  item: HardwareCardItem;
   reverse?: boolean;
-  onImageClick: (item: HardwareItem) => void;
+  onImageClick: (item: HardwareCardItem) => void;
 };
 
 function HardwareCard({ item, reverse = false, onImageClick }: Props) {
@@ -46,6 +38,7 @@ function HardwareCard({ item, reverse = false, onImageClick }: Props) {
             height={item.height}
             sizes="280px"
             style={imageSx}
+            unoptimized={item.imageSrc.startsWith("http")}
           />
         </Box>
       </ButtonBase>
