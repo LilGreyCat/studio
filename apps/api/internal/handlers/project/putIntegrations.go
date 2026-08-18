@@ -30,6 +30,10 @@ func (h Handler) PutIntegrations(w http.ResponseWriter, r *http.Request) {
 		request.AppleMusicEmbedURL,
 	)
 	if err != nil {
+		if utils.IsForeignKeyViolation(err) {
+			http.Error(w, "project not found", http.StatusNotFound)
+			return
+		}
 		http.Error(
 			w,
 			"failed to save project integrations",

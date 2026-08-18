@@ -33,6 +33,10 @@ func (h Handler) AddArtist(w http.ResponseWriter, r *http.Request) {
 		request.ArtistID,
 	)
 	if err != nil {
+		if utils.IsForeignKeyViolation(err) {
+			http.Error(w, "project or artist not found", http.StatusNotFound)
+			return
+		}
 		http.Error(
 			w,
 			"failed to link artist to project",

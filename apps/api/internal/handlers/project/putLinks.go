@@ -32,6 +32,10 @@ func (h Handler) PutLinks(w http.ResponseWriter, r *http.Request) {
 		request.YoutubeURL,
 	)
 	if err != nil {
+		if utils.IsForeignKeyViolation(err) {
+			http.Error(w, "project not found", http.StatusNotFound)
+			return
+		}
 		http.Error(
 			w,
 			"failed to save project links",
