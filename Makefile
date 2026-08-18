@@ -34,3 +34,12 @@ enter-db:
 
 restart-web:
 	docker compose restart web
+
+prod-up:
+	docker compose --env-file .env.production -f docker-compose.prod.yml up -d --build
+
+prod-down:
+	docker compose --env-file .env.production -f docker-compose.prod.yml down
+
+prod-logs:
+	docker compose --env-file .env.production -f docker-compose.prod.yml logs -f

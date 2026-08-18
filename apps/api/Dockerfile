@@ -12,6 +12,26 @@ RUN CGO_ENABLED=0 GOOS=linux go build \
     -o /out/studio-api \
     ./cmd/api
 
+FROM golang:1.25-alpine AS migration-builder
+
+RUN CGO_ENABLED=0 go install -tags "postgres file" \
+    github.com/golang-migrate/migrate/v4/cmd/migrate@v4.19.1
+
+FROM alpine:3.22 AS migrator
+
+RUN apk add --no-cache ca-certificates \
+    && addgroup -S migrate \
+    && adduser -S -G migrate migrate
+
+WORKDIR /app
+
+COPY --from=migration-builder /go/bin/migrate /usr/local/bin/migrate
+COPY --chown=migrate:migrate migrations ./migrations
+
+USER migrate
+
+ENTRYPOINT ["migrate"]
+
 FROM alpine:3.22 AS runner
 
 RUN apk add --no-cache ca-certificates tzdata \
