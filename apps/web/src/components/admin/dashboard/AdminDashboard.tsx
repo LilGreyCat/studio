@@ -12,6 +12,7 @@ import { useAdminLogout } from "@/hooks/server/admin/useAdminLogout";
 import { MainLogo } from "@/components/ui";
 import AdminHomeView from "./AdminHomeView";
 import AdminProjectsView from "./views/projects/view";
+import AdminHardwareView from "./views/hardware/view";
 
 type AdminDashboardProps = {
   admin: AdminSession;
@@ -32,7 +33,7 @@ export default function AdminDashboard({
       case "artists":
         return <Typography>Artists admin view</Typography>;
       case "hardware":
-        return <Typography>Hardware admin view</Typography>;
+        return <AdminHardwareView onBack={() => setActiveView("home")} />;
       default:
         return <AdminHomeView onSelectView={setActiveView} />;
     }
