@@ -35,7 +35,7 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := validateFileMimeType(file); err != nil {
+	if err := validateFileMimeType(file, ext); err != nil {
 		status := http.StatusBadRequest
 		if err.Error() == "failed to read file" ||
 			err.Error() == "failed to reset file reader" {

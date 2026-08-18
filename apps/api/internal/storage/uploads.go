@@ -28,7 +28,14 @@ func DeleteUploadedFile(publicURL string) error {
 		return err
 	}
 
-	if !strings.HasPrefix(cleanFilePath, cleanUploadsDir) {
+	relativeToUploads, err := filepath.Rel(cleanUploadsDir, cleanFilePath)
+	if err != nil {
+		return err
+	}
+
+	if relativeToUploads == "." || relativeToUploads == ".." ||
+		filepath.IsAbs(relativeToUploads) ||
+		strings.HasPrefix(relativeToUploads, ".."+string(filepath.Separator)) {
 		return nil
 	}
 

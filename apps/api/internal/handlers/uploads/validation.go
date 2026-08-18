@@ -21,11 +21,10 @@ var allowedExtensions = map[string]bool{
 	".webp": true,
 }
 
-var allowedMimeTypes = map[string]bool{
-	"image/jpeg": true,
-	"image/jpg":  true,
-	"image/png":  true,
-	"image/webp": true,
+var allowedMimeExtensions = map[string]map[string]bool{
+	"image/jpeg": {".jpg": true, ".jpeg": true},
+	"image/png":  {".png": true},
+	"image/webp": {".webp": true},
 }
 
 func validateFolder(folder string) error {
@@ -53,7 +52,7 @@ func validateFileExtension(filename string) (string, error) {
 	return ext, nil
 }
 
-func validateFileMimeType(file multipart.File) error {
+func validateFileMimeType(file multipart.File, extension string) error {
 	buffer := make([]byte, 512)
 
 	n, err := file.Read(buffer)
@@ -62,8 +61,12 @@ func validateFileMimeType(file multipart.File) error {
 	}
 
 	mimeType := http.DetectContentType(buffer[:n])
-	if !allowedMimeTypes[mimeType] {
+	allowedExtensions, supported := allowedMimeExtensions[mimeType]
+	if !supported {
 		return errors.New("unsupported file type")
+	}
+	if !allowedExtensions[extension] {
+		return errors.New("file extension does not match file type")
 	}
 
 	_, err = file.Seek(0, 0)

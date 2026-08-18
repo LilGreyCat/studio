@@ -26,11 +26,21 @@ func saveUploadedFile(
 	if err != nil {
 		return "", err
 	}
-	defer dst.Close()
+	completed := false
+	defer func() {
+		_ = dst.Close()
+		if !completed {
+			_ = os.Remove(dstPath)
+		}
+	}()
 
 	if _, err := io.Copy(dst, file); err != nil {
 		return "", err
 	}
+	if err := dst.Close(); err != nil {
+		return "", err
+	}
 
+	completed = true
 	return filename, nil
 }
