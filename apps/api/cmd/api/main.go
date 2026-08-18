@@ -11,8 +11,8 @@ import (
 func main() {
 	cfg := config.Load()
 
-	if cfg.AuthSecret == "" {
-		log.Fatal("AUTH_SECRET is required")
+	if err := cfg.ValidateAPI(); err != nil {
+		log.Fatalf("invalid configuration: %v", err)
 	}
 
 	pg, err := storage.NewPostgres(cfg.DatabaseUrl)
