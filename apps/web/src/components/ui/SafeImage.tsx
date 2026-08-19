@@ -10,7 +10,7 @@ type Props = Omit<ImageProps, "src"> & {
 
 export default function SafeImage({
   src,
-  fallbackSrc = "/logo-complet.svg",
+  fallbackSrc = "/logo-complet.webp",
   alt,
   onError,
   ...props

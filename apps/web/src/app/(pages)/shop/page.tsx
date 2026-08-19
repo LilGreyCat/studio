@@ -39,7 +39,7 @@ export default function Shop() {
         }}
       >
         <Image
-          src="/MOOD_BOARD_1.png"
+          src="/MOOD_BOARD_1.webp"
           alt="Aperçu de la future collection Nhadès Records"
           fill
           sizes="(max-width: 960px) 100vw, 960px"

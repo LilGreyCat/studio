@@ -30,7 +30,7 @@ export default function NavbarMobile() {
         handleClose={handleClose}
       />
 
-      <Box component="img" src="/logo-sans-texte.svg" alt="Logo du studio" sx={logoSx} />
+      <Box component="img" src="/logo-sans-texte.webp" alt="Logo du studio" sx={logoSx} />
     </Box>
   );
 }

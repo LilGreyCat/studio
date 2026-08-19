@@ -4,7 +4,7 @@ export default function MainLogo({ marginBottom }: { marginBottom?: number }) {
   return (
     <Box
       component="img"
-      src="/logo-complet.svg"
+      src="/logo-complet.webp"
       alt="Logo"
       sx={logoSx(marginBottom)}
     />
