@@ -36,9 +36,9 @@ const linkFields = [
   ["tiktok_url", "TikTok URL"],
 ] as const;
 const integrationFields = [
-  ["spotify_embed_url", "Spotify Embed URL"],
-  ["deezer_embed_url", "Deezer Embed URL"],
-  ["apple_music_embed_url", "Apple Music Embed URL"],
+  ["spotify_embed_url", "Spotify"],
+  ["deezer_embed_url", "Deezer"],
+  ["apple_music_embed_url", "Apple Music"],
 ] as const;
 
 export default function ArtistFormView({
@@ -183,10 +183,10 @@ export default function ArtistFormView({
       </GlassySurface>
       <GlassySurface sx={surfaceSx}>
         <Typography variant="h6">Intégrations</Typography>
-        {integrationFields.map(([key, label]) => (
+        {integrationFields.map(([key, provider]) => (
           <TextField
             key={key}
-            label={label}
+            label={`Intégration ${provider}`}
             value={integrations[key] ?? ""}
             onChange={(event) =>
               setIntegrations((current) => ({
@@ -194,6 +194,9 @@ export default function ArtistFormView({
                 [key]: event.target.value,
               }))
             }
+            helperText={`Collez le code iframe complet fourni par ${provider}.`}
+            multiline
+            minRows={2}
           />
         ))}
       </GlassySurface>

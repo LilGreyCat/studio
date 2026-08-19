@@ -62,13 +62,44 @@ func TestNormalizeHTTPURLs(t *testing.T) {
 }
 
 func TestNormalizeEmbedURLs(t *testing.T) {
-	embedValue := `<iframe title='player' src='https://open.spotify.com/embed/album/1'></iframe>`
-	embed := &embedValue
-	if err := NormalizeEmbedURLs(&embed); err != nil {
-		t.Fatal(err)
+	tests := []struct {
+		name     string
+		input    string
+		expected string
+	}{
+		{
+			name:     "Spotify iframe",
+			input:    `<iframe data-testid="embed-iframe" style="border-radius:12px" src="https://open.spotify.com/embed/album/4L6E6dsKYBoLp33NQLe0zL?utm_source=generator&si=2ec667a9909444cf" width="100%" height="352"></iframe>`,
+			expected: "https://open.spotify.com/embed/album/4L6E6dsKYBoLp33NQLe0zL?utm_source=generator&si=2ec667a9909444cf",
+		},
+		{
+			name:     "Deezer iframe",
+			input:    `<iframe title="deezer-widget" src="https://widget.deezer.com/widget/dark/album/811834641" width="100%" height="300"></iframe>`,
+			expected: "https://widget.deezer.com/widget/dark/album/811834641",
+		},
+		{
+			name:     "Apple Music iframe",
+			input:    `<iframe allow="autoplay *; encrypted-media *" src="https://embed.music.apple.com/fr/album/s-p-a-c-e/1836310530"></iframe>`,
+			expected: "https://embed.music.apple.com/fr/album/s-p-a-c-e/1836310530",
+		},
+		{
+			name:     "direct URL",
+			input:    "https://open.spotify.com/embed/album/1",
+			expected: "https://open.spotify.com/embed/album/1",
+		},
 	}
-	if embed == nil || *embed != "https://open.spotify.com/embed/album/1" {
-		t.Fatalf("iframe src was not extracted: %v", embed)
+
+	for _, test := range tests {
+		t.Run(test.name, func(t *testing.T) {
+			embedValue := test.input
+			embed := &embedValue
+			if err := NormalizeEmbedURLs(&embed); err != nil {
+				t.Fatal(err)
+			}
+			if embed == nil || *embed != test.expected {
+				t.Fatalf("iframe src was not extracted: %v", embed)
+			}
+		})
 	}
 }
 

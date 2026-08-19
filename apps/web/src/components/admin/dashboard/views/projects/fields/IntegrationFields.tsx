@@ -24,23 +24,32 @@ function ProjectIntegrationsFields({
 
       <Stack spacing={2}>
         <TextField
-          label="Spotify Embed URL"
+          label="Intégration Spotify"
           value={spotifyEmbedURL}
           onChange={(event) => onSpotifyEmbedURLChange(event.target.value)}
+          helperText="Collez le code iframe complet fourni par Spotify."
+          multiline
+          minRows={2}
           fullWidth
         />
 
         <TextField
-          label="Deezer Embed URL"
+          label="Intégration Deezer"
           value={deezerEmbedURL}
           onChange={(event) => onDeezerEmbedURLChange(event.target.value)}
+          helperText="Collez le code iframe complet fourni par Deezer."
+          multiline
+          minRows={2}
           fullWidth
         />
 
         <TextField
-          label="Apple Music Embed URL"
+          label="Intégration Apple Music"
           value={appleMusicEmbedURL}
           onChange={(event) => onAppleMusicEmbedURLChange(event.target.value)}
+          helperText="Collez le code iframe complet fourni par Apple Music."
+          multiline
+          minRows={2}
           fullWidth
         />
       </Stack>
