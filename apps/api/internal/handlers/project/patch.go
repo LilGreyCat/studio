@@ -25,7 +25,7 @@ func (h Handler) Patch(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "name cannot be null", http.StatusBadRequest)
 		return
 	}
-	if !request.Name.Set && !request.ImageURL.Set {
+	if !request.Name.Set && !request.ImageURL.Set && !request.DisplayOrder.Set && !request.IsVisible.Set {
 		http.Error(w, "at least one field is required", http.StatusBadRequest)
 		return
 	}
@@ -37,6 +37,14 @@ func (h Handler) Patch(w http.ResponseWriter, r *http.Request) {
 		}
 		request.Name.Value = &name
 	}
+	if request.DisplayOrder.Set && (request.DisplayOrder.Value == nil || *request.DisplayOrder.Value < 0) {
+		http.Error(w, "display_order must be zero or greater", http.StatusBadRequest)
+		return
+	}
+	if request.IsVisible.Set && request.IsVisible.Value == nil {
+		http.Error(w, "is_visible cannot be null", http.StatusBadRequest)
+		return
+	}
 
 	project, previousImageURL, err := h.projectRepo.Update(
 		r.Context(),
@@ -45,6 +53,10 @@ func (h Handler) Patch(w http.ResponseWriter, r *http.Request) {
 		request.Name.Value,
 		request.ImageURL.Set,
 		request.ImageURL.Value,
+		request.DisplayOrder.Set,
+		request.DisplayOrder.Value,
+		request.IsVisible.Set,
+		request.IsVisible.Value,
 	)
 	if err != nil {
 		httpapi.WriteRepositoryError(w, err, "project not found", "failed to update project")

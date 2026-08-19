@@ -1,14 +1,14 @@
 import { IconButton } from "@mui/material";
 
 import { iconPaths } from "@/components/footer/socialLinks/constants";
+import type { CustomIconKey } from "@/components/footer/socialLinks/types";
 import CustomIcon from "@/components/ui/CustomIcon";
 import type { LinkIconAction } from "../types";
-import type { IconKey } from "./types";
 
 import { iconSx } from "./styles";
 
 type LinkIconProps = {
-  icon: IconKey;
+  icon: CustomIconKey;
   action: LinkIconAction;
 };
 

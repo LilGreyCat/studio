@@ -15,6 +15,7 @@ func (r *ArtistRepository) GetByID(
 			id,
 			name,
 			image_url,
+			display_order, is_visible,
 			created_at,
 			updated_at
 		FROM artists
@@ -27,6 +28,7 @@ func (r *ArtistRepository) GetByID(
 		&artist.ID,
 		&artist.Name,
 		&artist.ImageURL,
+		&artist.DisplayOrder, &artist.IsVisible,
 		&artist.CreatedAt,
 		&artist.UpdatedAt,
 	)

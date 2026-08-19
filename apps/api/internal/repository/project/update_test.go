@@ -29,6 +29,8 @@ func TestUpdatePassesPatchPresenceSeparatelyFromValues(t *testing.T) {
 		SET
 			name = CASE WHEN $2 THEN $3 ELSE p.name END,
 			image_url = CASE WHEN $4 THEN $5 ELSE p.image_url END,
+			display_order = CASE WHEN $6 THEN $7 ELSE p.display_order END,
+			is_visible = CASE WHEN $8 THEN $9 ELSE p.is_visible END,
 			updated_at = NOW()
 		FROM previous
 		WHERE p.id = $1
@@ -36,17 +38,19 @@ func TestUpdatePassesPatchPresenceSeparatelyFromValues(t *testing.T) {
 			p.id,
 			p.name,
 			p.image_url,
+			p.display_order,
+			p.is_visible,
 			p.created_at,
 			p.updated_at,
 			previous.image_url;
 	`)
 	mock.ExpectQuery(query).
-		WithArgs(int64(4), true, &name, false, nil).
+		WithArgs(int64(4), true, &name, false, nil, false, nil, false, nil).
 		WillReturnRows(sqlmock.NewRows([]string{
-			"id", "name", "image_url", "created_at", "updated_at", "previous_image_url",
-		}).AddRow(4, name, "/uploads/current.webp", now, now, "/uploads/current.webp"))
+			"id", "name", "image_url", "display_order", "is_visible", "created_at", "updated_at", "previous_image_url",
+		}).AddRow(4, name, "/uploads/current.webp", 1, true, now, now, "/uploads/current.webp"))
 
-	updated, previousImage, err := New(db).Update(context.Background(), 4, true, &name, false, nil)
+	updated, previousImage, err := New(db).Update(context.Background(), 4, true, &name, false, nil, false, nil, false, nil)
 	if err != nil {
 		t.Fatal(err)
 	}

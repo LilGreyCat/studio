@@ -1,3 +1,4 @@
+import Artists from "@/components/references/artists/Artists";
 import Projects from "@/components/references/projects/Projects";
 import { Divider, MainLogo } from "@/components/ui";
 
@@ -11,8 +12,8 @@ export default function References() {
     <>
       <MainLogo marginBottom={5} />
       <Projects />
-      {/* Reserved separator for the future artists section. */}
       <Divider />
+      <Artists />
     </>
   );
 }

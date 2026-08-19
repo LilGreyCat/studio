@@ -22,11 +22,11 @@ func TestDeleteReturnsDeletedArtist(t *testing.T) {
 	query := regexp.QuoteMeta(`
 		DELETE FROM artists
 		WHERE id = $1
-		RETURNING id, name, image_url, created_at, updated_at;
+		RETURNING id, name, image_url, display_order, is_visible, created_at, updated_at;
 	`)
 	mock.ExpectQuery(query).WithArgs(int64(7)).WillReturnRows(
-		sqlmock.NewRows([]string{"id", "name", "image_url", "created_at", "updated_at"}).
-			AddRow(7, "Artist", "/uploads/artist.webp", now, now),
+		sqlmock.NewRows([]string{"id", "name", "image_url", "display_order", "is_visible", "created_at", "updated_at"}).
+			AddRow(7, "Artist", "/uploads/artist.webp", 1, true, now, now),
 	)
 
 	deleted, err := New(db).Delete(context.Background(), 7)

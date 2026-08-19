@@ -62,7 +62,9 @@ func registerAdminUploads(r chi.Router, deps Dependencies) {
 }
 
 func registerAdminProjects(r chi.Router, deps Dependencies) {
+	r.Get("/projects", deps.Projects.AdminList)
 	r.Post("/projects", deps.Projects.Create)
+	r.Put("/projects/order", deps.Projects.Reorder)
 	r.Delete("/projects/{id}", deps.Projects.Delete)
 	r.Patch("/projects/{id}", deps.Projects.Patch)
 
@@ -86,7 +88,9 @@ func registerAdminProjects(r chi.Router, deps Dependencies) {
 }
 
 func registerAdminArtists(r chi.Router, deps Dependencies) {
+	r.Get("/artists", deps.Artists.AdminList)
 	r.Post("/artists", deps.Artists.Create)
+	r.Put("/artists/order", deps.Artists.Reorder)
 	r.Delete("/artists/{id}", deps.Artists.Delete)
 	r.Patch("/artists/{id}", deps.Artists.Patch)
 

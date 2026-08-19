@@ -10,6 +10,10 @@ import type {
     UpdateProjectPayload,
 } from "./types";
 
+export function getAdminProjects(): Promise<Project[]> {
+    return fetchJson<Project[]>("/admin/projects", { credentials: "include" });
+}
+
 export function createProject(payload: CreateProjectPayload): Promise<Project> {
     return fetchJson<Project>("/admin/projects", {
         method: "POST",
@@ -84,4 +88,12 @@ export function patchProjectIntegrations(
             body: JSON.stringify(payload),
         }
     );
+}
+
+export function reorderProjects(ids: number[]): Promise<Project[]> {
+    return fetchJson<Project[]>("/admin/projects/order", {
+        method: "PUT",
+        credentials: "include",
+        body: JSON.stringify({ ids }),
+    });
 }

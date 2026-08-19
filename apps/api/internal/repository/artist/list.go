@@ -14,10 +14,12 @@ func (r *ArtistRepository) List(
 			id,
 			name,
 			image_url,
+			display_order,
+			is_visible,
 			created_at,
 			updated_at
-		FROM artists
-		ORDER BY id DESC;
+		FROM artists WHERE is_visible
+		ORDER BY display_order, id;
 	`
 
 	rows, err := r.db.QueryContext(ctx, query)
@@ -35,6 +37,8 @@ func (r *ArtistRepository) List(
 			&artist.ID,
 			&artist.Name,
 			&artist.ImageURL,
+			&artist.DisplayOrder,
+			&artist.IsVisible,
 			&artist.CreatedAt,
 			&artist.UpdatedAt,
 		)
@@ -50,4 +54,22 @@ func (r *ArtistRepository) List(
 	}
 
 	return artists, nil
+}
+
+func (r *ArtistRepository) ListAll(ctx context.Context) ([]models.Artist, error) {
+	const query = `SELECT id, name, image_url, display_order, is_visible, created_at, updated_at FROM artists ORDER BY display_order, id;`
+	rows, err := r.db.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	artists := make([]models.Artist, 0)
+	for rows.Next() {
+		var artist models.Artist
+		if err := rows.Scan(&artist.ID, &artist.Name, &artist.ImageURL, &artist.DisplayOrder, &artist.IsVisible, &artist.CreatedAt, &artist.UpdatedAt); err != nil {
+			return nil, err
+		}
+		artists = append(artists, artist)
+	}
+	return artists, rows.Err()
 }

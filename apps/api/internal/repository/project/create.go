@@ -14,13 +14,16 @@ func (r *ProjectRepository) Create(
 	const query = `
 		INSERT INTO projects (
 			name,
-			image_url
+			image_url,
+			display_order
 		)
-		VALUES ($1, $2)
+		VALUES ($1, $2, (SELECT COALESCE(MAX(display_order), 0) + 1 FROM projects))
 		RETURNING
 			id,
 			name,
 			image_url,
+			display_order,
+			is_visible,
 			created_at,
 			updated_at;
 	`
@@ -36,6 +39,8 @@ func (r *ProjectRepository) Create(
 		&project.ID,
 		&project.Name,
 		&project.ImageURL,
+		&project.DisplayOrder,
+		&project.IsVisible,
 		&project.CreatedAt,
 		&project.UpdatedAt,
 	)

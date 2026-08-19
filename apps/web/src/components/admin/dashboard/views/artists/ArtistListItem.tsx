@@ -1,34 +1,33 @@
 import { Box, Button, Chip, Stack, Typography } from "@mui/material";
-
 import { GlassySurface } from "@/components/ui";
-import type { HardwareItem } from "@/hooks/server/admin/hardware";
-
-import { resolveHardwareImageURL } from "./utils";
+import SafeImage from "@/components/ui/SafeImage";
+import type { Artist } from "@/hooks/server/artists/types";
+import { getImageUrl } from "@/utils/getImageUrl";
 import {
   destructiveActionSx,
   managementActionsSx,
 } from "../managementActionStyles";
 
 type Props = {
-  item: HardwareItem;
+  artist: Artist;
   index: number;
-  itemCount: number;
+  count: number;
   isBusy: boolean;
-  onEdit: (item: HardwareItem) => void;
-  onDelete: (item: HardwareItem) => Promise<void>;
-  onToggleVisibility: (item: HardwareItem) => Promise<void>;
   onMove: (index: number, direction: -1 | 1) => Promise<void>;
+  onEdit: (artist: Artist) => void;
+  onToggle: (artist: Artist) => Promise<void>;
+  onDelete: (artist: Artist) => Promise<void>;
 };
 
-export default function HardwareListItem({
-  item,
+export default function ArtistListItem({
+  artist,
   index,
-  itemCount,
+  count,
   isBusy,
-  onEdit,
-  onDelete,
-  onToggleVisibility,
   onMove,
+  onEdit,
+  onToggle,
+  onDelete,
 }: Props) {
   return (
     <GlassySurface
@@ -44,32 +43,33 @@ export default function HardwareListItem({
       }}
     >
       <Box
-        component="img"
-        src={resolveHardwareImageURL(item.image_url)}
-        alt={item.title}
         sx={{
+          position: "relative",
+          overflow: "hidden",
           width: { xs: "100%", md: 112 },
           height: 96,
+          flexShrink: 0,
           borderRadius: 1.5,
-          objectFit: "cover",
         }}
-      />
-
-      <Stack spacing={0.5} sx={{ flex: 1, minWidth: 0 }}>
+      >
+        <SafeImage
+          src={getImageUrl(artist.image_url)}
+          alt={artist.name}
+          fill
+          sizes="(max-width: 900px) 100vw, 112px"
+          style={{ objectFit: "cover" }}
+        />
+      </Box>
+      <Stack sx={{ flex: 1, minWidth: 0 }}>
         <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
-          <Typography variant="h6">{item.title}</Typography>
+          <Typography variant="h6">{artist.name}</Typography>
           <Chip
             size="small"
-            color={item.is_visible ? "success" : "default"}
-            label={item.is_visible ? "Visible" : "Masqué"}
+            color={artist.is_visible ? "success" : "default"}
+            label={artist.is_visible ? "Visible" : "Masqué"}
           />
         </Stack>
-        <Typography color="text.secondary">{item.eyebrow}</Typography>
-        <Typography variant="caption" color="text.secondary">
-          Position {index + 1} · {item.slug}
-        </Typography>
       </Stack>
-
       <Box sx={managementActionsSx}>
         <Button
           size="small"
@@ -82,7 +82,7 @@ export default function HardwareListItem({
         <Button
           size="small"
           variant="outlined"
-          disabled={isBusy || index === itemCount - 1}
+          disabled={isBusy || index === count - 1}
           onClick={() => onMove(index, 1)}
         >
           Descendre
@@ -91,7 +91,7 @@ export default function HardwareListItem({
           size="small"
           variant="outlined"
           disabled={isBusy}
-          onClick={() => onEdit(item)}
+          onClick={() => onEdit(artist)}
         >
           Modifier
         </Button>
@@ -99,16 +99,16 @@ export default function HardwareListItem({
           size="small"
           variant="outlined"
           disabled={isBusy}
-          onClick={() => onToggleVisibility(item)}
+          onClick={() => onToggle(artist)}
         >
-          {item.is_visible ? "Masquer" : "Afficher"}
+          {artist.is_visible ? "Masquer" : "Afficher"}
         </Button>
         <Button
           size="small"
           variant="outlined"
           color="error"
           disabled={isBusy}
-          onClick={() => onDelete(item)}
+          onClick={() => onDelete(artist)}
           sx={destructiveActionSx}
         >
           Supprimer

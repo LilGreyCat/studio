@@ -13,6 +13,7 @@ import { MainLogo } from "@/components/ui";
 import AdminHomeView from "./AdminHomeView";
 import AdminProjectsView from "./views/projects/view";
 import AdminHardwareView from "./views/hardware/view";
+import AdminArtistsView from "./views/artists/view";
 
 type AdminDashboardProps = {
   admin: AdminSession;
@@ -31,7 +32,7 @@ export default function AdminDashboard({
       case "projects":
         return <AdminProjectsView onBack={() => setActiveView("home")} />;
       case "artists":
-        return <Typography>Artists admin view</Typography>;
+        return <AdminArtistsView onBack={() => setActiveView("home")} />;
       case "hardware":
         return <AdminHardwareView onBack={() => setActiveView("home")} />;
       default:

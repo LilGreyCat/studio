@@ -15,6 +15,8 @@ func (r *ProjectRepository) GetByID(
 			id,
 			name,
 			image_url,
+			display_order,
+			is_visible,
 			created_at,
 			updated_at
 		FROM projects
@@ -27,6 +29,8 @@ func (r *ProjectRepository) GetByID(
 		&project.ID,
 		&project.Name,
 		&project.ImageURL,
+		&project.DisplayOrder,
+		&project.IsVisible,
 		&project.CreatedAt,
 		&project.UpdatedAt,
 	)

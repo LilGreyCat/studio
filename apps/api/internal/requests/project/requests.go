@@ -8,8 +8,14 @@ type CreateProject struct {
 }
 
 type PatchProject struct {
-	Name     utils.Optional[string] `json:"name"`
-	ImageURL utils.Optional[string] `json:"image_url"`
+	Name         utils.Optional[string] `json:"name"`
+	ImageURL     utils.Optional[string] `json:"image_url"`
+	DisplayOrder utils.Optional[int16]  `json:"display_order"`
+	IsVisible    utils.Optional[bool]   `json:"is_visible"`
+}
+
+type Reorder struct {
+	IDs []int64 `json:"ids"`
 }
 
 type PutLinks struct {

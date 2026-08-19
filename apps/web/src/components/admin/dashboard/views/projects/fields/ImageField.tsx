@@ -1,4 +1,6 @@
-import { Button, TextField, Typography } from "@mui/material";
+import SafeImage from "@/components/ui/SafeImage";
+import { getImageUrl } from "@/utils/getImageUrl";
+import { Box, Button, Typography } from "@mui/material";
 import { memo } from "react";
 
 type ProjectImageFieldProps = {
@@ -52,16 +54,30 @@ function ProjectImageField({
       )}
 
       {mode === "edit" && !imageFile && imageURL && (
-        <TextField
-          label="Image actuelle"
-          value={imageURL}
-          fullWidth
-          slotProps={{
-            input: {
-              readOnly: true,
-            },
-          }}
-        />
+        <Box>
+          <Typography color="text.secondary" sx={{ mb: 1 }}>
+            Image actuelle
+          </Typography>
+          <Box
+            sx={{
+              position: "relative",
+              width: 160,
+              height: 120,
+              overflow: "hidden",
+              borderRadius: 1,
+              border: "1px solid",
+              borderColor: "divider",
+            }}
+          >
+            <SafeImage
+              src={getImageUrl(imageURL)}
+              alt="Image actuelle du projet"
+              fill
+              sizes="160px"
+              style={{ objectFit: "cover" }}
+            />
+          </Box>
+        </Box>
       )}
     </>
   );

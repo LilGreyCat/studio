@@ -8,18 +8,22 @@ type ProjectListViewProps = {
   projects: Project[];
   isLoading: boolean;
   error: string | null;
-  isDeleting: boolean;
+  isBusy: boolean;
   onEdit: (project: Project) => void;
   onDelete: (projectId: number) => Promise<void>;
+  onToggleVisibility: (project: Project) => Promise<void>;
+  onMove: (index: number, direction: -1 | 1) => Promise<void>;
 };
 
 export default function ProjectListView({
   projects,
   isLoading,
   error,
-  isDeleting,
+  isBusy,
   onEdit,
   onDelete,
+  onToggleVisibility,
+  onMove,
 }: ProjectListViewProps) {
   if (isLoading) {
     return <CircularProgress />;
@@ -35,13 +39,17 @@ export default function ProjectListView({
 
   return (
     <Stack spacing={2}>
-      {projects.map((project) => (
+      {projects.map((project, index) => (
         <ProjectListItem
           key={project.id}
           project={project}
-          isDeleting={isDeleting}
+          index={index}
+          itemCount={projects.length}
+          isBusy={isBusy}
           onEdit={onEdit}
           onDelete={onDelete}
+          onToggleVisibility={onToggleVisibility}
+          onMove={onMove}
         />
       ))}
     </Stack>

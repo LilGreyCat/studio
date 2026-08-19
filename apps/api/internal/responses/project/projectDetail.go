@@ -9,12 +9,14 @@ import (
 )
 
 type ProjectDetailResponse struct {
-	ID        int64                       `json:"id"`
-	Name      string                      `json:"name"`
-	ImageURL  *string                     `json:"image_url"`
-	CreatedAt time.Time                   `json:"created_at"`
-	UpdatedAt time.Time                   `json:"updated_at"`
-	Artists   []artistResp.ArtistResponse `json:"artists"`
+	ID           int64                       `json:"id"`
+	Name         string                      `json:"name"`
+	ImageURL     *string                     `json:"image_url"`
+	DisplayOrder int16                       `json:"display_order"`
+	IsVisible    bool                        `json:"is_visible"`
+	CreatedAt    time.Time                   `json:"created_at"`
+	UpdatedAt    time.Time                   `json:"updated_at"`
+	Artists      []artistResp.ArtistResponse `json:"artists"`
 }
 
 func ToProjectDetailResponse(
@@ -24,11 +26,13 @@ func ToProjectDetailResponse(
 	base := ToProjectResponse(project)
 
 	return ProjectDetailResponse{
-		ID:        base.ID,
-		Name:      base.Name,
-		ImageURL:  base.ImageURL,
-		CreatedAt: base.CreatedAt,
-		UpdatedAt: base.UpdatedAt,
-		Artists:   artistResp.ToArtistResponses(artists),
+		ID:           base.ID,
+		Name:         base.Name,
+		ImageURL:     base.ImageURL,
+		DisplayOrder: base.DisplayOrder,
+		IsVisible:    base.IsVisible,
+		CreatedAt:    base.CreatedAt,
+		UpdatedAt:    base.UpdatedAt,
+		Artists:      artistResp.ToArtistResponses(artists),
 	}
 }
