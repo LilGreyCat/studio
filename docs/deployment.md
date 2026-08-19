@@ -55,6 +55,23 @@ proxy ranges explicitly before enabling it.
 
 ## Verification
 
+Before transferring the release to the server, run the local release gate:
+
+```sh
+cd apps/api && go vet ./... && go test ./...
+cd ../web
+npm ci && npx playwright install chromium
+npm run lint && npm run typecheck && npm run test:e2e
+cd ../..
+export ENV_FILE=.env.production.example
+docker compose --env-file .env.production.example -f docker-compose.prod.yml config --quiet
+docker compose --env-file .env.production.example -f docker-compose.prod.yml build
+```
+
+`ENV_FILE` makes the Compose services read the non-secret example file during
+configuration validation. Actual deployment commands continue to use the
+untracked `.env.production` file.
+
 After deployment, verify:
 
 ```sh
@@ -72,3 +89,5 @@ Before accepting production traffic, install the automated off-server backup
 timer and complete the restoration drill described in `docs/backups.md`.
 Install the orphaned-upload maintenance timer described in
 `docs/upload-cleanup.md` after the backup timer is working.
+
+The complete launch and rollback checklist is in `docs/release-checklist.md`.

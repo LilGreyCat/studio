@@ -32,6 +32,8 @@ It contains names and purposes only; real secrets must never be committed.
 | `RESEND_API_KEY` | For contact submissions | Yes | Resend server API key |
 | `CONTACT_TO_EMAIL` | For contact submissions | Sensitive configuration | Contact-form recipient |
 | `CONTACT_FROM_EMAIL` | For contact submissions | No | Verified sender address |
+| `CONTACT_RATE_LIMIT_MAX` | No | No | Maximum contact submissions per client and window; defaults to `5` |
+| `CONTACT_RATE_LIMIT_WINDOW_SECONDS` | No | No | Contact limiter window in seconds; defaults to `600` |
 
 The production reverse proxy must overwrite `X-Real-IP` and
 `X-Forwarded-For`; the contact limiter intentionally treats the rightmost
