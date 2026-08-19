@@ -8,7 +8,7 @@ export default function Infos() {
       </Typography>
 
       <Typography variant="body1" sx={contentSx} gutterBottom>
-        nhadesrecords@outlook.fr
+        contact@nhadesrecords.fr
       </Typography>
 
       <Typography variant="body1" sx={contentSx} gutterBottom>
