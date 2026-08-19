@@ -80,6 +80,29 @@ export default function LegalNotices() {
           </Typography>
         </LegalSection>
 
+        <LegalSection title="Conception et Développement">
+          <Typography color="text.secondary">
+            Le site nhadesrecords.fr a été conçu et développé par :
+            <br />
+            <br />
+            <strong>Conception :</strong> Martin DEPREAUX et Tanguy DEFRANCE
+            <br />
+            <strong>Direction artistique :</strong> Martin DEPREAUX et Tanguy
+            DEFRANCE
+            <br />
+            <strong>Développement frontend et infrastructure :</strong> Tanguy
+            DEFRANCE
+            <br />
+            <strong>Développement backend :</strong> Tanguy DEFRANCE
+            <br />
+            <strong>Photographies :</strong> Gabryel ROBIN
+            <br />
+            <br />
+            Technologies principales : Next.js, TypeScript, Material UI, Go et
+            PostgreSQL.
+          </Typography>
+        </LegalSection>
+
         <LegalSection title="Propriété intellectuelle">
           <Typography color="text.secondary">
             Les éléments propres au site nhadesrecords.fr, notamment les textes,
