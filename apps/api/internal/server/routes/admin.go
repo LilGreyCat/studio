@@ -47,7 +47,12 @@ func registerAdminProtected(
 		registerAdminArtists(r, deps)
 		registerAdminHardware(r, deps)
 		registerAdminNotifications(r, deps)
+		registerAdminPrices(r, deps)
 	})
+}
+
+func registerAdminPrices(r chi.Router, deps Dependencies) {
+	r.Put("/prices", deps.Prices.UpdateAll)
 }
 
 func registerAdminNotifications(r chi.Router, deps Dependencies) {

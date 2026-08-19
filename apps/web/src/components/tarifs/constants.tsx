@@ -1,6 +1,6 @@
 import type { Formule, Prestation } from "./types";
 
-const formules: Formule[] = [
+const formules = [
   {
     id: "single",
     titre: "FORMULE SINGLE",
@@ -36,9 +36,9 @@ const formules: Formule[] = [
       unit: "/ titre",
     },
   },
-];
+] satisfies Formule[];
 
-const prestations: Prestation[] = [
+const prestations = [
   {
     id: "recording",
     key: "enregistrement",
@@ -79,6 +79,6 @@ const prestations: Prestation[] = [
     },
     iconPath: "/icons/mastering.svg",
   },
-];
+] satisfies Prestation[];
 
 export { formules, prestations };

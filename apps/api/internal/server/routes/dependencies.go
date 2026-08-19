@@ -9,6 +9,7 @@ import (
 	artistHandlers "github.com/PtiCadri/studio/apps/api/internal/handlers/artist"
 	hardwareHandlers "github.com/PtiCadri/studio/apps/api/internal/handlers/hardware"
 	notificationHandlers "github.com/PtiCadri/studio/apps/api/internal/handlers/notification"
+	priceHandlers "github.com/PtiCadri/studio/apps/api/internal/handlers/price"
 	projectHandlers "github.com/PtiCadri/studio/apps/api/internal/handlers/project"
 	uploadHandlers "github.com/PtiCadri/studio/apps/api/internal/handlers/uploads"
 
@@ -16,6 +17,7 @@ import (
 	artistRepo "github.com/PtiCadri/studio/apps/api/internal/repository/artist"
 	hardwareRepo "github.com/PtiCadri/studio/apps/api/internal/repository/hardware"
 	notificationRepo "github.com/PtiCadri/studio/apps/api/internal/repository/notification"
+	priceRepo "github.com/PtiCadri/studio/apps/api/internal/repository/price"
 	projectRepo "github.com/PtiCadri/studio/apps/api/internal/repository/project"
 )
 
@@ -25,6 +27,7 @@ type Dependencies struct {
 	Artists       artistHandlers.Handler
 	Hardware      hardwareHandlers.Handler
 	Notifications notificationHandlers.Handler
+	Prices        priceHandlers.Handler
 	Admins        adminHandlers.Handler
 	Uploads       uploadHandlers.Handler
 }
@@ -37,6 +40,7 @@ func BuildDependencies(
 	artistsRepo := artistRepo.New(db)
 	hardwareRepository := hardwareRepo.New(db)
 	notificationsRepository := notificationRepo.New(db)
+	pricesRepository := priceRepo.New(db)
 	adminsRepo := adminRepo.New(db)
 
 	return Dependencies{
@@ -45,6 +49,7 @@ func BuildDependencies(
 		Artists:       artistHandlers.New(artistsRepo),
 		Hardware:      hardwareHandlers.New(hardwareRepository),
 		Notifications: notificationHandlers.New(notificationsRepository),
+		Prices:        priceHandlers.New(pricesRepository),
 		Admins:        adminHandlers.New(adminsRepo, cfg.AuthSecret, cfg.CookieSecure),
 		Uploads:       uploadHandlers.New(),
 	}

@@ -27,6 +27,7 @@ func NewRouter(db *sql.DB, cfg config.Config) http.Handler {
 	routes.RegisterArtists(r, deps)
 	routes.RegisterHardware(r, deps)
 	routes.RegisterNotifications(r, deps)
+	routes.RegisterPrices(r, deps)
 
 	return r
 }

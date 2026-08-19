@@ -1,1 +1,1 @@
-export type AdminView = "home" | "projects" | "artists" | "hardware" | "notifications";
+export type AdminView = "home" | "projects" | "artists" | "hardware" | "notifications" | "prices";

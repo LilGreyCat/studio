@@ -13,8 +13,11 @@ import {
 } from "./styles";
 
 import Link from "next/link";
+import { formatPrice } from "@/hooks/server/prices";
+import { usePricing } from "./PricingProvider";
 
 export default function Live() {
+  const prices = usePricing();
   return (
     <Box sx={liveGridSx}>
       <GlassySurface sx={surfaceSx}>
@@ -33,7 +36,7 @@ export default function Live() {
 
         <Box sx={tarifSx}>
           <Typography variant="body1" sx={prixSx}>
-            10 €
+            {formatPrice(prices.live_setup)}
           </Typography>
 
           <Typography variant="body1" sx={unitSx}>
@@ -65,7 +68,7 @@ export default function Live() {
 
         <Box sx={tarifSx}>
           <Typography variant="body1" sx={prixSx}>
-            100 €
+            {formatPrice(prices.live_performance)}
           </Typography>
 
           <Typography variant="body1" sx={unitSx}>

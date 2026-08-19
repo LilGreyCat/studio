@@ -46,6 +46,15 @@ export default function AdminHomeView({ onSelectView }: AdminHomeViewProps) {
         >
           <GlassySurface sx={adminOptionTileSx}>Notifications</GlassySurface>
         </ButtonBase>
+
+        <Box sx={{ gridColumn: { sm: "1 / -1" } }}>
+          <ButtonBase
+            sx={optionTileButtonSx}
+            onClick={() => onSelectView("prices")}
+          >
+            <GlassySurface sx={adminOptionTileSx}>Tarifs</GlassySurface>
+          </ButtonBase>
+        </Box>
       </Box>
     </Stack>
   );

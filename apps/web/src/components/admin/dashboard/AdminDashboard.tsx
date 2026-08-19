@@ -15,6 +15,7 @@ import AdminProjectsView from "./views/projects/view";
 import AdminHardwareView from "./views/hardware/view";
 import AdminArtistsView from "./views/artists/view";
 import AdminNotificationsView from "./views/notifications/view";
+import AdminPricesView from "./views/prices/view";
 
 type AdminDashboardProps = {
   admin: AdminSession;
@@ -38,6 +39,8 @@ export default function AdminDashboard({
         return <AdminHardwareView onBack={() => setActiveView("home")} />;
       case "notifications":
         return <AdminNotificationsView onBack={() => setActiveView("home")} />;
+      case "prices":
+        return <AdminPricesView onBack={() => setActiveView("home")} />;
       default:
         return <AdminHomeView onSelectView={setActiveView} />;
     }

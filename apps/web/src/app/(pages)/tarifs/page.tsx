@@ -1,6 +1,7 @@
 import Formules from "@/components/tarifs/Formules";
 import Live from "@/components/tarifs/Live";
 import Prestations from "@/components/tarifs/Prestations";
+import { PricingProvider } from "@/components/tarifs/PricingProvider";
 import { Divider, MainLogo } from "@/components/ui";
 import { Box, Link, Typography } from "@mui/material";
 import { Metadata } from "next";
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 
 export default function Tarifs() {
   return (
-    <>
+    <PricingProvider>
       <MainLogo />
       <Prestations />
       <Divider />
@@ -53,7 +54,7 @@ export default function Tarifs() {
           message de contact
         </Box>
       </Typography>
-    </>
+    </PricingProvider>
   );
 }
 
