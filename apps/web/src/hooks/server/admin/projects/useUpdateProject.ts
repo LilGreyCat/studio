@@ -3,11 +3,7 @@
 import { useState } from "react";
 
 import { uploadImage } from "@/hooks/server/admin/uploads";
-import {
-    patchProjectIntegrations,
-    patchProjectLinks,
-    updateProject,
-} from "./api";
+import { updateFullProject } from "./api";
 
 import type {
     PutProjectIntegrationsPayload,
@@ -17,8 +13,8 @@ import type {
 
 type UpdateFullProjectPayload = {
     project: UpdateProjectPayload;
-    links?: Partial<PutProjectLinksPayload>;
-    integrations?: Partial<PutProjectIntegrationsPayload>;
+    links: PutProjectLinksPayload;
+    integrations: PutProjectIntegrationsPayload;
     imageFile?: File | null;
 };
 
@@ -43,18 +39,11 @@ export function useUpdateProject({ onSuccess }: UseUpdateProjectParams = {}) {
                 payload.imageFile ?? null
             );
 
-            await updateProject(projectId, {
-                ...payload.project,
-                image_url: imageURL,
+            await updateFullProject(projectId, {
+                project: { ...payload.project, image_url: imageURL },
+                links: payload.links,
+                integrations: payload.integrations,
             });
-
-            if (payload.links) {
-                await patchProjectLinks(projectId, payload.links);
-            }
-
-            if (payload.integrations) {
-                await patchProjectIntegrations(projectId, payload.integrations);
-            }
 
             await onSuccess?.();
         } catch (err) {

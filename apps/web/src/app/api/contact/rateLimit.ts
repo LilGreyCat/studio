@@ -1,3 +1,5 @@
+import { isIP } from "node:net";
+
 type RateLimitEntry = {
     count: number;
     resetAt: number;
@@ -45,14 +47,23 @@ function pruneExpiredClients(now: number): void {
 }
 
 export function getContactClientKey(request: Request): string {
-    const forwardedAddress = request.headers
-        .get("x-forwarded-for")
-        ?.split(",")[0]
-        ?.trim();
-    const address =
-        forwardedAddress || request.headers.get("x-real-ip") || "unknown";
+    const realAddress = request.headers.get("x-real-ip")?.trim();
+    if (realAddress && isIP(realAddress)) {
+        return realAddress;
+    }
 
-    return address.slice(0, 128);
+    const forwardedAddresses =
+        request.headers
+            .get("x-forwarded-for")
+            ?.split(",")
+            .map((address) => address.trim()) ?? [];
+    for (let index = forwardedAddresses.length - 1; index >= 0; index -= 1) {
+        if (isIP(forwardedAddresses[index])) {
+            return forwardedAddresses[index];
+        }
+    }
+
+    return "unknown";
 }
 
 export function consumeContactRequest(

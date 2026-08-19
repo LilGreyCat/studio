@@ -2,16 +2,34 @@ import { fetchJson } from "@/utils/fetchJson";
 
 import type {
     CreateProjectPayload,
+    CreateFullProjectPayload,
     Project,
     ProjectIntegrations,
     ProjectLinks,
     PutProjectIntegrationsPayload,
     PutProjectLinksPayload,
     UpdateProjectPayload,
+    UpdateFullProjectPayload,
 } from "./types";
 
 export function getAdminProjects(): Promise<Project[]> {
     return fetchJson<Project[]>("/admin/projects", { credentials: "include" });
+}
+
+export function createFullProject(payload: CreateFullProjectPayload): Promise<Project> {
+    return fetchJson<Project>("/admin/projects/full", {
+        method: "POST",
+        credentials: "include",
+        body: JSON.stringify(payload),
+    });
+}
+
+export function updateFullProject(projectId: number, payload: UpdateFullProjectPayload): Promise<Project> {
+    return fetchJson<Project>(`/admin/projects/${projectId}/full`, {
+        method: "PUT",
+        credentials: "include",
+        body: JSON.stringify(payload),
+    });
 }
 
 export function createProject(payload: CreateProjectPayload): Promise<Project> {

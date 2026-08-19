@@ -54,6 +54,12 @@ func TestValidateAPIRejectsUnsafeConfiguration(t *testing.T) {
 				cfg.CookieSecure = false
 			},
 		},
+		{
+			name: "invalid trusted proxy network",
+			change: func(cfg *Config) {
+				cfg.TrustedProxyCIDRs = "127.0.0.1/32,not-a-network"
+			},
+		},
 	}
 
 	for _, test := range tests {

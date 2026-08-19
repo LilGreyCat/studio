@@ -49,3 +49,14 @@ export type UpdateProjectPayload = {
     display_order?: number;
     is_visible?: boolean;
 };
+
+export type CreateFullProjectPayload = CreateProjectPayload & {
+    links: PutProjectLinksPayload;
+    integrations: PutProjectIntegrationsPayload;
+};
+
+export type UpdateFullProjectPayload = {
+    project: UpdateProjectPayload;
+    links: PutProjectLinksPayload;
+    integrations: PutProjectIntegrationsPayload;
+};

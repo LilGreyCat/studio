@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { createProject, putProjectIntegrations, putProjectLinks } from "./api";
+import { createFullProject as saveFullProject } from "./api";
 
 import { uploadImage } from "@/hooks/server/admin/uploads";
 
@@ -36,13 +36,12 @@ export function useCreateProject({ onSuccess }: UseCreateProjectParams = {}) {
 
             const imageURL = await getUploadedImageURL(payload.imageFile);
 
-            const project = await createProject({
+            await saveFullProject({
                 ...payload.project,
                 image_url: imageURL,
+                links: payload.links,
+                integrations: payload.integrations,
             });
-
-            await putProjectLinks(project.id, payload.links);
-            await putProjectIntegrations(project.id, payload.integrations);
 
             await onSuccess?.();
         } catch (err) {

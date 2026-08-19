@@ -3,7 +3,9 @@ package middleware
 import (
 	"net"
 	"net/http"
+	"net/netip"
 	"strconv"
+	"strings"
 	"sync"
 	"time"
 )
@@ -84,15 +86,48 @@ func remoteClientKey(remoteAddress string) string {
 	return remoteAddress
 }
 
-// RateLimit restricts requests by the direct peer address. Deployments behind
-// a reverse proxy should also enforce a shared limit at the trusted proxy.
-func RateLimit(maxRequests int, window time.Duration) func(http.Handler) http.Handler {
+func clientKey(r *http.Request, trustedProxies []netip.Prefix) string {
+	directText := remoteClientKey(r.RemoteAddr)
+	direct, err := netip.ParseAddr(directText)
+	if err != nil || !addressInPrefixes(direct, trustedProxies) {
+		return directText
+	}
+
+	forwarded := strings.Split(r.Header.Get("X-Forwarded-For"), ",")
+	for index := len(forwarded) - 1; index >= 0; index-- {
+		candidate, err := netip.ParseAddr(strings.TrimSpace(forwarded[index]))
+		if err != nil {
+			continue
+		}
+		if !addressInPrefixes(candidate, trustedProxies) {
+			return candidate.String()
+		}
+	}
+	return directText
+}
+
+func addressInPrefixes(address netip.Addr, prefixes []netip.Prefix) bool {
+	for _, prefix := range prefixes {
+		if prefix.Contains(address) {
+			return true
+		}
+	}
+	return false
+}
+
+// RateLimit restricts requests by client address. Forwarded addresses are
+// considered only when the direct peer belongs to a configured trusted proxy.
+func RateLimit(
+	maxRequests int,
+	window time.Duration,
+	trustedProxies []netip.Prefix,
+) func(http.Handler) http.Handler {
 	limiter := newClientRateLimiter(maxRequests, window)
 
 	return func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			allowed, retryAfter := limiter.allow(
-				remoteClientKey(r.RemoteAddr),
+				clientKey(r, trustedProxies),
 				time.Now(),
 			)
 			if !allowed {

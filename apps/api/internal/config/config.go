@@ -10,11 +10,12 @@ import (
 const minimumAuthSecretBytes = 32
 
 type Config struct {
-	Port         string
-	DatabaseUrl  string
-	AuthSecret   string
-	FrontendUrl  string
-	CookieSecure bool
+	Port              string
+	DatabaseUrl       string
+	AuthSecret        string
+	FrontendUrl       string
+	CookieSecure      bool
+	TrustedProxyCIDRs string
 }
 
 // Load returns a Config object from environment variables.
@@ -29,11 +30,12 @@ func Load() Config {
 	cookieSecure, _ := strconv.ParseBool(os.Getenv("COOKIE_SECURE"))
 
 	return Config{
-		Port:         port,
-		DatabaseUrl:  os.Getenv("DATABASE_URL"),
-		AuthSecret:   os.Getenv("AUTH_SECRET"),
-		FrontendUrl:  os.Getenv("FRONTEND_URL"),
-		CookieSecure: cookieSecure,
+		Port:              port,
+		DatabaseUrl:       os.Getenv("DATABASE_URL"),
+		AuthSecret:        os.Getenv("AUTH_SECRET"),
+		FrontendUrl:       os.Getenv("FRONTEND_URL"),
+		CookieSecure:      cookieSecure,
+		TrustedProxyCIDRs: os.Getenv("TRUSTED_PROXY_CIDRS"),
 	}
 }
 
@@ -58,6 +60,10 @@ func (cfg Config) ValidateAPI() error {
 
 	if frontendURL.Scheme == "https" && !cfg.CookieSecure {
 		return errors.New("COOKIE_SECURE must be true when FRONTEND_URL uses HTTPS")
+	}
+
+	if _, err := ParseTrustedProxyCIDRs(cfg.TrustedProxyCIDRs); err != nil {
+		return err
 	}
 
 	return nil

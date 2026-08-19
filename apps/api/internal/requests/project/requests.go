@@ -7,6 +7,19 @@ type CreateProject struct {
 	ImageURL *string `json:"image_url"`
 }
 
+type CreateFullProject struct {
+	Name         string          `json:"name"`
+	ImageURL     *string         `json:"image_url"`
+	Links        PutLinks        `json:"links"`
+	Integrations PutIntegrations `json:"integrations"`
+}
+
+type UpdateFullProject struct {
+	Project      PatchProject    `json:"project"`
+	Links        PutLinks        `json:"links"`
+	Integrations PutIntegrations `json:"integrations"`
+}
+
 type PatchProject struct {
 	Name         utils.Optional[string] `json:"name"`
 	ImageURL     utils.Optional[string] `json:"image_url"`

@@ -15,13 +15,14 @@ func RegisterAdmin(
 	cfg config.Config,
 ) {
 	r.Route("/admin", func(r chi.Router) {
-		registerAdminPublic(r, deps)
+		registerAdminPublic(r, deps, cfg)
 		registerAdminProtected(r, deps, cfg)
 	})
 }
 
-func registerAdminPublic(r chi.Router, deps Dependencies) {
-	r.With(middleware.RateLimit(10, 15*time.Minute)).Post(
+func registerAdminPublic(r chi.Router, deps Dependencies, cfg config.Config) {
+	trustedProxies, _ := config.ParseTrustedProxyCIDRs(cfg.TrustedProxyCIDRs)
+	r.With(middleware.RateLimit(10, 15*time.Minute, trustedProxies)).Post(
 		"/login",
 		deps.Admins.Login,
 	)
@@ -76,6 +77,8 @@ func registerAdminUploads(r chi.Router, deps Dependencies) {
 
 func registerAdminProjects(r chi.Router, deps Dependencies) {
 	r.Get("/projects", deps.Projects.AdminList)
+	r.Post("/projects/full", deps.Projects.CreateFull)
+	r.Put("/projects/{id}/full", deps.Projects.UpdateFull)
 	r.Post("/projects", deps.Projects.Create)
 	r.Put("/projects/order", deps.Projects.Reorder)
 	r.Delete("/projects/{id}", deps.Projects.Delete)
@@ -102,6 +105,8 @@ func registerAdminProjects(r chi.Router, deps Dependencies) {
 
 func registerAdminArtists(r chi.Router, deps Dependencies) {
 	r.Get("/artists", deps.Artists.AdminList)
+	r.Post("/artists/full", deps.Artists.CreateFull)
+	r.Put("/artists/{id}/full", deps.Artists.UpdateFull)
 	r.Post("/artists", deps.Artists.Create)
 	r.Put("/artists/order", deps.Artists.Reorder)
 	r.Delete("/artists/{id}", deps.Artists.Delete)

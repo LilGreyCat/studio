@@ -16,6 +16,14 @@ export const createArtist = (payload: {
         credentials: "include",
         body: JSON.stringify(payload),
     });
+export const createFullArtist = (payload: {
+    name: string;
+    image_url: string | null;
+    links: Omit<ArtistLinks, "artist_id">;
+    integrations: Omit<ArtistIntegrations, "artist_id">;
+}) => fetchJson<Artist>("/admin/artists/full", {
+    method: "POST", credentials: "include", body: JSON.stringify(payload),
+});
 export const updateArtist = (
     id: number,
     payload: Partial<
@@ -27,6 +35,16 @@ export const updateArtist = (
         credentials: "include",
         body: JSON.stringify(payload),
     });
+export const updateFullArtist = (
+    id: number,
+    payload: {
+        artist: Partial<Pick<Artist, "name" | "image_url" | "display_order" | "is_visible">>;
+        links: Omit<ArtistLinks, "artist_id">;
+        integrations: Omit<ArtistIntegrations, "artist_id">;
+    }
+) => fetchJson<Artist>(`/admin/artists/${id}/full`, {
+    method: "PUT", credentials: "include", body: JSON.stringify(payload),
+});
 export const deleteArtist = (id: number) =>
     fetchJson<void>(`/admin/artists/${id}`, {
         method: "DELETE",

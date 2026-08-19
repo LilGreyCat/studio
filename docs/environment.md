@@ -12,6 +12,7 @@ It contains names and purposes only; real secrets must never be committed.
 | `AUTH_SECRET` | Yes | Yes | HMAC key for administrator sessions |
 | `FRONTEND_URL` | Yes | No | Allowed credentialed CORS origin |
 | `COOKIE_SECURE` | Production | No | Enables HTTPS-only session cookies |
+| `TRUSTED_PROXY_CIDRS` | Behind a proxy | No | Proxy networks allowed to supply API client addresses, as comma-separated CIDRs |
 
 ## Administrator bootstrap command
 
@@ -29,6 +30,10 @@ It contains names and purposes only; real secrets must never be committed.
 | `RESEND_API_KEY` | For contact submissions | Yes | Resend server API key |
 | `CONTACT_TO_EMAIL` | For contact submissions | Sensitive configuration | Contact-form recipient |
 | `CONTACT_FROM_EMAIL` | For contact submissions | No | Verified sender address |
+
+The production reverse proxy must overwrite `X-Real-IP` and
+`X-Forwarded-For`; the contact limiter intentionally treats the rightmost
+valid forwarded address as the nearest client hop.
 
 ## Development database container
 

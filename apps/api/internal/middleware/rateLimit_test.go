@@ -3,6 +3,7 @@ package middleware
 import (
 	"net/http"
 	"net/http/httptest"
+	"net/netip"
 	"testing"
 	"time"
 )
@@ -26,7 +27,7 @@ func TestClientRateLimiterEnforcesAndResetsLimit(t *testing.T) {
 }
 
 func TestRateLimitSeparatesClients(t *testing.T) {
-	handler := RateLimit(1, time.Minute)(http.HandlerFunc(func(
+	handler := RateLimit(1, time.Minute, nil)(http.HandlerFunc(func(
 		w http.ResponseWriter,
 		_ *http.Request,
 	) {
@@ -54,5 +55,21 @@ func TestRateLimitSeparatesClients(t *testing.T) {
 	handler.ServeHTTP(otherResponse, otherRequest)
 	if otherResponse.Code != http.StatusNoContent {
 		t.Fatalf("other client status = %d, want %d", otherResponse.Code, http.StatusNoContent)
+	}
+}
+
+func TestClientKeyUsesForwardedChainOnlyForTrustedPeer(t *testing.T) {
+	trusted := []netip.Prefix{netip.MustParsePrefix("127.0.0.1/32")}
+
+	request := httptest.NewRequest(http.MethodPost, "/admin/login", nil)
+	request.RemoteAddr = "127.0.0.1:4321"
+	request.Header.Set("X-Forwarded-For", "198.51.100.8, 203.0.113.10")
+	if got := clientKey(request, trusted); got != "203.0.113.10" {
+		t.Fatalf("clientKey() = %q, want rightmost untrusted address", got)
+	}
+
+	request.RemoteAddr = "192.0.2.20:4321"
+	if got := clientKey(request, trusted); got != "192.0.2.20" {
+		t.Fatalf("clientKey() trusted spoofed header from untrusted peer: %q", got)
 	}
 }

@@ -2,10 +2,8 @@
 
 import { GlassySurface } from "@/components/ui";
 import {
-  createArtist,
-  putArtistIntegrations,
-  putArtistLinks,
-  updateArtist,
+  createFullArtist,
+  updateFullArtist,
 } from "@/hooks/server/admin/artists";
 import { uploadImage } from "@/hooks/server/admin/uploads/api";
 import {
@@ -82,31 +80,23 @@ export default function ArtistFormView({
       setError(null);
       let imageURL = artist?.image_url;
       if (file) imageURL = (await uploadImage(file, "artists")).url;
-      const saved =
-        mode === "create"
-          ? await createArtist({
-              name: name.trim(),
-              image_url: imageURL ?? null,
-            })
-          : await updateArtist(artist!.id, {
-              name: name.trim(),
-              ...(file ? { image_url: imageURL } : {}),
-            });
-      await putArtistLinks(
-        saved.id,
-        Object.fromEntries(
-          linkFields.map(([key]) => [key, emptyToNull(links[key] ?? "")])
-        ) as never
-      );
-      await putArtistIntegrations(
-        saved.id,
-        Object.fromEntries(
-          integrationFields.map(([key]) => [
-            key,
-            emptyToNull(integrations[key] ?? ""),
-          ])
-        ) as never
-      );
+      const normalizedLinks = Object.fromEntries(
+        linkFields.map(([key]) => [key, emptyToNull(links[key] ?? "")])
+      ) as never;
+      const normalizedIntegrations = Object.fromEntries(
+        integrationFields.map(([key]) => [key, emptyToNull(integrations[key] ?? "")])
+      ) as never;
+      if (mode === "create") {
+        await createFullArtist({
+          name: name.trim(), image_url: imageURL ?? null,
+          links: normalizedLinks, integrations: normalizedIntegrations,
+        });
+      } else {
+        await updateFullArtist(artist!.id, {
+          artist: { name: name.trim(), ...(file ? { image_url: imageURL } : {}) },
+          links: normalizedLinks, integrations: normalizedIntegrations,
+        });
+      }
       await onSuccess();
     } catch (err) {
       setError(

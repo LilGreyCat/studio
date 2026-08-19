@@ -7,6 +7,19 @@ type CreateArtist struct {
 	ImageURL *string `json:"image_url"`
 }
 
+type CreateFullArtist struct {
+	Name         string          `json:"name"`
+	ImageURL     *string         `json:"image_url"`
+	Links        PutLinks        `json:"links"`
+	Integrations PutIntegrations `json:"integrations"`
+}
+
+type UpdateFullArtist struct {
+	Artist       PatchArtist     `json:"artist"`
+	Links        PutLinks        `json:"links"`
+	Integrations PutIntegrations `json:"integrations"`
+}
+
 type PatchArtist struct {
 	Name         utils.Optional[string] `json:"name"`
 	ImageURL     utils.Optional[string] `json:"image_url"`
