@@ -1,4 +1,5 @@
 import { SxProps, Theme } from "@mui/material";
+import type { SystemStyleObject } from "@mui/system";
 import {
     optionTileButtonSx as buttonSx,
     optionTileSx as optionBoxSx,
@@ -26,8 +27,30 @@ const titleSx: SxProps<Theme> = {
     fontSize: { xs: "1.2rem", md: "1.5rem" },
 };
 
-const contentSx: SxProps<Theme> = {
+const contentSx: SystemStyleObject<Theme> = {
     fontSize: { xs: "0.875rem", md: "1rem" },
+};
+
+const selectedOptionSx = (isSelected: boolean): SystemStyleObject<Theme> => ({
+    position: "relative",
+    borderWidth: isSelected ? "2px" : "1px",
+    backgroundColor: isSelected
+        ? "rgba(255, 255, 255, 0.14)"
+        : "transparent",
+    boxShadow: isSelected
+        ? "inset 0 0 18px rgba(255,255,255,0.08), 0 0 14px rgba(255,255,255,0.12)"
+        : "none",
+    color: isSelected ? "text.primary" : "text.secondary",
+    fontWeight: isSelected ? 700 : 400,
+});
+
+const selectedIconSx: SystemStyleObject<Theme> = {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    width: 20,
+    height: 20,
+    color: "text.primary",
 };
 
 const prestationsSx: SxProps<Theme> = {
@@ -50,7 +73,7 @@ const formulesSx: SxProps<Theme> = {
     userSelect: "none",
 };
 
-const prestationIconSx: SxProps<Theme> = {
+const prestationIconSx: SystemStyleObject<Theme> = {
     width: { xs: "25px", md: "30px" },
     height: { xs: "25px", md: "30px" },
 };
@@ -63,6 +86,8 @@ export {
     optionBoxSx,
     prestationIconSx,
     prestationsSx,
+    selectedIconSx,
+    selectedOptionSx,
     surfaceSx,
     titleSx,
 };

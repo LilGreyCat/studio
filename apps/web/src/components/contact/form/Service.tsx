@@ -1,7 +1,15 @@
 import { Prestation } from "@/components/home/prestations/types";
 import { ServiceId } from "@/hooks/contact/useContactForm";
 import { Box, ButtonBase } from "@mui/material";
-import { buttonSx, contentSx, optionBoxSx, prestationIconSx } from "./styles";
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded";
+import {
+  buttonSx,
+  contentSx,
+  optionBoxSx,
+  prestationIconSx,
+  selectedIconSx,
+  selectedOptionSx,
+} from "./styles";
 
 type ServiceProps = {
   services: ServiceId[];
@@ -29,8 +37,10 @@ export default function Service({
         sx={{
           ...optionBoxSx(isSelected),
           ...contentSx,
+          ...selectedOptionSx(isSelected),
         }}
       >
+        {isSelected && <CheckCircleRoundedIcon aria-hidden="true" sx={selectedIconSx} />}
         <Box
           component="img"
           src={`/icons/${prestation.icon}.svg`}
