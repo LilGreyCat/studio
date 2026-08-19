@@ -84,6 +84,7 @@ export default function NotificationFormView({ item, onCancel, onSuccess }: Prop
           <TextField
             label="Début d’affichage"
             type="datetime-local"
+            sx={dateTimeFieldSx}
             value={startsAt}
             onChange={(event) => setStartsAt(event.target.value)}
             required fullWidth
@@ -92,6 +93,7 @@ export default function NotificationFormView({ item, onCancel, onSuccess }: Prop
           <TextField
             label="Fin d’affichage"
             type="datetime-local"
+            sx={dateTimeFieldSx}
             value={endsAt}
             onChange={(event) => setEndsAt(event.target.value)}
             required fullWidth
@@ -112,3 +114,13 @@ export default function NotificationFormView({ item, onCancel, onSuccess }: Prop
     </Stack>
   );
 }
+
+const dateTimeFieldSx = {
+  "& input": {
+    colorScheme: "dark",
+  },
+  "& input::-webkit-calendar-picker-indicator": {
+    opacity: 0.85,
+    cursor: "pointer",
+  },
+};
