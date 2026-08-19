@@ -4,7 +4,6 @@ import CloseIcon from "@mui/icons-material/Close";
 import { Box, ButtonBase, IconButton, Typography } from "@mui/material";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { NAVBAR_HEIGHT } from "@/components/ui/constants";
 import { getActiveNotification, type Notification } from "@/hooks/server/notifications";
 
 const BAND_HEIGHT = 44;
@@ -73,7 +72,7 @@ export default function NotificationBand() {
       aria-label="Notification"
       sx={{
         position: "fixed",
-        top: `${NAVBAR_HEIGHT}px`,
+        top: 0,
         left: 0,
         right: 0,
         zIndex: (theme) => theme.zIndex.appBar,

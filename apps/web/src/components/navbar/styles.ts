@@ -5,7 +5,7 @@ import { NAVBAR_HEIGHT } from "@/components/ui/constants";
 
 const navSx: SxProps<Theme> = {
     position: "fixed",
-    top: 0,
+    top: "var(--notification-band-height, 0px)",
     left: 0,
     right: 0,
     height: NAVBAR_HEIGHT,
@@ -19,6 +19,7 @@ const navSx: SxProps<Theme> = {
         "0 8px 30px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08)",
     backdropFilter: "blur(5px) saturate(150%)",
     WebkitBackdropFilter: "blur(5px) saturate(150%)",
+    transition: "top 250ms ease",
 
     "&::after": {
         content: '""',
