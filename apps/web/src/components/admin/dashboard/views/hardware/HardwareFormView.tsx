@@ -8,17 +8,18 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { FormEvent, useEffect, useState } from "react";
+import { useEffect, useState, type SubmitEvent } from "react";
 
 import {
   createHardware,
+  updateHardware,
   type CreateHardwarePayload,
   type HardwareItem,
   type UpdateHardwarePayload,
-  updateHardware,
 } from "@/hooks/server/admin/hardware";
 import { uploadImage } from "@/hooks/server/admin/uploads/api";
 
+import GlassySurface from "@/components/ui/GlassySurface";
 import {
   readImageDimensions,
   resolveHardwareImageURL,
@@ -30,6 +31,12 @@ type Props = {
   item?: HardwareItem;
   onCancel: () => void;
   onSuccess: () => void | Promise<void>;
+};
+
+const SurfaceSx = {
+  display: "flex",
+  flexDirection: "column",
+  gap: 3,
 };
 
 export default function HardwareFormView({
@@ -91,7 +98,7 @@ export default function HardwareFormView({
   }
 
   async function handleSubmit(
-    event: FormEvent<HTMLFormElement>
+    event: SubmitEvent<HTMLFormElement>
   ): Promise<void> {
     event.preventDefault();
     setError(null);
@@ -155,89 +162,95 @@ export default function HardwareFormView({
 
   return (
     <Stack component="form" spacing={3} onSubmit={handleSubmit}>
-      <Typography variant="h4">
-        {mode === "create" ? "Ajouter un matériel" : "Modifier le matériel"}
-      </Typography>
-
-      <TextField
-        label="Titre"
-        value={title}
-        required
-        inputProps={{ maxLength: 160 }}
-        onChange={(event) => handleTitleChange(event.target.value)}
-      />
-      <TextField
-        label="Slug"
-        value={slug}
-        required
-        inputProps={{ maxLength: 80, pattern: "[a-z0-9]+(-[a-z0-9]+)*" }}
-        helperText="Identifiant technique unique, généré automatiquement depuis le titre."
-        onChange={(event) => {
-          setSlugEdited(true);
-          setSlug(slugifyHardwareTitle(event.target.value));
-        }}
-      />
-      <TextField
-        label="Catégorie courte"
-        value={eyebrow}
-        required
-        inputProps={{ maxLength: 80 }}
-        onChange={(event) => setEyebrow(event.target.value)}
-      />
-      <TextField
-        label="Description"
-        value={description}
-        required
-        multiline
-        minRows={7}
-        inputProps={{ maxLength: 10000 }}
-        helperText="Utilisez **texte** pour conserver une partie en gras."
-        onChange={(event) => setDescription(event.target.value)}
-      />
-
-      <FormControlLabel
-        control={
-          <Switch
-            checked={isVisible}
-            onChange={(event) => setIsVisible(event.target.checked)}
-          />
-        }
-        label="Visible sur la page Matériel"
-      />
-
-      <Button variant="outlined" component="label" disabled={isSubmitting}>
-        {mode === "create" ? "Choisir une image" : "Remplacer l’image"}
-        <input
-          hidden
-          type="file"
-          accept="image/png,image/jpeg,image/webp"
-          onChange={handleImageChange}
-        />
-      </Button>
-
-      {imageFile && (
-        <Typography>
-          {imageFile.name} — {imageWidth} × {imageHeight}px
+      <GlassySurface sx={SurfaceSx}>
+        <Typography variant="h4">
+          {mode === "create" ? "Ajouter un matériel" : "Modifier le matériel"}
         </Typography>
-      )}
-
-      {currentImageURL && (
-        // Blob and authenticated API image previews are intentionally unoptimized.
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={currentImageURL}
-          alt="Aperçu du matériel"
-          style={{
-            width: "100%",
-            maxWidth: 420,
-            maxHeight: 320,
-            borderRadius: 8,
-            objectFit: "cover",
+        <TextField
+          label="Titre"
+          value={title}
+          required
+          slotProps={{ htmlInput: { maxLength: 160 } }}
+          onChange={(event) => handleTitleChange(event.target.value)}
+        />
+        <TextField
+          label="Slug"
+          value={slug}
+          required
+          slotProps={{
+            htmlInput: {
+              maxLength: 80,
+              pattern: "[a-z0-9]+(-[a-z0-9]+)*",
+            },
+          }}
+          helperText="Identifiant technique unique, généré automatiquement depuis le titre."
+          onChange={(event) => {
+            setSlugEdited(true);
+            setSlug(slugifyHardwareTitle(event.target.value));
           }}
         />
-      )}
+        <TextField
+          label="Catégorie courte"
+          value={eyebrow}
+          required
+          slotProps={{ htmlInput: { maxLength: 80 } }}
+          onChange={(event) => setEyebrow(event.target.value)}
+        />
+        <TextField
+          label="Description"
+          value={description}
+          required
+          multiline
+          minRows={7}
+          slotProps={{ htmlInput: { maxLength: 10000 } }}
+          helperText="Utilisez **texte** pour conserver une partie en gras."
+          onChange={(event) => setDescription(event.target.value)}
+        />
 
-      {error && <Typography color="error">{error}</Typography>}
+        <FormControlLabel
+          control={
+            <Switch
+              checked={isVisible}
+              onChange={(event) => setIsVisible(event.target.checked)}
+            />
+          }
+          label="Visible sur la page Matériel"
+        />
+
+        {imageFile && (
+          <Typography>
+            {imageFile.name} — {imageWidth} × {imageHeight}px
+          </Typography>
+        )}
+
+        {currentImageURL && (
+          // Blob and authenticated API image previews are intentionally unoptimized.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={currentImageURL}
+            alt="Aperçu du matériel"
+            style={{
+              width: "100%",
+              maxWidth: 420,
+              maxHeight: 320,
+              borderRadius: 8,
+              objectFit: "cover",
+            }}
+          />
+        )}
+
+        <Button variant="outlined" component="label" disabled={isSubmitting}>
+          {mode === "create" ? "Choisir une image" : "Remplacer l’image"}
+          <input
+            hidden
+            type="file"
+            accept="image/png,image/jpeg,image/webp"
+            onChange={handleImageChange}
+          />
+        </Button>
+
+        {error && <Typography color="error">{error}</Typography>}
+      </GlassySurface>
 
       <Stack direction="row" spacing={2}>
         <Button type="submit" variant="contained" disabled={isSubmitting}>

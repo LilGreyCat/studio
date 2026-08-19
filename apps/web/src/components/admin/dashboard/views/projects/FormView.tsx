@@ -41,11 +41,11 @@ export default function ProjectFormView({
 
   return (
     <Stack component="form" spacing={3} onSubmit={form.handleSubmit}>
-      <Typography variant="h4">
-        {mode === "create" ? "Créer un projet" : "Modifier le projet"}
-      </Typography>
-
       <GlassySurface sx={SurfaceSx}>
+        <Typography variant="h4">
+          {mode === "create" ? "Créer un projet" : "Modifier le projet"}
+        </Typography>
+
         <ProjectBaseFields name={form.name} onNameChange={form.setName} />
 
         <ProjectImageField

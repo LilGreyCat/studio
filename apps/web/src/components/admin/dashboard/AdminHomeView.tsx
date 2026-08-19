@@ -1,5 +1,6 @@
+import { GlassySurface } from "@/components/ui";
 import { optionTileButtonSx, optionTileSx } from "@/components/ui/optionTileStyles";
-import { Box, ButtonBase, Stack, Typography } from "@mui/material";
+import { ButtonBase, Stack, Typography } from "@mui/material";
 import { AdminView } from "../types";
 
 type AdminHomeViewProps = {
@@ -16,21 +17,21 @@ export default function AdminHomeView({ onSelectView }: AdminHomeViewProps) {
           sx={optionTileButtonSx}
           onClick={() => onSelectView("projects")}
         >
-          <Box sx={adminOptionTileSx}>Projets</Box>
+          <GlassySurface sx={adminOptionTileSx}>Projets</GlassySurface>
         </ButtonBase>
 
         <ButtonBase
           sx={optionTileButtonSx}
           onClick={() => onSelectView("artists")}
         >
-          <Box sx={adminOptionTileSx}>Artistes</Box>
+          <GlassySurface sx={adminOptionTileSx}>Artistes</GlassySurface>
         </ButtonBase>
 
         <ButtonBase
           sx={optionTileButtonSx}
           onClick={() => onSelectView("hardware")}
         >
-          <Box sx={adminOptionTileSx}>Matériel</Box>
+          <GlassySurface sx={adminOptionTileSx}>Matériel</GlassySurface>
         </ButtonBase>
       </Stack>
     </Stack>
