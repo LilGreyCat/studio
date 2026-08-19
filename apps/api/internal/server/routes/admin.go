@@ -46,7 +46,15 @@ func registerAdminProtected(
 		registerAdminProjects(r, deps)
 		registerAdminArtists(r, deps)
 		registerAdminHardware(r, deps)
+		registerAdminNotifications(r, deps)
 	})
+}
+
+func registerAdminNotifications(r chi.Router, deps Dependencies) {
+	r.Get("/notifications", deps.Notifications.List)
+	r.Post("/notifications", deps.Notifications.Create)
+	r.Put("/notifications/{id}", deps.Notifications.Update)
+	r.Delete("/notifications/{id}", deps.Notifications.Delete)
 }
 
 func registerAdminHardware(r chi.Router, deps Dependencies) {

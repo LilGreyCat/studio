@@ -5,6 +5,7 @@ import React from "react";
 import Starfield from "@/components/background/Starfield";
 import Footer from "@/components/footer/Footer";
 import { Navbar } from "@/components/navbar";
+import { NotificationBand } from "@/components/notification";
 import { NAVBAR_HEIGHT } from "@/components/ui/constants";
 import { ibmPlexSans } from "@/theme/fonts";
 import { Box } from "@mui/material";
@@ -29,10 +30,12 @@ export default function RootLayout({
         <Starfield />
         <ThemeRegistry>
           <Navbar />
+          <NotificationBand />
 
           <Box
             sx={{
-              pt: `${NAVBAR_HEIGHT + 20}px`,
+              pt: `calc(${NAVBAR_HEIGHT + 20}px + var(--notification-band-height, 0px))`,
+              transition: "padding-top 250ms ease",
               width: "100%",
               overflowX: "hidden",
               px: { xs: "20px", lg: "0px" },

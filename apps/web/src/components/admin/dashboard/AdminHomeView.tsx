@@ -12,7 +12,12 @@ export default function AdminHomeView({ onSelectView }: AdminHomeViewProps) {
     <Stack spacing={3}>
       <Typography variant="h5">Que veux-tu gérer ?</Typography>
 
-      <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
+      <Stack
+        direction={{ xs: "column", md: "row" }}
+        spacing={2}
+        useFlexGap
+        flexWrap="wrap"
+      >
         <ButtonBase
           sx={optionTileButtonSx}
           onClick={() => onSelectView("projects")}
@@ -32,6 +37,13 @@ export default function AdminHomeView({ onSelectView }: AdminHomeViewProps) {
           onClick={() => onSelectView("hardware")}
         >
           <GlassySurface sx={adminOptionTileSx}>Matériel</GlassySurface>
+        </ButtonBase>
+
+        <ButtonBase
+          sx={optionTileButtonSx}
+          onClick={() => onSelectView("notifications")}
+        >
+          <GlassySurface sx={adminOptionTileSx}>Notifications</GlassySurface>
         </ButtonBase>
       </Stack>
     </Stack>
