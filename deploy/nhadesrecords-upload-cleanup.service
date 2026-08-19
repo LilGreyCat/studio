@@ -1,0 +1,10 @@
+[Unit]
+Description=Nha Dès Records orphaned upload cleanup
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/nhadesrecords
+ExecStart=/usr/bin/docker compose --env-file .env.production -f docker-compose.prod.yml --profile tools run --rm upload-cleanup
+User=root

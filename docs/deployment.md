@@ -70,3 +70,5 @@ the map or music integrations.
 
 Before accepting production traffic, install the automated off-server backup
 timer and complete the restoration drill described in `docs/backups.md`.
+Install the orphaned-upload maintenance timer described in
+`docs/upload-cleanup.md` after the backup timer is working.

@@ -74,6 +74,21 @@ services:
         condition: service_healthy
     restart: "no"
 
+  upload-cleanup:
+    profiles: ["tools"]
+    build:
+      context: ./apps/api
+      dockerfile: Dockerfile
+      target: upload-cleaner
+    env_file:
+      - ${ENV_FILE:-.env.production}
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - prod_uploads:/app/uploads
+    restart: "no"
+
   web:
     build:
       context: ./apps/web

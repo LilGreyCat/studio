@@ -15,7 +15,12 @@ RUN CGO_ENABLED=0 GOOS=linux go build \
     -trimpath \
     -ldflags="-s -w" \
     -o /out/create-admin \
-    ./cmd/create-admin
+    ./cmd/create-admin \
+    && CGO_ENABLED=0 GOOS=linux go build \
+    -trimpath \
+    -ldflags="-s -w" \
+    -o /out/cleanup-uploads \
+    ./cmd/cleanup-uploads
 
 FROM golang:1.25-alpine AS migration-builder
 
@@ -50,6 +55,22 @@ COPY --from=builder --chown=studio:studio /out/create-admin ./create-admin
 USER studio
 
 ENTRYPOINT ["./create-admin"]
+
+FROM alpine:3.22 AS upload-cleaner
+
+RUN apk add --no-cache ca-certificates \
+    && addgroup -S studio \
+    && adduser -S -G studio studio \
+    && mkdir -p /app/uploads \
+    && chown -R studio:studio /app
+
+WORKDIR /app
+
+COPY --from=builder --chown=studio:studio /out/cleanup-uploads ./cleanup-uploads
+
+USER studio
+
+ENTRYPOINT ["./cleanup-uploads"]
 
 FROM alpine:3.22 AS runner
 

@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily Nha Dès Records orphaned upload cleanup
+
+[Timer]
+OnCalendar=*-*-* 04:00:00
+Persistent=true
+RandomizedDelaySec=15m
+Unit=nhadesrecords-upload-cleanup.service
+
+[Install]
+WantedBy=timers.target

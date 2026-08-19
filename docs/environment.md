@@ -20,6 +20,7 @@ It contains names and purposes only; real secrets must never be committed.
 | --- | --- | --- | --- |
 | `ADMIN_EMAIL` | When creating an admin | No | Initial administrator email |
 | `ADMIN_PASSWORD` | When creating an admin | Yes | Initial administrator password |
+| `UPLOAD_CLEANUP_GRACE_HOURS` | No | No | Minimum age before an unreferenced upload may be removed; defaults to 24 hours |
 
 ## Web application
 

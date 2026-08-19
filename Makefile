@@ -47,6 +47,9 @@ prod-logs:
 prod-create-admin:
 	docker compose --env-file .env.production -f docker-compose.prod.yml --profile tools run --rm admin-create
 
+prod-clean-uploads:
+	docker compose --env-file .env.production -f docker-compose.prod.yml --profile tools run --rm upload-cleanup
+
 prod-backup:
 	bash deploy/backup.sh
 
