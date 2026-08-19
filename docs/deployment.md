@@ -67,3 +67,6 @@ Confirm that HTTPS redirects work, the health endpoint returns success, uploads
 load through the API domain, the contact form sends successfully, and admin
 login is functional. Browser developer tools should show no CSP violations on
 the map or music integrations.
+
+Before accepting production traffic, install the automated off-server backup
+timer and complete the restoration drill described in `docs/backups.md`.

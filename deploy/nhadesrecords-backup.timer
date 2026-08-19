@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily Nha Dès Records production backup
+
+[Timer]
+OnCalendar=*-*-* 03:15:00
+Persistent=true
+RandomizedDelaySec=15m
+Unit=nhadesrecords-backup.service
+
+[Install]
+WantedBy=timers.target

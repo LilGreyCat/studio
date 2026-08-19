@@ -1,0 +1,11 @@
+[Unit]
+Description=Nha Dès Records production backup
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+WorkingDirectory=/opt/nhadesrecords
+EnvironmentFile=/etc/nhadesrecords-backup.env
+ExecStart=/usr/bin/bash /opt/nhadesrecords/deploy/backup.sh
+User=root

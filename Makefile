@@ -46,3 +46,10 @@ prod-logs:
 
 prod-create-admin:
 	docker compose --env-file .env.production -f docker-compose.prod.yml --profile tools run --rm admin-create
+
+prod-backup:
+	bash deploy/backup.sh
+
+# Usage: make prod-restore BACKUP=/absolute/path/to/backup.tar.gz
+prod-restore:
+	bash deploy/restore.sh --yes "$(BACKUP)"
