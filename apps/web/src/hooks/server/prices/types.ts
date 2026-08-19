@@ -7,22 +7,22 @@ export type PriceKey = (typeof priceKeys)[number];
 export type Price = { key: PriceKey; amount_cents: number; updated_at: string };
 export type PriceMap = Record<PriceKey, number>;
 
-export const defaultPrices: PriceMap = {
-  recording: 3000,
-  mixing: 4000,
-  mastering: 2000,
-  live_setup: 1000,
-  live_performance: 10000,
-  single: 10000,
-  ep: 8000,
-  album: 6000,
-};
-
 export function toPriceMap(prices: Price[]): PriceMap {
-  return prices.reduce(
-    (result, price) => ({ ...result, [price.key]: price.amount_cents }),
-    { ...defaultPrices }
-  );
+  const expected = new Set<string>(priceKeys);
+  const result = new Map<PriceKey, number>();
+  for (const price of prices) {
+    if (!expected.has(price.key) || result.has(price.key)) {
+      throw new Error("Invalid price response");
+    }
+    if (!Number.isSafeInteger(price.amount_cents) || price.amount_cents < 0) {
+      throw new Error("Invalid price amount");
+    }
+    result.set(price.key, price.amount_cents);
+  }
+  if (result.size !== priceKeys.length) {
+    throw new Error("Incomplete price response");
+  }
+  return Object.fromEntries(result) as PriceMap;
 }
 
 export function formatPrice(amountCents: number): string {

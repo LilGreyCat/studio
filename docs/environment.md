@@ -26,6 +26,7 @@ It contains names and purposes only; real secrets must never be committed.
 | Variable | Required | Secret | Purpose |
 | --- | --- | --- | --- |
 | `NEXT_PUBLIC_API_URL` | Yes | No | Browser-visible base URL for the Go API |
+| `API_INTERNAL_URL` | Server rendering | No | Internal API base URL used by the Next.js server |
 | `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` | For the map | Public credential | Browser Maps API key; restrict by domain and API |
 | `RESEND_API_KEY` | For contact submissions | Yes | Resend server API key |
 | `CONTACT_TO_EMAIL` | For contact submissions | Sensitive configuration | Contact-form recipient |

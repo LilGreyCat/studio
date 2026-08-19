@@ -83,6 +83,8 @@ services:
     restart: unless-stopped
     env_file:
       - ${ENV_FILE:-.env.production}
+    environment:
+      API_INTERNAL_URL: http://api:8080
     depends_on:
       api:
         condition: service_healthy

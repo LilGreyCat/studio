@@ -2,7 +2,7 @@
 
 import { GlassySurface } from "@/components/ui";
 import { getAdminPrices, updateAllPrices } from "@/hooks/server/admin/prices";
-import { defaultPrices, priceKeys, toPriceMap, type PriceMap } from "@/hooks/server/prices";
+import { priceKeys, toPriceMap, type PriceMap } from "@/hooks/server/prices";
 import { Button, CircularProgress, InputAdornment, Stack, TextField, Typography } from "@mui/material";
 import { useEffect, useState, type ReactNode, type SubmitEvent } from "react";
 
@@ -47,6 +47,14 @@ export default function AdminPricesView({ onBack }: Props) {
   }
 
   if (!prices && !error) return <CircularProgress />;
+  if (!prices) {
+    return (
+      <Stack spacing={2}>
+        <Button variant="outlined" onClick={onBack} sx={{ alignSelf: "flex-start" }}>Retour</Button>
+        <Typography color="error">{error}</Typography>
+      </Stack>
+    );
+  }
 
   return (
     <Stack component="form" spacing={3} onSubmit={handleSubmit}>
@@ -65,10 +73,10 @@ export default function AdminPricesView({ onBack }: Props) {
               key={key}
               label={labels[key]}
               type="number"
-              value={prices ? prices[key] / 100 : defaultPrices[key] / 100}
+              value={prices[key] / 100}
               onChange={(event) => {
                 const euros = Number(event.target.value);
-                setPrices((current) => ({ ...(current ?? defaultPrices), [key]: Math.round(euros * 100) }));
+                setPrices((current) => current ? { ...current, [key]: Math.round(euros * 100) } : current);
                 setSuccess(false);
               }}
               required

@@ -44,6 +44,7 @@ services:
     ports:
       - "3000:3000"
     environment:
+      API_INTERNAL_URL: http://api:8080
       # Windows/Docker: make file watching reliable
       WATCHPACK_POLLING: "true"
       WATCHPACK_POLLING_INTERVAL: "500"

@@ -1,19 +1,16 @@
 "use client";
 
-import { getPrices, defaultPrices, toPriceMap, type PriceMap } from "@/hooks/server/prices";
-import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import type { PriceMap } from "@/hooks/server/prices";
+import { createContext, useContext, type ReactNode } from "react";
 
-const PricingContext = createContext<PriceMap>(defaultPrices);
+const PricingContext = createContext<PriceMap | null>(null);
 
-export function PricingProvider({ children }: { children: ReactNode }) {
-  const [prices, setPrices] = useState(defaultPrices);
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      void getPrices().then((items) => setPrices(toPriceMap(items))).catch(() => undefined);
-    }, 0);
-    return () => window.clearTimeout(timer);
-  }, []);
+export function PricingProvider({ prices, children }: { prices: PriceMap; children: ReactNode }) {
   return <PricingContext.Provider value={prices}>{children}</PricingContext.Provider>;
 }
 
-export function usePricing(): PriceMap { return useContext(PricingContext); }
+export function usePricing(): PriceMap {
+  const prices = useContext(PricingContext);
+  if (!prices) throw new Error("usePricing must be used within PricingProvider");
+  return prices;
+}
