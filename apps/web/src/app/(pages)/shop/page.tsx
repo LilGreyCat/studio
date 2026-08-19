@@ -1,6 +1,7 @@
 import { GlassySurface, MainLogo } from "@/components/ui";
 import { Box, Typography } from "@mui/material";
 import { Metadata } from "next";
+import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Shop",
@@ -26,51 +27,91 @@ export default function Shop() {
       <GlassySurface
         animatedBorder
         sx={{
+          position: "relative",
           width: "100%",
-          maxWidth: 680,
-          px: { xs: 3, sm: 6 },
-          py: { xs: 5, sm: 7 },
+          maxWidth: 960,
+          minHeight: { xs: 480, sm: 560 },
           borderRadius: 2,
+          overflow: "hidden",
+          display: "flex",
+          alignItems: "flex-end",
           textAlign: "center",
         }}
       >
-        <Typography
-          component="p"
-          sx={{
-            mb: 1.5,
-            color: "text.secondary",
-            fontSize: ".75rem",
-            fontWeight: 700,
-            letterSpacing: ".2em",
-            textTransform: "uppercase",
-          }}
-        >
-          Nhadès Records
-        </Typography>
+        <Image
+          src="/MOOD_BOARD_1.png"
+          alt="Aperçu de la future collection Nhadès Records"
+          fill
+          sizes="(max-width: 960px) 100vw, 960px"
+          loading="eager"
+          fetchPriority="high"
+          style={{ objectFit: "cover", objectPosition: "center" }}
+        />
 
-        <Typography
-          component="h1"
+        <Box
+          aria-hidden="true"
           sx={{
-            fontSize: { xs: "2rem", sm: "2.75rem" },
-            fontWeight: 700,
-            lineHeight: 1.15,
+            position: "absolute",
+            inset: 0,
+            background:
+              "linear-gradient(180deg, rgba(0,0,0,.02) 35%, rgba(0,0,0,.9) 100%)",
           }}
-        >
-          Le Shop arrive bientôt
-        </Typography>
+        />
 
-        <Typography
+        <Box
           sx={{
-            maxWidth: 480,
-            mx: "auto",
-            mt: 2.5,
-            color: "text.secondary",
-            fontSize: { xs: ".9rem", sm: "1rem" },
-            lineHeight: 1.7,
+            position: "relative",
+            zIndex: 1,
+            width: "100%",
+            px: { xs: 3, sm: 6 },
+            pt: 10,
+            pb: { xs: 4, sm: 5 },
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            textAlign: "center",
           }}
         >
-          Une sélection pensée par le studio est en préparation.
-        </Typography>
+          <Typography
+            component="p"
+            sx={{
+              mb: 1.5,
+              color: "rgba(255,255,255,.72)",
+              fontSize: ".75rem",
+              fontWeight: 700,
+              letterSpacing: ".2em",
+              textTransform: "uppercase",
+            }}
+          >
+            Nhadès Records — Première collection
+          </Typography>
+
+          <Typography
+            component="h1"
+            sx={{
+              color: "common.white",
+              fontSize: { xs: "2rem", sm: "2.75rem" },
+              fontWeight: 700,
+              lineHeight: 1.15,
+              textShadow: "0 2px 18px rgba(0,0,0,.8)",
+            }}
+          >
+            Le Shop arrive bientôt
+          </Typography>
+
+          <Typography
+            sx={{
+              maxWidth: 480,
+              mx: "auto",
+              mt: 2,
+              color: "rgba(255,255,255,.76)",
+              fontSize: { xs: ".9rem", sm: "1rem" },
+              lineHeight: 1.7,
+            }}
+          >
+            Une sélection pensée par le studio est en préparation.
+          </Typography>
+        </Box>
       </GlassySurface>
     </Box>
   );
