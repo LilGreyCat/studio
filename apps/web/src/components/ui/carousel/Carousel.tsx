@@ -54,10 +54,11 @@ export default function Carousel() {
         <Box sx={viewportWrapperSx}>
           <Box ref={emblaRef} sx={viewportSx}>
             <Box sx={containerSx}>
-              {studioSlides.map((slide) => (
+              {studioSlides.map((slide, index) => (
                 <Slide
                   key={slide.src}
                   slide={slide}
+                  eager={index === 0}
                   onClick={handleSlideClick}
                 />
               ))}

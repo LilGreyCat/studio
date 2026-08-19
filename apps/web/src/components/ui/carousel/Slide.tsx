@@ -7,10 +7,11 @@ import { slideButtonSx, slideInnerSx, slideSx } from "./styles";
 
 type SlideProps = {
   slide: StudioSlide;
+  eager?: boolean;
   onClick: (slide: StudioSlide) => void;
 };
 
-function Slide({ slide, onClick }: SlideProps) {
+function Slide({ slide, eager = false, onClick }: SlideProps) {
   return (
     <Box sx={slideSx}>
       <ButtonBase
@@ -25,6 +26,8 @@ function Slide({ slide, onClick }: SlideProps) {
             width={slide.width}
             height={slide.height}
             sizes="100vw"
+            loading={eager ? "eager" : "lazy"}
+            fetchPriority={eager ? "high" : "auto"}
             style={{ width: "75%", height: "auto" }}
           />
         </Box>
