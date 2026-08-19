@@ -19,7 +19,7 @@ export default function NavbarDesktop() {
         ))}
       </Stack>
 
-      <Box component="img" src="/logo.svg" alt="Logo du studio" sx={logoSx} />
+      <Box component="img" src="/logo-sans-texte.svg" alt="Logo du studio" sx={logoSx} />
     </Box>
   );
 }

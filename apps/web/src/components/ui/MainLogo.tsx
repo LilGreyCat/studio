@@ -4,7 +4,7 @@ export default function MainLogo({ marginBottom }: { marginBottom?: number }) {
   return (
     <Box
       component="img"
-      src="/logo2.svg"
+      src="/logo-complet.svg"
       alt="Logo"
       sx={logoSx(marginBottom)}
     />
@@ -13,8 +13,8 @@ export default function MainLogo({ marginBottom }: { marginBottom?: number }) {
 
 const logoSx = (marginBottom?: number): SxProps<Theme> => ({
   width: "auto",
-  minHeight: { xs: "180px", lg: "280px" },
-  maxHeight: { xs: "180px", lg: "280px" },
+  minHeight: { xs: "220px", lg: "340px" },
+  maxHeight: { xs: "220px", lg: "340px" },
   mb: marginBottom ?? "0px",
   userSelect: "none",
 });

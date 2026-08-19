@@ -53,7 +53,7 @@ const navSx: SxProps<Theme> = {
 };
 
 const logoSx: SxProps<Theme> = {
-    height: "70px",
+    height: "78px",
     mr: { sm: "10px", lg: "25px" },
     zIndex: 1,
 };

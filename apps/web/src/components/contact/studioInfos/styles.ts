@@ -15,7 +15,7 @@ const surfaceSx: SxProps<Theme> = {
 };
 
 const logoSx: SxProps<Theme> = {
-    height: { xs: "150px", md: "180px" },
+    height: { xs: "165px", md: "198px" },
     width: "keep-aspect-ratio",
     userSelect: "none",
     aspectRatio: "1 / 1",

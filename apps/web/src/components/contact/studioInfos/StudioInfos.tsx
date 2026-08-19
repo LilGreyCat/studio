@@ -8,7 +8,7 @@ import { logoSx, surfaceSx } from "./styles";
 export default function StudioInfos() {
   return (
     <GlassySurface sx={surfaceSx}>
-      <Box component="img" src="/logo2.svg" alt="Logo du studio" sx={logoSx} />
+      <Box component="img" src="/logo-complet.svg" alt="Logo du studio" sx={logoSx} />
       <Infos />
       <StudioLocation />
     </GlassySurface>

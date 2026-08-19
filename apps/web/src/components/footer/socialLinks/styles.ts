@@ -24,7 +24,7 @@ const containerSx: SxProps<Theme> = {
 
 const logoSx: SxProps<Theme> = {
     width: "auto",
-    height: "180px",
+    height: "220px",
 };
 
 export { containerSx, iconSx, logoSx };
