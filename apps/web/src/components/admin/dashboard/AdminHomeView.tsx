@@ -1,6 +1,6 @@
 import { GlassySurface } from "@/components/ui";
 import { optionTileButtonSx, optionTileSx } from "@/components/ui/optionTileStyles";
-import { ButtonBase, Stack, Typography } from "@mui/material";
+import { Box, ButtonBase, Stack, Typography } from "@mui/material";
 import { AdminView } from "../types";
 
 type AdminHomeViewProps = {
@@ -12,11 +12,12 @@ export default function AdminHomeView({ onSelectView }: AdminHomeViewProps) {
     <Stack spacing={3}>
       <Typography variant="h5">Que veux-tu gérer ?</Typography>
 
-      <Stack
-        direction={{ xs: "column", md: "row" }}
-        spacing={2}
-        useFlexGap
-        flexWrap="wrap"
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: { xs: "1fr", sm: "repeat(2, minmax(0, 1fr))" },
+          gap: 2,
+        }}
       >
         <ButtonBase
           sx={optionTileButtonSx}
@@ -45,7 +46,7 @@ export default function AdminHomeView({ onSelectView }: AdminHomeViewProps) {
         >
           <GlassySurface sx={adminOptionTileSx}>Notifications</GlassySurface>
         </ButtonBase>
-      </Stack>
+      </Box>
     </Stack>
   );
 }
