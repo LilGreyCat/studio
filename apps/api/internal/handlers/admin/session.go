@@ -3,21 +3,18 @@ package admin
 import (
 	"net/http"
 	"time"
-
-	auth "github.com/PtiCadri/studio/apps/api/internal/auth"
 )
+
+const adminSessionLifetime = 24 * time.Hour
 
 func (h Handler) setAdminSessionCookie(
 	w http.ResponseWriter,
-	adminID int64,
-	authSecret string,
+	token string,
+	expiresAt time.Time,
 ) {
-	expiresAt := time.Now().Add(24 * time.Hour)
-	cookieValue := auth.SignUserID(adminID, authSecret, expiresAt)
-
 	http.SetCookie(w, &http.Cookie{
 		Name:     "admin_session",
-		Value:    cookieValue,
+		Value:    token,
 		Path:     "/",
 		HttpOnly: true,
 		SameSite: http.SameSiteLaxMode,

@@ -1,34 +1,39 @@
 package auth
 
 import (
+	"bytes"
 	"testing"
-	"time"
 )
 
-func TestSignedUserID(t *testing.T) {
-	value := SignUserID(42, "test-secret", time.Now().Add(time.Hour))
-
-	userID, err := VerifyUserID(value, "test-secret")
+func TestSessionTokenGenerationAndHashing(t *testing.T) {
+	token, err := GenerateSessionToken()
 	if err != nil {
-		t.Fatalf("VerifyUserID returned an error: %v", err)
+		t.Fatal(err)
 	}
-	if userID != 42 {
-		t.Fatalf("VerifyUserID returned %d, want 42", userID)
+	first, err := HashSessionToken(token, "first-secret")
+	if err != nil {
+		t.Fatal(err)
+	}
+	second, err := HashSessionToken(token, "first-secret")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if !bytes.Equal(first, second) || len(first) != 32 {
+		t.Fatal("session token hash is not stable and 32 bytes long")
+	}
+	other, err := HashSessionToken(token, "other-secret")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if bytes.Equal(first, other) {
+		t.Fatal("session token hash did not depend on the secret")
 	}
 }
 
-func TestSignedUserIDRejectsExpiredValue(t *testing.T) {
-	value := SignUserID(42, "test-secret", time.Now().Add(-time.Second))
-
-	if _, err := VerifyUserID(value, "test-secret"); err == nil {
-		t.Fatal("VerifyUserID accepted an expired value")
-	}
-}
-
-func TestSignedUserIDRejectsTampering(t *testing.T) {
-	value := SignUserID(42, "test-secret", time.Now().Add(time.Hour))
-
-	if _, err := VerifyUserID(value, "different-secret"); err == nil {
-		t.Fatal("VerifyUserID accepted a value signed with another secret")
+func TestSessionTokenRejectsMalformedValues(t *testing.T) {
+	for _, token := range []string{"", "not-base64", "c2hvcnQ"} {
+		if _, err := HashSessionToken(token, "secret"); err == nil {
+			t.Fatalf("HashSessionToken(%q) unexpectedly succeeded", token)
+		}
 	}
 }

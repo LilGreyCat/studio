@@ -40,7 +40,7 @@ func registerAdminProtected(
 ) {
 	r.Group(func(r chi.Router) {
 		r.Use(middleware.RequireOrigin(cfg.FrontendUrl))
-		r.Use(middleware.AdminAuth(cfg.AuthSecret))
+		r.Use(middleware.AdminAuth(deps.AdminSessions, cfg.AuthSecret))
 
 		registerAdminSession(r, deps)
 		registerAdminUploads(r, deps)

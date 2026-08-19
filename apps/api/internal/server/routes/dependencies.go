@@ -12,6 +12,7 @@ import (
 	priceHandlers "github.com/PtiCadri/studio/apps/api/internal/handlers/price"
 	projectHandlers "github.com/PtiCadri/studio/apps/api/internal/handlers/project"
 	uploadHandlers "github.com/PtiCadri/studio/apps/api/internal/handlers/uploads"
+	"github.com/PtiCadri/studio/apps/api/internal/middleware"
 
 	adminRepo "github.com/PtiCadri/studio/apps/api/internal/repository/admin"
 	artistRepo "github.com/PtiCadri/studio/apps/api/internal/repository/artist"
@@ -30,6 +31,7 @@ type Dependencies struct {
 	Prices        priceHandlers.Handler
 	Admins        adminHandlers.Handler
 	Uploads       uploadHandlers.Handler
+	AdminSessions middleware.AdminSessionStore
 }
 
 func BuildDependencies(
@@ -52,5 +54,6 @@ func BuildDependencies(
 		Prices:        priceHandlers.New(pricesRepository),
 		Admins:        adminHandlers.New(adminsRepo, cfg.AuthSecret, cfg.CookieSecure),
 		Uploads:       uploadHandlers.New(),
+		AdminSessions: adminsRepo,
 	}
 }

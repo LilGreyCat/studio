@@ -15,8 +15,9 @@ import (
 )
 
 const (
-	testAdminSecret = "hardware-admin-test-secret"
-	testFrontendURL = "http://localhost:3000"
+	testAdminSecret  = "hardware-admin-test-secret"
+	testFrontendURL  = "http://localhost:3000"
+	testSessionToken = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
 )
 
 func authenticatedHardwareRequest(method, target, body string) *http.Request {
@@ -24,9 +25,20 @@ func authenticatedHardwareRequest(method, target, body string) *http.Request {
 	request.Header.Set("Origin", testFrontendURL)
 	request.AddCookie(&http.Cookie{
 		Name:  "admin_session",
-		Value: auth.SignUserID(1, testAdminSecret, time.Now().Add(time.Hour)),
+		Value: testSessionToken,
 	})
 	return request
+}
+
+func expectAuthenticatedSession(t *testing.T, mock sqlmock.Sqlmock) {
+	t.Helper()
+	hash, err := auth.HashSessionToken(testSessionToken, testAdminSecret)
+	if err != nil {
+		t.Fatal(err)
+	}
+	mock.ExpectQuery("SELECT session.admin_id").
+		WithArgs(hash, sqlmock.AnyArg()).
+		WillReturnRows(sqlmock.NewRows([]string{"admin_id"}).AddRow(1))
 }
 
 func hardwareTestConfig() config.Config {
@@ -56,6 +68,7 @@ func TestAdminHardwareListIncludesHiddenItems(t *testing.T) {
 	defer db.Close()
 
 	now := time.Now()
+	expectAuthenticatedSession(t, mock)
 	mock.ExpectQuery("FROM hardware_items").WillReturnRows(
 		sqlmock.NewRows([]string{
 			"id", "slug", "eyebrow", "title", "description", "image_url",
@@ -81,6 +94,7 @@ func TestAdminHardwareCreateReportsSlugConflict(t *testing.T) {
 	}
 	defer db.Close()
 
+	expectAuthenticatedSession(t, mock)
 	mock.ExpectQuery("INSERT INTO hardware_items").WillReturnError(&pgconn.PgError{Code: "23505"})
 	body := `{"slug":"soundcard","eyebrow":"Interface","title":"Apollo","description":"Description","image_url":"/matos/carte-son.jpg","image_width":100,"image_height":100}`
 	response := httptest.NewRecorder()
@@ -101,6 +115,7 @@ func TestAdminHardwarePatchAcceptsVisibilityFalse(t *testing.T) {
 	defer db.Close()
 
 	now := time.Now()
+	expectAuthenticatedSession(t, mock)
 	mock.ExpectQuery("UPDATE hardware_items").WillReturnRows(
 		sqlmock.NewRows([]string{
 			"id", "slug", "eyebrow", "title", "description", "image_url",
@@ -126,6 +141,7 @@ func TestAdminHardwareDeleteReportsNotFound(t *testing.T) {
 	}
 	defer db.Close()
 
+	expectAuthenticatedSession(t, mock)
 	mock.ExpectQuery("DELETE FROM hardware_items").WillReturnRows(
 		sqlmock.NewRows([]string{
 			"id", "slug", "eyebrow", "title", "description", "image_url",
