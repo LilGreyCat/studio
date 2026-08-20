@@ -2,14 +2,14 @@
 
 ## Workflow
 
-1. Branch from `production` using a focused name such as `fix/login-session`
+1. Branch from `main` using a focused name such as `fix/login-session`
    or `feat/artist-search`.
 2. Keep changes scoped and preserve existing visual and behavioral contracts
    unless the change explicitly updates them.
 3. Use concise conventional commit messages, for example
    `fix(auth): handle expired sessions`.
 4. Run the relevant checks locally.
-5. Open a pull request into `production` and wait for CI to pass.
+5. Open a pull request into `main` and wait for CI to pass.
 
 Do not commit `.env` files, credentials, production exports, database dumps,
 or uploaded customer data.

@@ -3,7 +3,7 @@
 Production website and content-management application for Nhadès Records, a
 recording studio in Bihorel, France.
 
-[![CI](https://github.com/PtiCadri/studio/actions/workflows/ci.yml/badge.svg?branch=production)](https://github.com/PtiCadri/studio/actions/workflows/ci.yml)
+[![CI](https://github.com/PtiCadri/studio/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/PtiCadri/studio/actions/workflows/ci.yml)
 
 The repository contains a public Next.js website, an authenticated
 administration panel, a Go HTTP API, PostgreSQL migrations, and an operational
@@ -94,7 +94,7 @@ npm run typecheck
 npm run test:e2e
 ```
 
-Pull requests and the `production` branch are checked by GitHub Actions.
+Pull requests and the `main` branch are checked by GitHub Actions.
 
 ## Configuration and secrets
 
@@ -129,6 +129,6 @@ should accept public traffic on ports 80 and 443.
 
 ## Repository workflow
 
-`production` is the deployable branch. Changes should be made on focused
+`main` is the deployable branch. Changes should be made on focused
 branches and merged only after CI passes. See [`CONTRIBUTING.md`](CONTRIBUTING.md)
 and [`SECURITY.md`](SECURITY.md).

@@ -14,7 +14,7 @@ people while investigating.
 
 ## Supported version
 
-Security fixes target the current `production` branch. Older branches and
+Security fixes target the current `main` branch. Older branches and
 historical deployments are not maintained.
 
 ## Secret handling
