@@ -1,149 +1,41 @@
-# 📦 Backend -- Studio API
+# Studio API
 
-This directory contains the Go backend for the studio's website.
+Go HTTP API for Nhadès Records. It owns persistence, administrator
+authentication, public content endpoints, uploads, and database migrations.
 
-The API is responsible for: - Exposing HTTP endpoints - Managing
-database access (PostgreSQL) - Handling business logic related to blog
-posts, authentication, etc.
+## Structure
 
-The backend runs inside Docker and supports hot-reload via Air for
-development.
+```text
+cmd/api/              API entrypoint
+cmd/create-admin/     administrator bootstrap command
+cmd/cleanup-uploads/  orphan-upload maintenance command
+internal/handlers/    HTTP handlers
+internal/repository/  PostgreSQL queries and transactions
+internal/middleware/  authentication, origin, rate-limit, and security layers
+internal/storage/     database and upload storage
+migrations/           ordered up/down SQL migrations
+```
 
-------------------------------------------------------------------------
+## Development
 
-## 🏗 Architecture Overview
+The normal development workflow runs the API through the root Compose stack:
 
-The backend follows a simple layered structure:
-
-    apps/api/
-      cmd/api/        # Application entrypoint
-      internal/
-        config/       # Environment configuration
-        server/       # HTTP server + router setup
-        handlers/     # HTTP handlers (controllers)
-        storage/      # Database access layer
-        domain/       # Domain models
-
-### Design Principles
-
-- `main.go` only bootstraps dependencies
-- Handlers handle HTTP only
-- Storage handles DB interaction
-- No over-engineering (kept intentionally simple)
-
-------------------------------------------------------------------------
-
-## 🚀 Running the Backend (Development)
-
-From the project root:
-
-``` bash
+```sh
 make up
-```
-
-The API will be available at:
-
-    http://localhost:8080
-
-Health check endpoint:
-
-    GET /health
-
-If everything works correctly, it should return:
-
-    ok
-
-------------------------------------------------------------------------
-
-## 🔄 Hot Reload (Air)
-
-The backend uses **Air** for hot-reload inside Docker.
-
-Any change to `.go` files automatically triggers a rebuild and restart.
-
-If hot reload does not trigger: - Ensure Docker is running with WSL2
-backend - Ensure file polling is enabled in `.air.toml`
-
-------------------------------------------------------------------------
-
-## 🗄 Database
-
-The backend uses PostgreSQL.
-
-The database runs in a Docker container defined in `docker-compose.yml`.
-
-Connection string (development):
-
-    postgresql://studio:studio@db:5432/studio?sslmode=disable
-
-The `db` hostname refers to the Docker service name.
-
-------------------------------------------------------------------------
-
-## 🔐 Environment Variables
-
-Environment variables are defined in the root `.env` file.
-
-Required variables:
-
-``` env
-API_PORT=8080
-DATABASE_URL=postgresql://studio:studio@db:5432/studio?sslmode=disable
-```
-
-------------------------------------------------------------------------
-
-## 📦 Go Module
-
-Module path:
-
-    github.com/PtiCadri/studio/apps/api
-
-All internal imports must start with:
-
-    github.com/PtiCadri/studio/apps/api/internal/...
-
-------------------------------------------------------------------------
-
-## 🧪 Useful Commands
-
-Rebuild containers:
-
-``` bash
-make down
-make up
-```
-
-Run only API logs:
-
-``` bash
 make logs-api
 ```
 
-Run only Database logs:
+The API listens on <http://localhost:8080>; `GET /health` returns `ok` when the
+database is reachable.
 
-``` bash
-make logs-db
+Run the backend release checks directly from this directory:
+
+```sh
+go vet ./...
+go test ./...
 ```
 
-Enter API container:
-
-```bash
-make enter-api
-```
-
-Enter Database container:
-
-```bash
-make enter-db
-```
-
-------------------------------------------------------------------------
-
-## 📌 Development Guidelines
-
-- Do not put business logic inside `main.go`
-- Keep handlers small and focused
-- Database access must go through the storage layer
-- Keep files reasonably small and readable
-- Favor clarity over abstraction
+Configuration is loaded from the root `.env` file. See
+[`../../docs/environment.md`](../../docs/environment.md) for the complete
+contract. Database changes must be introduced as paired migration files and
+must not be edited after production use.
