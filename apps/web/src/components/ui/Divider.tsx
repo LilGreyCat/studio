@@ -40,6 +40,10 @@ const dividerSx = {
     backgroundSize: "300% 100%",
     animation: "navBorderGlow 6s linear infinite",
     opacity: 0.9,
+    "@media (prefers-reduced-motion: reduce)": {
+      animation: "none",
+      backgroundPosition: "50% 50%",
+    },
   },
 
   "@keyframes navBorderGlow": {

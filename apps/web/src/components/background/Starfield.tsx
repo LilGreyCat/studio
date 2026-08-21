@@ -23,43 +23,51 @@ export default function Starfield() {
   );
 }
 
+const STARFIELD_SIZE = 2000;
+
 const animKeyframes = {
   "@keyframes animStar": {
     from: { transform: "translate3d(0, 0, 0)" },
-    to: { transform: "translate3d(0, -2000px, 0)" },
+    to: { transform: `translate3d(0, -${STARFIELD_SIZE}px, 0)` },
   },
 };
 
 const compositorSx = {
   willChange: "transform",
   backfaceVisibility: "hidden",
+  contain: "strict",
+  "@media (prefers-reduced-motion: reduce)": {
+    animation: "none",
+    transform: "none",
+  },
 };
 
 function createStarLayerSx(size: number, duration: number, stars: string) {
-  const pixelSize = `${size}px`;
-
   return {
     ...compositorSx,
     position: "absolute",
     top: 0,
     left: 0,
-    width: pixelSize,
-    height: pixelSize,
-    background: "transparent",
-    borderRadius: "50%",
+    width: "100%",
+    height: `calc(100% + ${STARFIELD_SIZE}px)`,
+    backgroundImage: createStarTexture(size, stars),
+    backgroundPosition: "0 0",
+    backgroundRepeat: "repeat",
+    backgroundSize: `${STARFIELD_SIZE}px ${STARFIELD_SIZE}px`,
     animation: `animStar ${duration}s linear infinite`,
-    boxShadow: stars,
-    "&::after": {
-      content: '""',
-      position: "absolute",
-      top: "2000px",
-      width: pixelSize,
-      height: pixelSize,
-      background: "transparent",
-      borderRadius: "50%",
-      boxShadow: stars,
-    },
   };
+}
+
+function createStarTexture(size: number, stars: string): string {
+  const radius = size / 2;
+  const circles = Array.from(stars.matchAll(/(\d+)px\s+(\d+)px/g), (match) => {
+    const x = Number(match[1]) + radius;
+    const y = Number(match[2]) + radius;
+    return `<circle cx="${x}" cy="${y}" r="${radius}"/>`;
+  }).join("");
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${STARFIELD_SIZE}" height="${STARFIELD_SIZE}" viewBox="0 0 ${STARFIELD_SIZE} ${STARFIELD_SIZE}" fill="white">${circles}</svg>`;
+
+  return `url("data:image/svg+xml,${encodeURIComponent(svg)}")`;
 }
 
 const stars1Sx = createStarLayerSx(1, 120, STARS_1);

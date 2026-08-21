@@ -34,6 +34,11 @@ export const animatedBorderSx = (): SystemStyleObject<Theme> => ({
         opacity: 0.9,
         animation: "borderGlow 6s linear infinite",
 
+        "@media (prefers-reduced-motion: reduce)": {
+            animation: "none",
+            backgroundPosition: "50% 50%",
+        },
+
         WebkitMask:
             "linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0)",
         WebkitMaskComposite: "xor",
