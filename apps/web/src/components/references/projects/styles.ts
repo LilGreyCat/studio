@@ -32,9 +32,9 @@ export { containerSx };
 const surfaceSx: SxProps<Theme> = {
     width: "100%",
     height: "fit-content",
-    p: 3,
+    p: { xs: 2, sm: 3 },
     display: "flex",
-    flexDirection: "row",
+    flexDirection: { xs: "column", sm: "row" },
     alignItems: "center",
 };
 
@@ -60,7 +60,8 @@ const nameLinksWrapperSx: SxProps<Theme> = {
     flexDirection: "column",
     alignItems: "center",
     justifyContent: "space-between",
-    ml: 2,
+    ml: { xs: 0, sm: 2 },
+    mt: { xs: 2, sm: 0 },
 };
 
 const imageWrapperSx: SxProps<Theme> = {
@@ -68,7 +69,7 @@ const imageWrapperSx: SxProps<Theme> = {
     overflow: "hidden",
     borderRadius: "4px",
     position: "relative",
-    height: "180px",
+    height: { xs: "160px", sm: "180px" },
     aspectRatio: "1 / 1",
 };
 
@@ -82,7 +83,8 @@ const integrationWrapperSx: SxProps<Theme> = {
 const integrationHeaderSx: SxProps<Theme> = {
     width: "100%",
     display: "flex",
-    alignItems: "center",
+    flexDirection: { xs: "column", sm: "row" },
+    alignItems: { xs: "stretch", sm: "center" },
     justifyContent: "space-between",
     gap: 2,
 };
@@ -96,6 +98,7 @@ const backButtonSx: SxProps<Theme> = {
     px: 2,
     py: 0.5,
     cursor: "pointer",
+    alignSelf: { xs: "flex-end", sm: "auto" },
 };
 
 export {

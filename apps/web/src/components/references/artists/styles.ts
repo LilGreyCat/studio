@@ -1,8 +1,8 @@
 import type { SxProps, Theme } from "@mui/material";
 
 const artistSurfaceSx: SxProps<Theme> = {
-  width: "calc(100% - 32px)",
-  mx: 2,
+  width: { xs: "calc(100% - 16px)", sm: "calc(100% - 32px)" },
+  mx: { xs: 1, sm: 2 },
   minWidth: 0,
   height: "fit-content",
   p: 2,

@@ -25,7 +25,7 @@ export default function ProjectDefaultCard({ name, imageSrc, actions }: Props) {
           src={imageSrc}
           alt={name}
           fill
-          sizes="180px"
+          sizes="(max-width: 600px) 160px, 180px"
           style={{ objectFit: "cover" }}
         />
       </Box>
