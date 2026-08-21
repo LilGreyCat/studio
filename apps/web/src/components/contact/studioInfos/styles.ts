@@ -15,10 +15,13 @@ const surfaceSx: SxProps<Theme> = {
 };
 
 const logoSx: SxProps<Theme> = {
-    height: { xs: "165px", md: "198px" },
-    width: "keep-aspect-ratio",
+    width: "100%",
+    maxWidth: { xs: "165px", md: "198px" },
+    height: "auto",
     userSelect: "none",
     aspectRatio: "1 / 1",
+    objectFit: "contain",
+    justifySelf: "center",
     mb: "30px",
 };
 
