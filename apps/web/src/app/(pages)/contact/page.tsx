@@ -8,7 +8,7 @@ import { MainLogo } from "@/components/ui";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Contactez Nhadès Records pour toute information ou demande de collaboration.",
+    "Contactez Nha Dès Records pour toute information ou demande de collaboration.",
 };
 
 export default function Contact() {

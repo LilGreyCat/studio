@@ -4,7 +4,7 @@ import { Divider, MainLogo } from "@/components/ui";
 
 export const metadata = {
   title: "Références",
-  description: "Découvrez les références de Nhadès Records.",
+  description: "Découvrez les références de Nha Dès Records.",
 };
 
 export default function References() {

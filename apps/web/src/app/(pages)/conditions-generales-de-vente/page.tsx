@@ -5,7 +5,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Conditions générales de vente",
   description:
-    "Les conditions générales de vente de Nhadès Records seront bientôt disponibles.",
+    "Les conditions générales de vente de Nha Dès Records seront bientôt disponibles.",
 };
 
 export default function TermsAndConditions() {

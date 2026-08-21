@@ -2,15 +2,15 @@ import Formules from "@/components/tarifs/Formules";
 import Live from "@/components/tarifs/Live";
 import Prestations from "@/components/tarifs/Prestations";
 import { PricingProvider } from "@/components/tarifs/PricingProvider";
+import { Divider, MainLogo } from "@/components/ui";
 import { toPriceMap, type PriceMap } from "@/hooks/server/prices";
 import { getServerPrices } from "@/hooks/server/prices/server";
-import { Divider, MainLogo } from "@/components/ui";
 import { Box, Link, Typography } from "@mui/material";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Tarifs",
-  description: "Découvrez les tarifs pratiqués par Nhadès Records.",
+  description: "Découvrez les tarifs pratiqués par Nha Dès Records.",
 };
 
 export const dynamic = "force-dynamic";
@@ -23,8 +23,12 @@ export default async function Tarifs() {
     return (
       <>
         <MainLogo />
-        <Typography color="text.secondary" sx={{ px: 2, py: 8, textAlign: "center" }}>
-          Les tarifs sont temporairement indisponibles. Veuillez réessayer dans quelques instants.
+        <Typography
+          color="text.secondary"
+          sx={{ px: 2, py: 8, textAlign: "center" }}
+        >
+          Les tarifs sont temporairement indisponibles. Veuillez réessayer dans
+          quelques instants.
         </Typography>
       </>
     );

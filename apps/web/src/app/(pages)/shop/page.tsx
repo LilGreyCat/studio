@@ -5,7 +5,7 @@ import Image from "next/image";
 
 export const metadata: Metadata = {
   title: "Shop",
-  description: "Découvrez le shop de Nhadès Records.",
+  description: "Découvrez le shop de Nha Dès Records.",
 };
 
 export default function Shop() {

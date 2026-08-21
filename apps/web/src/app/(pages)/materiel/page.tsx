@@ -6,7 +6,7 @@ import { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Matériel",
-  description: "Découvrez le matériel du studio Nhadès Records.",
+  description: "Découvrez le matériel du studio Nha Dès Records.",
 };
 
 export default function Materiel() {

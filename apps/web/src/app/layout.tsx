@@ -12,11 +12,11 @@ import { Box } from "@mui/material";
 
 export const metadata: Metadata = {
   title: {
-    default: "Nhadès Records",
-    template: "%s | Nhadès Records",
+    default: "Nha Dès Records",
+    template: "%s | Nha Dès Records",
   },
   description:
-    "Nhadès Records, studio de musique indépendant situé à 5 minutes de Rouen.",
+    "Nha Dès Records, studio de musique indépendant situé à 5 minutes de Rouen.",
 };
 
 export default function RootLayout({

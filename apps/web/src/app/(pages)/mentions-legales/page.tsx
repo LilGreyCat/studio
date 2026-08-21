@@ -5,7 +5,7 @@ import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "Mentions légales",
-  description: "Mentions légales du site Nhadès Records.",
+  description: "Mentions légales du site Nha Dès Records.",
 };
 
 export default function LegalNotices() {

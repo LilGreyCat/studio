@@ -6,21 +6,48 @@ import type { ReactNode } from "react";
 
 export const metadata: Metadata = {
   title: "Plan du site",
-  description: "Retrouvez toutes les pages du site Nhadès Records.",
+  description: "Retrouvez toutes les pages du site Nha Dès Records.",
 };
 
 const mainPages = [
-  { label: "Accueil", href: "/", description: "Présentation du studio Nhadès Records." },
-  { label: "Matériel", href: "/materiel", description: "Découvrez les équipements disponibles au studio." },
-  { label: "Références", href: "/references", description: "Parcourez les projets et artistes accompagnés." },
-  { label: "Shop", href: "/shop", description: "Accédez à l’espace boutique du studio." },
-  { label: "Tarifs", href: "/tarifs", description: "Consultez les prestations et formules proposées." },
-  { label: "Contact", href: "/contact", description: "Contactez le studio et préparez votre projet." },
+  {
+    label: "Accueil",
+    href: "/",
+    description: "Présentation du studio Nhadès Records.",
+  },
+  {
+    label: "Matériel",
+    href: "/materiel",
+    description: "Découvrez les équipements disponibles au studio.",
+  },
+  {
+    label: "Références",
+    href: "/references",
+    description: "Parcourez les projets et artistes accompagnés.",
+  },
+  {
+    label: "Shop",
+    href: "/shop",
+    description: "Accédez à l’espace boutique du studio.",
+  },
+  {
+    label: "Tarifs",
+    href: "/tarifs",
+    description: "Consultez les prestations et formules proposées.",
+  },
+  {
+    label: "Contact",
+    href: "/contact",
+    description: "Contactez le studio et préparez votre projet.",
+  },
 ] as const;
 
 const informationPages = [
   { label: "Mentions légales", href: "/mentions-legales" },
-  { label: "Conditions générales de vente", href: "/conditions-generales-de-vente" },
+  {
+    label: "Conditions générales de vente",
+    href: "/conditions-generales-de-vente",
+  },
   { label: "Plan du site", href: "/plan-du-site" },
 ] as const;
 
@@ -48,7 +75,10 @@ export default function SitemapPage() {
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns: { xs: "1fr", sm: "repeat(2, minmax(0, 1fr))" },
+              gridTemplateColumns: {
+                xs: "1fr",
+                sm: "repeat(2, minmax(0, 1fr))",
+              },
               gap: 2,
             }}
           >
@@ -79,7 +109,11 @@ export default function SitemapPage() {
                   <Typography component="h3" variant="h6" fontWeight={700}>
                     {page.label}
                   </Typography>
-                  <Typography color="text.secondary" variant="body2" sx={{ mt: 0.5 }}>
+                  <Typography
+                    color="text.secondary"
+                    variant="body2"
+                    sx={{ mt: 0.5 }}
+                  >
                     {page.description}
                   </Typography>
                 </Box>
@@ -109,7 +143,13 @@ export default function SitemapPage() {
   );
 }
 
-function SitemapSection({ title, children }: { title: string; children: ReactNode }) {
+function SitemapSection({
+  title,
+  children,
+}: {
+  title: string;
+  children: ReactNode;
+}) {
   return (
     <GlassySurface
       sx={{
