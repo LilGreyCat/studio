@@ -12,8 +12,8 @@ import {
   unitSx,
 } from "./styles";
 
-import Link from "next/link";
 import { formatPrice } from "@/hooks/server/prices";
+import Link from "next/link";
 import { usePricing } from "./PricingProvider";
 
 export default function Live() {
@@ -72,7 +72,7 @@ export default function Live() {
           </Typography>
 
           <Typography variant="body1" sx={unitSx}>
-            / cachet
+            / prestation
           </Typography>
         </Box>
 
