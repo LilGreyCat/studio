@@ -1,8 +1,6 @@
 "use client";
 import { useProjects } from "@/hooks/server/projects/useProjects";
-import { Box, Typography } from "@mui/material";
-import { Divider } from "@/components/ui";
-import { sectionTitleSx } from "../sectionStyles";
+import { Box } from "@mui/material";
 import Project from "./Project";
 
 import { containerSx, featuredContainerSx, featuredSectionSx } from "./styles";
@@ -36,46 +34,15 @@ export default function Projects() {
       {featuredProjects.length > 0 && (
         <Box
           component="section"
-          aria-labelledby="featured-projects-title"
+          aria-label="Dernières sorties"
           sx={featuredSectionSx}
         >
-          <Typography
-            id="featured-projects-title"
-            component="h2"
-            sx={sectionTitleSx}
-          >
-            DERNIÈRES SORTIES
-          </Typography>
           <Box sx={featuredContainerSx}>{renderProjects(featuredProjects)}</Box>
         </Box>
       )}
 
-      {featuredProjects.length > 0 && regularProjects.length > 0 && (
-        <Box
-          sx={{
-            width: "100%",
-            display: "flex",
-            justifyContent: "center",
-            mb: 5,
-          }}
-        >
-          <Divider />
-        </Box>
-      )}
-
       {regularProjects.length > 0 && (
-        <Box
-          component="section"
-          aria-labelledby="regular-projects-title"
-          sx={{ width: "100%" }}
-        >
-          <Typography
-            id="regular-projects-title"
-            component="h2"
-            sx={sectionTitleSx}
-          >
-            PROJETS
-          </Typography>
+        <Box component="section" aria-label="Projets" sx={{ width: "100%" }}>
           <Box sx={containerSx}>{renderProjects(regularProjects)}</Box>
         </Box>
       )}

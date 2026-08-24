@@ -3,7 +3,6 @@
 import { Box, type SxProps, type Theme, Typography } from "@mui/material";
 
 import { useArtists } from "@/hooks/server/artists";
-import { sectionTitleSx } from "../sectionStyles";
 import Artist from "./Artist";
 
 const artistContainerSx: SxProps<Theme> = {
@@ -37,12 +36,9 @@ export default function Artists() {
   return (
     <Box
       component="section"
-      aria-labelledby="artists-title"
+      aria-label="Artistes"
       sx={{ width: "100%", mt: 5 }}
     >
-      <Typography id="artists-title" component="h2" sx={sectionTitleSx}>
-        ARTISTES
-      </Typography>
       <Box sx={artistContainerSx}>
         {artists.map((artist) => (
           <Artist
