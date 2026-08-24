@@ -9,15 +9,21 @@ import { getImageUrl } from "@/utils/getImageUrl";
 
 import ProjectDefaultCard from "./DefaultCard";
 import ProjectIntegrationCard from "./IntegrationCard";
-import { surfaceSx } from "./styles";
+import { featuredBadgeSx, surfaceSx } from "./styles";
 
 type ProjectProps = {
   id: number;
   name: string;
   image_url: string | null;
+  isFeatured?: boolean;
 };
 
-export default function Project({ id, name, image_url }: ProjectProps) {
+export default function Project({
+  id,
+  name,
+  image_url,
+  isFeatured = false,
+}: ProjectProps) {
   const imageSrc = getImageUrl(image_url);
 
   const { links, integrations, isLoading, error } = useProjectDetails(id);
@@ -56,5 +62,14 @@ export default function Project({ id, name, image_url }: ProjectProps) {
     );
   }
 
-  return <GlassySurface sx={surfaceSx}>{renderContent()}</GlassySurface>;
+  return (
+    <GlassySurface sx={surfaceSx}>
+      {isFeatured && activeIntegration === null && (
+        <Typography component="span" sx={featuredBadgeSx}>
+          Nouveau
+        </Typography>
+      )}
+      {renderContent()}
+    </GlassySurface>
+  );
 }

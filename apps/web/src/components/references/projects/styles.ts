@@ -50,12 +50,30 @@ export { containerSx, featuredContainerSx, featuredSectionSx };
 
 // PROJECT
 const surfaceSx: SxProps<Theme> = {
+    position: "relative",
     width: "100%",
     height: "fit-content",
     p: { xs: 2, sm: 3 },
     display: "flex",
     flexDirection: { xs: "column", sm: "row" },
     alignItems: "center",
+};
+
+const featuredBadgeSx: SxProps<Theme> = {
+    position: "absolute",
+    top: { xs: 10, sm: 12 },
+    right: { xs: 10, sm: 12 },
+    zIndex: 1,
+    px: 1.25,
+    py: 0.35,
+    borderRadius: "999px",
+    backgroundColor: "common.white",
+    color: "common.black",
+    fontSize: "0.68rem",
+    fontWeight: 700,
+    letterSpacing: "0.08em",
+    lineHeight: 1.4,
+    textTransform: "uppercase",
 };
 
 const iconsWrapperSx: SxProps<Theme> = {
@@ -123,6 +141,7 @@ const backButtonSx: SxProps<Theme> = {
 
 export {
     backButtonSx,
+    featuredBadgeSx,
     iconsWrapperSx,
     imageWrapperSx,
     integrationHeaderSx,

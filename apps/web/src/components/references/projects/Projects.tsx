@@ -19,13 +19,14 @@ export default function Projects() {
   const featuredProjects = projects.filter((project) => project.is_featured);
   const regularProjects = projects.filter((project) => !project.is_featured);
 
-  const renderProjects = (items: typeof projects) =>
+  const renderProjects = (items: typeof projects, isFeatured = false) =>
     items.map((project) => (
       <Project
         key={project.id}
         id={project.id}
         name={project.name}
         image_url={project.image_url}
+        isFeatured={isFeatured}
       />
     ));
 
@@ -37,7 +38,9 @@ export default function Projects() {
           aria-label="Dernières sorties"
           sx={featuredSectionSx}
         >
-          <Box sx={featuredContainerSx}>{renderProjects(featuredProjects)}</Box>
+          <Box sx={featuredContainerSx}>
+            {renderProjects(featuredProjects, true)}
+          </Box>
         </Box>
       )}
 
