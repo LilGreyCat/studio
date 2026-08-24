@@ -33,16 +33,33 @@ export default function Projects() {
   return (
     <>
       {featuredProjects.length > 0 && (
-        <Box component="section" aria-labelledby="featured-projects-title" sx={featuredSectionSx}>
-          <Typography id="featured-projects-title" component="h2" sx={featuredTitleSx}>
+        <Box
+          component="section"
+          aria-labelledby="featured-projects-title"
+          sx={featuredSectionSx}
+        >
+          <Typography
+            id="featured-projects-title"
+            component="h2"
+            sx={featuredTitleSx}
+          >
             À la une
           </Typography>
-          <Box sx={{ ...containerSx, mb: 0 }}>{renderProjects(featuredProjects)}</Box>
+          <Box sx={{ ...containerSx, mb: 0 }}>
+            {renderProjects(featuredProjects)}
+          </Box>
         </Box>
       )}
 
       {featuredProjects.length > 0 && regularProjects.length > 0 && (
-        <Box sx={{ width: "100%", display: "flex", justifyContent: "center", mb: 5 }}>
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            mb: 5,
+          }}
+        >
           <Divider />
         </Box>
       )}
