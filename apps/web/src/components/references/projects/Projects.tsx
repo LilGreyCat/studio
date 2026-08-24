@@ -1,6 +1,7 @@
 "use client";
 import { useProjects } from "@/hooks/server/projects/useProjects";
 import { Box, Typography } from "@mui/material";
+import { Divider } from "@/components/ui";
 import Project from "./Project";
 
 import { containerSx, featuredSectionSx, featuredTitleSx } from "./styles";
@@ -37,6 +38,12 @@ export default function Projects() {
             À la une
           </Typography>
           <Box sx={{ ...containerSx, mb: 0 }}>{renderProjects(featuredProjects)}</Box>
+        </Box>
+      )}
+
+      {featuredProjects.length > 0 && regularProjects.length > 0 && (
+        <Box sx={{ width: "100%", display: "flex", justifyContent: "center", mb: 5 }}>
+          <Divider />
         </Box>
       )}
 
