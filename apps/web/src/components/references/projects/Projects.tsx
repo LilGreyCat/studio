@@ -2,9 +2,10 @@
 import { useProjects } from "@/hooks/server/projects/useProjects";
 import { Box, Typography } from "@mui/material";
 import { Divider } from "@/components/ui";
+import { sectionTitleSx } from "../sectionStyles";
 import Project from "./Project";
 
-import { containerSx, featuredSectionSx, featuredTitleSx } from "./styles";
+import { containerSx, featuredSectionSx } from "./styles";
 
 export default function Projects() {
   const { projects, isLoading, error } = useProjects();
@@ -41,9 +42,9 @@ export default function Projects() {
           <Typography
             id="featured-projects-title"
             component="h2"
-            sx={featuredTitleSx}
+            sx={sectionTitleSx}
           >
-            À la une
+            DERNIÈRES SORTIES
           </Typography>
           <Box sx={{ ...containerSx, mb: 0 }}>
             {renderProjects(featuredProjects)}
@@ -65,7 +66,20 @@ export default function Projects() {
       )}
 
       {regularProjects.length > 0 && (
-        <Box sx={containerSx}>{renderProjects(regularProjects)}</Box>
+        <Box
+          component="section"
+          aria-labelledby="regular-projects-title"
+          sx={{ width: "100%" }}
+        >
+          <Typography
+            id="regular-projects-title"
+            component="h2"
+            sx={sectionTitleSx}
+          >
+            PROJETS
+          </Typography>
+          <Box sx={containerSx}>{renderProjects(regularProjects)}</Box>
+        </Box>
       )}
     </>
   );

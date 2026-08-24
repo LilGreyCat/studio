@@ -36,17 +36,7 @@ const featuredSectionSx: SxProps<Theme> = {
     mb: 5,
 };
 
-const featuredTitleSx: SxProps<Theme> = {
-    mb: 3,
-    textAlign: "center",
-    color: "text.secondary",
-    fontSize: { xs: "1.15rem", sm: "1.35rem" },
-    fontWeight: 600,
-    letterSpacing: "0.08em",
-    textTransform: "uppercase",
-};
-
-export { containerSx, featuredSectionSx, featuredTitleSx };
+export { containerSx, featuredSectionSx };
 
 // PROJECT
 const surfaceSx: SxProps<Theme> = {
