@@ -36,7 +36,17 @@ const featuredSectionSx: SxProps<Theme> = {
     mb: 5,
 };
 
-export { containerSx, featuredSectionSx };
+const featuredContainerSx: SxProps<Theme> = {
+    ...containerSx,
+    gridTemplateColumns: "minmax(0, 1fr)",
+    mb: 0,
+    "& > :last-child:nth-child(odd)": {
+        width: "100%",
+        gridColumn: "auto",
+    },
+};
+
+export { containerSx, featuredContainerSx, featuredSectionSx };
 
 // PROJECT
 const surfaceSx: SxProps<Theme> = {

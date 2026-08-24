@@ -5,7 +5,7 @@ import { Divider } from "@/components/ui";
 import { sectionTitleSx } from "../sectionStyles";
 import Project from "./Project";
 
-import { containerSx, featuredSectionSx } from "./styles";
+import { containerSx, featuredContainerSx, featuredSectionSx } from "./styles";
 
 export default function Projects() {
   const { projects, isLoading, error } = useProjects();
@@ -46,9 +46,7 @@ export default function Projects() {
           >
             DERNIÈRES SORTIES
           </Typography>
-          <Box sx={{ ...containerSx, mb: 0 }}>
-            {renderProjects(featuredProjects)}
-          </Box>
+          <Box sx={featuredContainerSx}>{renderProjects(featuredProjects)}</Box>
         </Box>
       )}
 
