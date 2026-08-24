@@ -20,10 +20,10 @@ func TestCreateFullCommitsProjectLinksAndIntegrationsTogether(t *testing.T) {
 	now := time.Now()
 	mock.ExpectBegin()
 	mock.ExpectQuery("INSERT INTO projects").
-		WithArgs("Album", nil).
+		WithArgs("Album", nil, true).
 		WillReturnRows(sqlmock.NewRows([]string{
-			"id", "name", "image_url", "display_order", "is_visible", "created_at", "updated_at",
-		}).AddRow(12, "Album", nil, 3, true, now, now))
+			"id", "name", "image_url", "display_order", "is_visible", "is_featured", "created_at", "updated_at",
+		}).AddRow(12, "Album", nil, 1, true, true, now, now))
 	mock.ExpectQuery("INSERT INTO project_links").
 		WithArgs(int64(12), nil, nil, nil, nil, nil).
 		WillReturnRows(sqlmock.NewRows([]string{
@@ -36,11 +36,11 @@ func TestCreateFullCommitsProjectLinksAndIntegrationsTogether(t *testing.T) {
 		}).AddRow(12, nil, nil, nil))
 	mock.ExpectCommit()
 
-	saved, err := New(db).CreateFull(context.Background(), projectReq.CreateFullProject{Name: "Album"})
+	saved, err := New(db).CreateFull(context.Background(), projectReq.CreateFullProject{Name: "Album", IsFeatured: true})
 	if err != nil {
 		t.Fatal(err)
 	}
-	if saved.ID != 12 || saved.Name != "Album" {
+	if saved.ID != 12 || saved.Name != "Album" || !saved.IsFeatured || saved.DisplayOrder != 1 {
 		t.Fatalf("unexpected project: %#v", saved)
 	}
 	if err := mock.ExpectationsWereMet(); err != nil {

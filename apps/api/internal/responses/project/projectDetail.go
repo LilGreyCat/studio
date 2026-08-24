@@ -14,6 +14,7 @@ type ProjectDetailResponse struct {
 	ImageURL     *string                     `json:"image_url"`
 	DisplayOrder int16                       `json:"display_order"`
 	IsVisible    bool                        `json:"is_visible"`
+	IsFeatured   bool                        `json:"is_featured"`
 	CreatedAt    time.Time                   `json:"created_at"`
 	UpdatedAt    time.Time                   `json:"updated_at"`
 	Artists      []artistResp.ArtistResponse `json:"artists"`
@@ -31,6 +32,7 @@ func ToProjectDetailResponse(
 		ImageURL:     base.ImageURL,
 		DisplayOrder: base.DisplayOrder,
 		IsVisible:    base.IsVisible,
+		IsFeatured:   base.IsFeatured,
 		CreatedAt:    base.CreatedAt,
 		UpdatedAt:    base.UpdatedAt,
 		Artists:      artistResp.ToArtistResponses(artists),

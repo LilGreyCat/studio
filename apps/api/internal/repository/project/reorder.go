@@ -28,7 +28,7 @@ func (r *ProjectRepository) Reorder(ctx context.Context, ids []int64) ([]models.
 			WHERE projects.id = requested.id
 			RETURNING projects.*
 		)
-		SELECT id, name, image_url, display_order, is_visible, created_at, updated_at
+		SELECT id, name, image_url, display_order, is_visible, is_featured, created_at, updated_at
 		FROM updated
 		ORDER BY display_order, id;
 	`
@@ -44,7 +44,7 @@ func (r *ProjectRepository) Reorder(ctx context.Context, ids []int64) ([]models.
 	projects := make([]models.Project, 0)
 	for rows.Next() {
 		var project models.Project
-		if err := rows.Scan(&project.ID, &project.Name, &project.ImageURL, &project.DisplayOrder, &project.IsVisible, &project.CreatedAt, &project.UpdatedAt); err != nil {
+		if err := rows.Scan(&project.ID, &project.Name, &project.ImageURL, &project.DisplayOrder, &project.IsVisible, &project.IsFeatured, &project.CreatedAt, &project.UpdatedAt); err != nil {
 			return nil, err
 		}
 		projects = append(projects, project)

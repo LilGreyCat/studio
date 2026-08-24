@@ -15,7 +15,7 @@ func (r *ProjectRepository) CreateFull(
 	var saved models.Project
 	err := repository.WithinTransaction(ctx, r.db, func(db repository.Database) error {
 		txRepo := New(db)
-		project, err := txRepo.Create(ctx, request.Name, request.ImageURL)
+		project, err := txRepo.Create(ctx, request.Name, request.ImageURL, request.IsFeatured)
 		if err != nil {
 			return err
 		}
@@ -50,7 +50,8 @@ func (r *ProjectRepository) UpdateFull(
 			request.Project.Name.Set, request.Project.Name.Value,
 			request.Project.ImageURL.Set, request.Project.ImageURL.Value,
 			request.Project.DisplayOrder.Set, request.Project.DisplayOrder.Value,
-			request.Project.IsVisible.Set, request.Project.IsVisible.Value)
+			request.Project.IsVisible.Set, request.Project.IsVisible.Value,
+			request.Project.IsFeatured.Set, request.Project.IsFeatured.Value)
 		if err != nil {
 			return err
 		}

@@ -13,6 +13,7 @@ type ProjectResponse struct {
 	ImageURL     *string   `json:"image_url"`
 	DisplayOrder int16     `json:"display_order"`
 	IsVisible    bool      `json:"is_visible"`
+	IsFeatured   bool      `json:"is_featured"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
 }
@@ -24,6 +25,7 @@ func ToProjectResponse(project models.Project) ProjectResponse {
 		ImageURL:     utils.NullStringToPointer(project.ImageURL),
 		DisplayOrder: project.DisplayOrder,
 		IsVisible:    project.IsVisible,
+		IsFeatured:   project.IsFeatured,
 		CreatedAt:    project.CreatedAt,
 		UpdatedAt:    project.UpdatedAt,
 	}

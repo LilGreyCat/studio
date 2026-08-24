@@ -10,6 +10,7 @@ export function useProjectBaseForm({ project }: UseProjectBaseFormParams) {
     const [name, setName] = useState(project?.name ?? "");
     const [imageURL, setImageURL] = useState(project?.image_url ?? "");
     const [imageFile, setImageFile] = useState<File | null>(null);
+    const [isFeatured, setIsFeatured] = useState(project?.is_featured ?? false);
 
     const imagePreviewURL = useMemo(() => {
         if (imageFile === null) {
@@ -42,9 +43,11 @@ export function useProjectBaseForm({ project }: UseProjectBaseFormParams) {
         imageURL,
         imageFile,
         imagePreviewURL,
+        isFeatured,
         setName,
         setImageURL,
         setImageFile,
+        setIsFeatured,
         handleImageChange,
     };
 }

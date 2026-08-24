@@ -24,9 +24,29 @@ const containerSx: SxProps<Theme> = {
     gap: 3,
     alignItems: "start",
     mb: 5,
+    "& > :last-child:nth-child(odd)": {
+        width: { xs: "100%", lg: "calc((100% - 24px) / 2)" },
+        gridColumn: { lg: "1 / -1" },
+        justifySelf: "center",
+    },
 };
 
-export { containerSx };
+const featuredSectionSx: SxProps<Theme> = {
+    width: "100%",
+    mb: 5,
+};
+
+const featuredTitleSx: SxProps<Theme> = {
+    mb: 3,
+    textAlign: "center",
+    color: "text.secondary",
+    fontSize: { xs: "1.15rem", sm: "1.35rem" },
+    fontWeight: 600,
+    letterSpacing: "0.08em",
+    textTransform: "uppercase",
+};
+
+export { containerSx, featuredSectionSx, featuredTitleSx };
 
 // PROJECT
 const surfaceSx: SxProps<Theme> = {

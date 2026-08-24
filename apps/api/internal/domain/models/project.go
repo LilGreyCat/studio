@@ -11,6 +11,7 @@ type Project struct {
 	ImageURL     sql.NullString `json:"image_url" db:"image_url"`
 	DisplayOrder int16          `json:"display_order" db:"display_order"`
 	IsVisible    bool           `json:"is_visible" db:"is_visible"`
+	IsFeatured   bool           `json:"is_featured" db:"is_featured"`
 	CreatedAt    time.Time      `json:"created_at" db:"created_at"`
 	UpdatedAt    time.Time      `json:"updated_at" db:"updated_at"`
 }

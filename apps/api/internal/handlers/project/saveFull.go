@@ -58,7 +58,7 @@ func (h Handler) UpdateFull(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if !request.Project.Name.Set && !request.Project.ImageURL.Set &&
-		!request.Project.DisplayOrder.Set && !request.Project.IsVisible.Set {
+		!request.Project.DisplayOrder.Set && !request.Project.IsVisible.Set && !request.Project.IsFeatured.Set {
 		http.Error(w, "at least one project field is required", http.StatusBadRequest)
 		return
 	}
@@ -76,6 +76,10 @@ func (h Handler) UpdateFull(w http.ResponseWriter, r *http.Request) {
 	}
 	if request.Project.IsVisible.Set && request.Project.IsVisible.Value == nil {
 		http.Error(w, "is_visible cannot be null", http.StatusBadRequest)
+		return
+	}
+	if request.Project.IsFeatured.Set && request.Project.IsFeatured.Value == nil {
+		http.Error(w, "is_featured cannot be null", http.StatusBadRequest)
 		return
 	}
 	if err := normalizeFullProjectURLs(&request.Links, &request.Integrations); err != nil {

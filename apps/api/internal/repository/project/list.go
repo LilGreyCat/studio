@@ -16,6 +16,7 @@ func (r *ProjectRepository) List(
 			image_url,
 			display_order,
 			is_visible,
+			is_featured,
 			created_at,
 			updated_at
 		FROM projects
@@ -40,6 +41,7 @@ func (r *ProjectRepository) List(
 			&project.ImageURL,
 			&project.DisplayOrder,
 			&project.IsVisible,
+			&project.IsFeatured,
 			&project.CreatedAt,
 			&project.UpdatedAt,
 		)
@@ -59,7 +61,7 @@ func (r *ProjectRepository) List(
 
 func (r *ProjectRepository) ListAll(ctx context.Context) ([]models.Project, error) {
 	const query = `
-		SELECT id, name, image_url, display_order, is_visible, created_at, updated_at
+		SELECT id, name, image_url, display_order, is_visible, is_featured, created_at, updated_at
 		FROM projects
 		ORDER BY display_order, id;
 	`
@@ -71,7 +73,7 @@ func (r *ProjectRepository) ListAll(ctx context.Context) ([]models.Project, erro
 	projects := make([]models.Project, 0)
 	for rows.Next() {
 		var project models.Project
-		if err := rows.Scan(&project.ID, &project.Name, &project.ImageURL, &project.DisplayOrder, &project.IsVisible, &project.CreatedAt, &project.UpdatedAt); err != nil {
+		if err := rows.Scan(&project.ID, &project.Name, &project.ImageURL, &project.DisplayOrder, &project.IsVisible, &project.IsFeatured, &project.CreatedAt, &project.UpdatedAt); err != nil {
 			return nil, err
 		}
 		projects = append(projects, project)

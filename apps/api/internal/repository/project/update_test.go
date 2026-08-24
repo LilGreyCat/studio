@@ -18,6 +18,7 @@ func TestUpdatePassesPatchPresenceSeparatelyFromValues(t *testing.T) {
 
 	now := time.Now()
 	name := "Renamed project"
+	isFeatured := true
 	query := regexp.QuoteMeta(`
 		WITH previous AS (
 			SELECT image_url
@@ -31,6 +32,7 @@ func TestUpdatePassesPatchPresenceSeparatelyFromValues(t *testing.T) {
 			image_url = CASE WHEN $4 THEN $5 ELSE p.image_url END,
 			display_order = CASE WHEN $6 THEN $7 ELSE p.display_order END,
 			is_visible = CASE WHEN $8 THEN $9 ELSE p.is_visible END,
+			is_featured = CASE WHEN $10 THEN $11 ELSE p.is_featured END,
 			updated_at = NOW()
 		FROM previous
 		WHERE p.id = $1
@@ -40,21 +42,22 @@ func TestUpdatePassesPatchPresenceSeparatelyFromValues(t *testing.T) {
 			p.image_url,
 			p.display_order,
 			p.is_visible,
+			p.is_featured,
 			p.created_at,
 			p.updated_at,
 			previous.image_url;
 	`)
 	mock.ExpectQuery(query).
-		WithArgs(int64(4), true, &name, false, nil, false, nil, false, nil).
+		WithArgs(int64(4), true, &name, false, nil, false, nil, false, nil, true, &isFeatured).
 		WillReturnRows(sqlmock.NewRows([]string{
-			"id", "name", "image_url", "display_order", "is_visible", "created_at", "updated_at", "previous_image_url",
-		}).AddRow(4, name, "/uploads/current.webp", 1, true, now, now, "/uploads/current.webp"))
+			"id", "name", "image_url", "display_order", "is_visible", "is_featured", "created_at", "updated_at", "previous_image_url",
+		}).AddRow(4, name, "/uploads/current.webp", 1, true, true, now, now, "/uploads/current.webp"))
 
-	updated, previousImage, err := New(db).Update(context.Background(), 4, true, &name, false, nil, false, nil, false, nil)
+	updated, previousImage, err := New(db).Update(context.Background(), 4, true, &name, false, nil, false, nil, false, nil, true, &isFeatured)
 	if err != nil {
 		t.Fatal(err)
 	}
-	if updated.Name != name || previousImage == nil || *previousImage != "/uploads/current.webp" {
+	if updated.Name != name || !updated.IsFeatured || previousImage == nil || *previousImage != "/uploads/current.webp" {
 		t.Fatalf("unexpected update result: %+v, previous image %v", updated, previousImage)
 	}
 	if err := mock.ExpectationsWereMet(); err != nil {

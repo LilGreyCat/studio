@@ -70,6 +70,9 @@ export default function ProjectListItem({
             color={project.is_visible ? "success" : "default"}
             label={project.is_visible ? "Visible" : "Masqué"}
           />
+          {project.is_featured && (
+            <Chip size="small" color="primary" label="Mis en avant" />
+          )}
         </Stack>
       </Stack>
 

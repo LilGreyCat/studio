@@ -26,6 +26,7 @@ func (h Handler) Create(w http.ResponseWriter, r *http.Request) {
 		r.Context(),
 		name,
 		request.ImageURL,
+		request.IsFeatured,
 	)
 	if err != nil {
 		http.Error(

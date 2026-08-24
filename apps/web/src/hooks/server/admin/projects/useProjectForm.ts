@@ -58,6 +58,7 @@ export function useProjectForm({
                 project: {
                     name: base.name.trim(),
                     image_url: emptyToNull(base.imageURL),
+                    is_featured: base.isFeatured,
                 },
                 links: links.getLinksPayload(),
                 integrations: integrations.getIntegrationsPayload(),
@@ -71,6 +72,7 @@ export function useProjectForm({
             project: {
                 name: base.name.trim(),
                 image_url: null,
+                is_featured: base.isFeatured,
             },
             links: links.getLinksPayload(),
             integrations: integrations.getIntegrationsPayload(),

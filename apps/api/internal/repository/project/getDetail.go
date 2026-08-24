@@ -10,7 +10,7 @@ import (
 func (r *ProjectRepository) GetDetail(ctx context.Context, id int64) (models.Project, []models.Artist, error) {
 	const query = `
 		SELECT
-			p.id, p.name, p.image_url, p.display_order, p.is_visible,
+			p.id, p.name, p.image_url, p.display_order, p.is_visible, p.is_featured,
 			p.created_at, p.updated_at,
 			a.id, a.name, a.image_url, a.display_order, a.is_visible,
 			a.created_at, a.updated_at
@@ -43,6 +43,7 @@ func (r *ProjectRepository) GetDetail(ctx context.Context, id int64) (models.Pro
 		if err := rows.Scan(
 			&project.ID, &project.Name, &project.ImageURL,
 			&project.DisplayOrder, &project.IsVisible,
+			&project.IsFeatured,
 			&project.CreatedAt, &project.UpdatedAt,
 			&artistID, &artistName, &artistImageURL,
 			&artistDisplayOrder, &artistIsVisible,

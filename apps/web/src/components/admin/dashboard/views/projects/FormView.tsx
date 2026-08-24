@@ -46,7 +46,12 @@ export default function ProjectFormView({
           {mode === "create" ? "Créer un projet" : "Modifier le projet"}
         </Typography>
 
-        <ProjectBaseFields name={form.name} onNameChange={form.setName} />
+        <ProjectBaseFields
+          name={form.name}
+          onNameChange={form.setName}
+          isFeatured={form.isFeatured}
+          onFeaturedChange={form.setIsFeatured}
+        />
 
         <ProjectImageField
           mode={mode}
