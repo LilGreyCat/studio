@@ -19,7 +19,7 @@ const studioSlides: StudioSlide[] = [
         height: 1023,
     },
     {
-        src: "03_fish-oeil1.png",
+        src: "03_fish-oeil1.png?v=20260828",
         alt: "Première vue grand-angle du studio",
         width: 1535,
         height: 1024,
